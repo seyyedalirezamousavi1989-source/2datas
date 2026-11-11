@@ -220,6 +220,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Require materially distinct scenario paths with observable activation, invalidation and expiry conditions; preserve immutable revisions and explicit evidence conflicts; keep scenario probability semantics separate from forecast targets and action policy.
 - Consequence: No forced bullish/bearish symmetry, arbitrary probability normalization, vague untestable triggers, hindsight rewriting, or treating a triggered scenario as an order/fill. Any actionable policy must pass current data, economics, deterministic risk, execution and authorization gates. No scenario generation or implementation is authorized.
 
+## D-031 — Market reasoning must be evidence-linked, causal and conflict-preserving
+
+- Status: Accepted as a provisional cross-task reasoning contract; implementation and empirical validation remain pending
+- Date: 2026-11-12
+- Decision: Keep observation, measurement, interpretation, forecast and policy/action as distinct epistemic layers. Reason from an immutable decision-time snapshot and canonical evidence references. Preserve timeframe/source/price-basis conflicts, typed uncertainty and abstention; do not force consensus or invent probabilities.
+- Consequence: This document coordinates existing semantic owners and does not redefine feature, structure, target, scenario, schema or policy contracts. Retain only non-duplicative reasoning examples with traceable evidence and named task value. No data inspection, annotation, generation, implementation or training is authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

@@ -164,12 +164,14 @@ Scenario lifecycle, scenario assessment, condition evaluation and entry-policy a
 
 ### 6.5 Order, deal and position status
 
-Do not collapse broker order status, deal/fill status and position state:
-- Order lifecycle: request/pending/accepted/partially-filled/filled/rejected/cancelled/expired/replaced/reconciliation-required, using broker-specific mapping.
-- Deal/fill: confirmed fill, partial fill, correction, reversal or broker-specific execution event.
-- Position: open/reduced/closed/unknown/reconciliation-required under the account's netting/hedging model.
+Do not collapse broker order status, deal/fill events, position state and reconciliation state. Their canonical normalized values and transitions are defined in SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md.
 
-Exact broker values and mapping version must be preserved alongside normalized states. A missing acknowledgement is not proof of rejection or non-execution.
+- Order lifecycle uses its own order_status domain; preserve exact broker-native values and mapping version.
+- Deal/fill is an immutable event stream (confirmed, corrected, busted or reversed), not a mutable order/position status.
+- Position status is OPEN, CLOSE_PENDING or CLOSED under the account's netting/hedging model.
+- Reconciliation uses a separate reconciliation_status domain; uncertainty must not be inserted into order_status or position_status.
+
+A missing acknowledgement is not proof of rejection or non-execution. A fill does not by itself prove that the local position projection has been reconciled.
 
 ### 6.6 Artifact/release status
 

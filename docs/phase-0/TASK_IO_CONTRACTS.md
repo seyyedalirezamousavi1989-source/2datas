@@ -79,7 +79,7 @@ The materialized model input contains only information available at decision tim
 
 **Evaluation:** Exact agreement with engine outputs, zero critical fabricated values, explanation accuracy, safe abstention.
 
-## 8. T06 — Trade lifecycle and management reasoning (H + I + J)
+## 8. T06 — Trade lifecycle and management reasoning (H + J; consumes verified I events as context)
 
 **Question:** Given verified broker state and chronological events, what management action, if any, is justified now?
 

@@ -24,6 +24,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Feature admission policy](docs/phase-0/FEATURE_POLICY.md) — feature registry, incremental value, redundancy control.
 - [Feature intelligence and information-value system](docs/phase-0/FEATURE_INTELLIGENCE_AND_INFORMATION_VALUE_SYSTEM.md) — candidate families, causal dependencies, normalization, redundancy, ablation and feature promotion gates.
 - [Label specification](docs/phase-0/LABEL_SPECIFICATION.md) — outcome vs policy labels, ambiguity, leakage firewall.
+- [Target and label intelligence governance](docs/phase-0/TARGET_AND_LABEL_INTELLIGENCE_GOVERNANCE.md) — target ontology, compact target portfolio, probability semantics, policy-label safeguards, censoring and leakage gates.
 - [Forecast target engineering](docs/phase-0/FORECAST_TARGET_ENGINEERING.md) — precise future-event targets, horizons, price conventions, probability semantics and censoring.
 - [Multi-timeframe and market structure](docs/phase-0/MULTI_TIMEFRAME_AND_MARKET_STRUCTURE.md) — causal swing confirmation, BOS/CHoCH, SMC definitions, as-of synchronization and conflict-aware MTF reasoning.
 - [News and macro event intelligence](docs/phase-0/NEWS_AND_MACRO_EVENT_INTELLIGENCE.md) — point-in-time releases, consensus snapshots, revisions, market reactions, event risk and licensing gates.

@@ -101,6 +101,8 @@ Any change to target formula, horizon, price convention, cost model, confirmatio
 
 ## 9. Initial label candidates — not yet approved
 
+Candidate priority and redundancy are governed by TARGET_PORTFOLIO_AND_REDUNDANCY_DECISION.md. A directional class derived from a fixed-horizon return is not an independent sample family by default.
+
 1. Fixed-horizon forward return with explicit price convention.
 2. Volatility-scaled upper/lower barrier event with ambiguous-path handling.
 3. MFE/MAE over a fixed observation horizon.

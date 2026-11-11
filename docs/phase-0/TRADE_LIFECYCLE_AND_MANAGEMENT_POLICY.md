@@ -56,7 +56,7 @@ At each approved observation point, a management task should follow this sequenc
 4. **Observe change:** identify new market facts and distinguish them from derived features and interpretations.
 5. **Reassess scenarios:** determine whether the original scenario remains valid, is weakened, invalidated, or replaced.
 6. **Evaluate risk:** request/consume a fresh deterministic calculation for proposed changes; never estimate authoritative volume or loss.
-7. **Select action:** no action, hold, reduce, modify stop, trail, partial exit, full exit, wait, or abstain according to the task policy.
+7. **Select action:** choose one canonical management_action (HOLD, MOVE_STOP_TO_BREAK_EVEN, TRAIL_STOP, REDUCE_PARTIAL, CLOSE_POSITION, EXTEND_TARGET, TIME_EXIT, EMERGENCY_RISK_REDUCTION, NO_ACTION or ABSTAIN) under the task policy.
 8. **State preconditions:** specify the evidence and authorization required before any external action.
 9. **Record:** append the recommendation and references; never mutate the prior decision.
 10. **Verify:** if an action is separately authorized and executed, rely on broker events and reconciliation—not the request—to establish its result.
@@ -75,16 +75,19 @@ Each proposed action must carry:
 - approval/authorization requirement;
 - abstention reason if not safe to recommend.
 
-Action semantics:
-- HOLD / NO_ACTION: preserve current verified position; does not mean the original thesis is guaranteed valid.
-- REDUCE_POSITION: request a smaller exposure; residual size is unknown until broker confirmation.
-- MOVE_STOP: proposed stop change; validate broker distance, side, freeze level, tick size and risk consequences.
-- TRAIL_STOP: versioned rule with activation, step/update conditions, minimum distance and stop-side validation.
-- PARTIAL_TAKE_PROFIT: proposed partial close; define quantity/volume-step and residual-position handling.
-- CLOSE_POSITION: request full exit; state remains open/pending until fills and reconciliation confirm closure.
-- REQUEST_RECALCULATION: inputs changed or stale; no action based on old risk result.
-- WAIT_FOR_CONFIRMATION: setup or management condition not yet confirmed.
+Action semantics (canonical values are governed by SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md):
+- HOLD: affirmative recommendation to maintain the verified current position under current policy.
+- MOVE_STOP_TO_BREAK_EVEN: proposed stop change; account for spread, commission, swap, conversion and broker constraints. It is not automatically net break-even.
+- TRAIL_STOP: versioned rule with activation, reference side, step/update conditions, minimum distance and stop-side validation.
+- REDUCE_PARTIAL: request a smaller exposure; residual size is unknown until broker confirmation.
+- CLOSE_POSITION: request full exit; the position remains open/pending until fills and reconciliation confirm closure.
+- EXTEND_TARGET: permitted only by an approved policy and fresh evidence/risk review.
+- TIME_EXIT: exit due to a registered time/horizon rule.
+- EMERGENCY_RISK_REDUCTION: reduce risk under an explicitly defined emergency policy.
+- NO_ACTION: no management change is justified at this evaluation; it does not imply missing evidence.
 - ABSTAIN: state/data/risk uncertainty makes a safe recommendation impossible.
+- Recalculation is a required control step/reference, not a management action class.
+- WAIT is not a management action; use NO_ACTION or ABSTAIN with a reason and next-observation condition.
 
 ## 7. Stop-loss and take-profit semantics
 

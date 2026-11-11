@@ -24,7 +24,7 @@ Common constraints:
 | A. Market structure | MarketSnapshot, bars, approved structure FeatureValues | StructureAssessment (logical task output) | Reproducible swing/trend/range/break/failure events | Confirmed vs provisional and confirmation time must be explicit |
 | B. Liquidity / SMC | MarketSnapshot, bars, validated structure/liquidity FeatureValues | StructureAssessment or Scenario evidence | Operational event detection and reliability | No hidden institutional-flow claims; each concept requires precise definition |
 | C. Multi-timeframe | MarketSnapshot timeframe references and availability/completion states | MTFAssessment (logical task output) | Alignment/conflict correctness and as-of integrity | Include only timeframes with distinct decision value |
-| D. Regime / volatility | MarketSnapshot and non-redundant volatility/return FeatureValues | RegimeAssessment (logical task output) | State/transition reliability and stability | Merge with A when target semantics do not differ |
+| D. Volatility regime | MarketSnapshot and non-redundant causal range/return/volatility FeatureValues | VolatilityRegimeAssessment (logical task output) | Volatility state, expansion/contraction, clustering and transition reliability | Keep distinct from A only while its target and consumer remain independently useful; otherwise merge/defer |
 | E. Forecasting | MarketSnapshot plus approved causal feature references | Forecast | Event-specific discrimination and calibration | Every forecast names target, event space, horizon and probability semantics |
 | F. Setup decision | MarketSnapshot, Forecast references, Scenario references, RiskCalculation result | TradeDecision | Policy compliance, abstention quality, net results after costs | Separate from market outcome labels and order execution |
 | G. Risk | Verified account/instrument/quote/exposure references and deterministic engine | RiskCalculation | Exact calculation reproducibility and constraint compliance | Model interprets; deterministic service calculates and enforces |
@@ -41,15 +41,15 @@ The names in the “logical task output” column are conceptual boundaries, not
 
 | Priority task | A–M coverage | Canonical entities |
 |---|---|---|
-| T01 Market-state assessment | A + D | MarketSnapshot, FeatureValue, logical MarketStateAssessment |
-| T02 Multi-timeframe synthesis | C + relevant A/D context | MarketSnapshot, logical MTFAssessment |
+| T01 Price/structure state assessment | A | MarketSnapshot, FeatureValue, logical MarketStateAssessment |
+| T02 Multi-timeframe synthesis | C + relevant A and optional D context | MarketSnapshot, logical MTFAssessment |
 | T03 Probabilistic outcome forecast | E | Forecast, OutcomeLabel |
 | T04 Conditional setup decision | F + scenario evidence from A–E | Scenario, TradeDecision, PolicyLabel |
 | T05 Risk-plan interpretation | G | RiskCalculation |
 | T06 Trade lifecycle reasoning | H + J (consumes verified I events as context) | LifecycleEvent, RiskCalculation, logical ManagementAssessment |
 | T07 Structure-event interpretation | A + selected B concepts | FeatureValue, logical StructureAssessment, OutcomeLabel if objectively defined |
 | T08 Execution-cost interpretation | I | LifecycleEvent, InstrumentSpecification, logical ExecutionAssessment |
-| T09 Regime/volatility characterization | D | FeatureValue, logical RegimeAssessment |
+| T09 Volatility-regime characterization | D | FeatureValue, logical VolatilityRegimeAssessment |
 | T10 News-context interpretation | K | SourceDefinition, timestamped observation, logical ContextAssessment |
 | T11 Visual chart reasoning | L | MarketSnapshot, chart artifact reference, logical VisualAssessment |
 

@@ -120,6 +120,14 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Prioritize a compact core of causal market state, multi-timeframe synthesis, explicit forecasts, conditional decisions, deterministic risk interpretation, and event-based lifecycle reasoning. Optional execution, regime refinement, news, and visual tasks require independent feasibility and incremental-value evidence.
 - Consequence: No fixed row target, blanket indicator library, automatic SMC inclusion, or expensive modality is approved. Hard provenance, causality, definition, and licensing gates cannot be traded off against predictive scores.
 
+
+## D-017 — Forecast targets must be event-defined and semantically separate
+
+- Status: Accepted as a provisional target-engineering contract; target selection remains pending
+- Date: 2026-11-12
+- Decision: Distinguish fixed-horizon returns, directional classes, barrier first-passage, MFE/MAE, time-to-event, future volatility/range, state transitions, and fully specified net-trade outcomes. Each target must declare horizon, price basis, availability, ambiguity, censoring, costs and evaluation.
+- Consequence: Directional probabilities, barrier probabilities and probability of net trade profit are not interchangeable. OHLC cannot resolve unknown intrabar ordering. No exact horizon, barrier, or target set is frozen by this decision.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

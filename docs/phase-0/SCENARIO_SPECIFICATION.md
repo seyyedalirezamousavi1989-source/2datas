@@ -147,11 +147,15 @@ Do not select thresholds after seeing the future path. Thresholds and parameters
 
 ## 11. Scenario lifecycle and immutable revisions
 
-Use a lifecycle that distinguishes hypothesis creation from activation and outcome:
+Use the canonical scenario lifecycle and transition rules in SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md:
 
     DRAFT → CANDIDATE → ACTIVE → TRIGGERED → (COMPLETED | INVALIDATED | EXPIRED | CANCELLED)
 
-Not every scenario must pass through every state. UNRESOLVED is an assessment state for insufficient or conflicting evidence, not a synonym for an expired scenario. Exact enum names remain subject to the canonical status contract.
+SUPERSEDED is available only when an explicitly linked replacement revision supersedes this scenario. Not every scenario passes through every state. Terminal states cannot be silently reopened.
+
+UNRESOLVED is an assessment state, not a lifecycle state. Where a separate point-in-time assessment is needed, use scenario_assessment = SUPPORTED | CONTRADICTED | UNRESOLVED. Each assessment revision preserves its evidence and timestamp.
+
+Condition predicates use condition_state = NOT_EVALUATED | TRUE | FALSE | UNKNOWN | STALE | INVALID. UNKNOWN, STALE, INVALID and NOT_EVALUATED never satisfy a trigger. Each evaluation is an immutable time-stamped record; later evidence must not backdate an earlier condition result.
 
 Rules:
 - Creation records the original hypothesis and evidence snapshot.

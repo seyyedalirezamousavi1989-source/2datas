@@ -89,6 +89,21 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Preserve the initial A–M capability architecture and map it to canonical shared entities. T01–T11 are prioritization/grouping, not a replacement architecture.
 - Consequence: Do not drop a capability merely because the compact task catalog groups it with another. Split or merge only when target semantics, inputs, consumers, and evaluation justify it.
 
+
+## D-013 — Task-level behavioral contracts
+
+- Status: Accepted as provisional design contracts
+- Date: 2026-11-12
+- Decision: Define input, output, abstention, prohibition and evaluation semantics for each prioritized T01–T11 task while preserving A–M scope.
+- Consequence: No task may be implemented merely from a broad capability name; its point-in-time inputs, target, downstream consumer and evaluation must be explicit.
+
+## D-014 — Annotation reliability before scale
+
+- Status: Accepted as a release requirement
+- Date: 2026-11-12
+- Decision: Interpretive labels require operational definitions, reliability pilots, disagreement reporting and preservation of ambiguity. Policy labels remain distinct from market outcomes.
+- Consequence: Do not scale subjective labeling or force ambiguous cases into binary classes.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

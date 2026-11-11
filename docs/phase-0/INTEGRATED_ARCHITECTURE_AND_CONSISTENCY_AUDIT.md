@@ -302,27 +302,29 @@ The current documents correctly reject random splitting and fixed universal samp
 
 **Required resolution:** once target horizons, late-arrival windows and event confirmation rules are frozen, define a split dependency graph. Group duplicates and overlapping target episodes before assigning splits. Purge/embargo must cover the maximum relevant target/event dependency and source-latency uncertainty, not an arbitrary fixed number of bars.
 
-### 12.11 Medium: task-level schema ownership is not yet machine-checkable
+### 12.11 Partially resolved: task-level field ownership
 
-The documents describe canonical entity ownership and task-specific references, but a field-level inventory is still required before JSON Schema or Parquet contracts are frozen.
+- CANONICAL_FIELD_REGISTRY_AND_SEMANTIC_RECONCILIATION.md now provides a provisional shared field inventory and task projection matrix.
+- SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md now owns scoped enum values and transition rules.
+- DATA_MODEL_AND_SCHEMA_CONTRACTS.md now references the scoped status authority and separates value origin (observed/derived/estimated) from status.
 
-**Required resolution:** create one field registry with entity, field path, semantic owner, type/unit, requiredness, applicability, value/status relationship, timestamp role, source/derivation, version and consuming tasks. Then generate/review task projections from that registry; do not hand-maintain competing field definitions.
+**Remaining gate:** inventory every field in every entity, including news, visual, annotation, evaluation and release records; bind each field to one status domain and null/value rule; reconcile every task projection. No operational schema should be generated until this is complete and reviewed.
 
 ## 13. Consolidated freeze blockers
 
 Phase 0 cannot be declared design-frozen until the following are resolved and reviewed:
-1. Remaining scoped enum/status transition rules (T06/T08 ownership is resolved by D-033).
-2. Scoped action/status enums and transition rules.
-3. Field-level null/missing/unknown/applicability semantics.
-4. Canonical timestamp, interval, correction and as-of rules.
-5. Snapshot identity, immutability and supersession.
-6. Risk request/result and policy handoff contract.
-7. T01/T09 merge decision.
-8. Task-to-field registry and task projection consistency.
-9. Target-dependent episode, purge and embargo rules.
-10. Stage 5 compatibility after independent acceptance.
-11. Source feasibility and rights after explicit authorization.
-12. User review and explicit design-freeze approval.
+1. Field-by-field status-domain binding and null/value rules across every canonical entity.
+2. Canonical timestamp, interval, correction, clock uncertainty and as-of rules, supported by actual source evidence.
+3. Snapshot identity, immutable revision and supersession contract at field-level.
+4. Risk request/result and policy handoff, including authoritative engine/interface verification.
+5. T01/T09 merge decision based on distinct target and downstream consumer.
+6. Complete task-to-field registry and task projection consistency.
+7. Target-dependent episode clustering, purge and embargo rules after horizons are selected.
+8. Stage 5 compatibility after independent acceptance and audit of actual deliverables.
+9. Source feasibility, point-in-time availability and rights after explicit authorization.
+10. User review and explicit design-freeze approval.
+
+Scoped enum/action governance and the T06/T08 boundary are now documented provisionally; this does not freeze wire values, broker mappings or field-level bindings.
 
 ## 14. Recommended next work item
 

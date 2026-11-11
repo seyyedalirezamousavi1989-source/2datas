@@ -11,7 +11,7 @@ Maximize verified information value per example—not row count, feature count, 
 ## Scope and authority
 
 - Instrument focus: XAUUSD.
-- Intended capability: causal multi-timeframe market interpretation, calibrated forecasting, setup assessment, risk-aware planning, trade lifecycle reasoning, and disciplined abstention.
+- Intended capability: causal multi-timeframe market interpretation, calibrated forecasting, scenario construction, setup assessment, risk-aware planning, trade lifecycle reasoning, and disciplined abstention.
 - Deterministic financial calculations and execution safeguards remain authoritative outside the learned model.
 - This repository is independent of AURORA QUANT implementation and the separate Stage 5 dataset project.
 - No data acquisition, archive inspection, pipeline implementation, labeling, training, benchmark execution, or changes to external projects without a separate explicit approval.
@@ -23,6 +23,9 @@ Maximize verified information value per example—not row count, feature count, 
 - [Task catalog](docs/phase-0/TASK_CATALOG.md) — prioritized, non-overlapping learning objectives.
 - [Feature admission policy](docs/phase-0/FEATURE_POLICY.md) — feature registry, incremental value, redundancy control.
 - [Label specification](docs/phase-0/LABEL_SPECIFICATION.md) — outcome vs policy labels, ambiguity, leakage firewall.
+- [Scenario specification](docs/phase-0/SCENARIO_SPECIFICATION.md) — conditional market paths, evidence, activation, invalidation, calibrated probabilities.
+- [Risk and trade management](docs/phase-0/RISK_AND_TRADE_MANAGEMENT_SPECIFICATION.md) — deterministic risk boundary and event-based lifecycle.
+- [Evaluation protocol](docs/phase-0/EVALUATION_PROTOCOL.md) — chronological testing, baselines, uncertainty, cost-aware policy evaluation.
 - [Data quality principles](docs/phase-0/DATA_QUALITY_PRINCIPLES.md) — inclusion, deduplication, leakage, validation.
 - [Decision log](docs/phase-0/DECISION_LOG.md) — recorded decisions and unresolved questions.
 

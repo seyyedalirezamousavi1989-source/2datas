@@ -24,6 +24,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Feature admission policy](docs/phase-0/FEATURE_POLICY.md) — feature registry, incremental value, redundancy control.
 - [Label specification](docs/phase-0/LABEL_SPECIFICATION.md) — outcome vs policy labels, ambiguity, leakage firewall.
 - [Forecast target engineering](docs/phase-0/FORECAST_TARGET_ENGINEERING.md) — precise future-event targets, horizons, price conventions, probability semantics and censoring.
+- [Multi-timeframe and market structure](docs/phase-0/MULTI_TIMEFRAME_AND_MARKET_STRUCTURE.md) — causal swing confirmation, BOS/CHoCH, SMC definitions, as-of synchronization and conflict-aware MTF reasoning.
 - [Scenario specification](docs/phase-0/SCENARIO_SPECIFICATION.md) — conditional market paths, evidence, activation, invalidation, calibrated probabilities.
 - [Risk and trade management](docs/phase-0/RISK_AND_TRADE_MANAGEMENT_SPECIFICATION.md) — deterministic risk boundary and event-based lifecycle.
 - [Evaluation protocol](docs/phase-0/EVALUATION_PROTOCOL.md) — chronological testing, baselines, uncertainty, cost-aware policy evaluation.

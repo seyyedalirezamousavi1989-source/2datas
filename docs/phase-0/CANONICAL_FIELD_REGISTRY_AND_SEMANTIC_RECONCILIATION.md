@@ -145,6 +145,13 @@ Forecast probabilities, market outcome labels, policy labels and realized P&L ar
 | risk_engine_version | Risk engine registry | Calculator version | Authoritative risk result |
 | constraint_status | Risk policy | Permitted/rejected/recalculation-required | Policy constraint domain |
 | order_id/deal_id/position_id | Broker lifecycle identity mapping | Broker-native/canonical identities | Preserve broker and mapping identity |
+| order_status | Scoped enum governance + broker adapter | Normalized order lifecycle, retaining broker-native value and mapping version | Broker order records |
+| position_status | Scoped enum governance + position contract | OPEN/CLOSE_PENDING/CLOSED verified position lifecycle | Position records |
+| reconciliation_status | Scoped enum governance + reconciliation contract | NOT_REQUIRED/PENDING/MATCHED/DIVERGENT/UNRESOLVED local-broker reconciliation | Where local and broker state are compared |
+| risk_calculation_status | Scoped enum governance + risk engine contract | REQUESTED/VALIDATING/CALCULATED/REJECTED_INPUT/STALE_INPUT/FAILED/EXPIRED/SUPERSEDED | Risk calculation records |
+| constraint_outcome | Risk policy contract | PERMITTED/PROHIBITED/RECALCULATION_REQUIRED/PENDING_AUTHORIZATION | Policy evaluation of a risk result |
+| annotation_status | Annotation reliability contract | UNREVIEWED/INDEPENDENTLY_ANNOTATED/DISAGREEMENT/ADJUDICATED/UNRESOLVED/REJECTED | Interpretive annotation records |
+| artifact_status/release_status | Artifact and release governance | Separate artifact lifecycle from dataset release approval | Artifact/release records |
 | order_request_time/broker_ack_time/fill_time | Execution event contract | Distinct request, acknowledgement and fill times | Relevant broker events |
 | fill_price/fill_volume/commission/swap/slippage/spread | Execution evidence contract | Observed execution and cost facts | Only with evidence; distinguish modeled assumptions |
 | event_id/event_sequence/event_type | Lifecycle event contract | Immutable event identity, order and type | Lifecycle events |

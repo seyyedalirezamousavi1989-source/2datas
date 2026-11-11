@@ -61,7 +61,7 @@ The materialized model input contains only information available at decision tim
 
 **Inputs:** Snapshot; relevant T01/T02 outputs; optional T03 forecast references; current cost/execution context; deterministic risk feasibility result for actionable plans.
 
-**Output:** Small set of materially distinct scenarios or unresolved state; supporting/conflicting evidence; activation, invalidation and expiry; decision class LONG/SHORT/NO_TRADE/WATCH/WAIT_FOR_CONFIRMATION; trigger and risk references for actionable decisions; abstention/rejection reasons.
+**Output:** Small set of materially distinct scenarios or unresolved state; supporting/conflicting evidence; activation, invalidation and expiry; entry decision class LONG/SHORT/WATCH/WAIT_FOR_CONFIRMATION/NO_TRADE/ABSTAIN; trigger and risk references for actionable decisions; abstention/rejection reasons. WAIT is deprecated as a standalone entry action.
 
 **Prohibitions:** No forced trade; no confusing scenario probability with probability of profit; no executable order or bypass of risk gates; no labeling a decision correct solely from eventual P&L.
 
@@ -85,7 +85,7 @@ The materialized model input contains only information available at decision tim
 
 **Inputs:** Ordered broker-confirmed LifecycleEvents; current verified position/order state and reconciliation status; fresh snapshot; latest deterministic risk result and hard constraints.
 
-**Output:** Current lifecycle state and evidence references; action such as HOLD, REDUCE_POSITION, MOVE_STOP, TRAIL_STOP, PARTIAL_TAKE_PROFIT, CLOSE_POSITION, REQUEST_RECALCULATION or ABSTAIN; preconditions, rationale, expiry/invalidation; required recalculation/approval boundary; state uncertainty.
+**Output:** Current lifecycle state and evidence references; management_action such as HOLD, MOVE_STOP_TO_BREAK_EVEN, TRAIL_STOP, REDUCE_PARTIAL, CLOSE_POSITION, EXTEND_TARGET, TIME_EXIT, EMERGENCY_RISK_REDUCTION, NO_ACTION or ABSTAIN; preconditions, rationale, expiry/invalidation; required recalculation/approval boundary; state uncertainty.
 
 **Prohibitions:** No inferring fills from requests; no stale/unreconciled state; no rewriting past decisions after outcome; no arbitrary stop movement presented as universally optimal.
 

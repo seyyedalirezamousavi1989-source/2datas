@@ -128,6 +128,14 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Distinguish fixed-horizon returns, directional classes, barrier first-passage, MFE/MAE, time-to-event, future volatility/range, state transitions, and fully specified net-trade outcomes. Each target must declare horizon, price basis, availability, ambiguity, censoring, costs and evaluation.
 - Consequence: Directional probabilities, barrier probabilities and probability of net trade profit are not interchangeable. OHLC cannot resolve unknown intrabar ordering. No exact horizon, barrier, or target set is frozen by this decision.
 
+
+## D-018 — Market structure and MTF must be causal and conflict-aware
+
+- Status: Accepted as a provisional behavioral contract; feature admission remains pending
+- Date: 2026-11-12
+- Decision: Structure events become usable only at their actual confirmation and availability times. MTF synthesis uses as-of snapshots and preserves partial, stale, missing and conflicting timeframe evidence. BOS/CHoCH/SMC concepts require operational definitions rather than assumed universal meanings.
+- Consequence: No pivot backdating, future swing endpoints, forced timeframe consensus, or claims of hidden institutional order flow. Exact algorithms and timeframe selection remain open.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

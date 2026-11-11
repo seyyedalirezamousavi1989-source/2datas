@@ -178,6 +178,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Evaluate sources by rights, identity, temporal semantics, task-specific coverage, quality, reproducibility, incremental value, cost and governance. Prefer the smallest defensible source set and preserve provider/feed identity rather than merging incompatible prices.
 - Consequence: No vendor, archive, uploaded ZIP, date range or license is approved. Tick, news, broker specification and execution history are required only for tasks that depend on their semantics. Source inspection/acquisition remains separately gated.
 
+## D-025 — Dataset lineage and releases must be immutable and reconstructable
+
+- Status: Accepted as a provisional governance contract; implementation remains unapproved
+- Date: 2026-11-12
+- Decision: Represent source, transformation, feature, label, dataset, split, evaluation and review artifacts in a versioned provenance graph. Pin checksums, code/configuration/environment, schema and policy versions. Preserve superseded artifacts and invalidate downstream results when upstream semantics or content changes.
+- Consequence: No mutable paths as sole lineage, no in-place replacement of accepted artifacts, no untraceable model checkpoints, and no proprietary data in Git without rights/security review. Storage technology and physical manifest schemas remain undecided.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

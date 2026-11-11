@@ -213,6 +213,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Define distinct ontologies for market outcome, forecast, policy/action, broker execution and post-trade outcome. Preserve NO_TRADE/abstention as first-class policy outcomes. Require exact event-space semantics, price basis, horizon, confirmation, ambiguity/censoring, overlap and provenance for each target.
 - Consequence: Profitability cannot be used as a proxy for decision correctness; a forecast probability cannot be relabeled as trade success probability; simulated fills cannot be presented as observed broker fills. Only a compact subset of target candidates should be promoted after source feasibility and Stage 5 review. No label generation or implementation is authorized.
 
+## D-030 — Scenarios are falsifiable conditional hypotheses, separate from policy and execution
+
+- Status: Accepted as a provisional scenario-governance rule; scenario schema remains unfrozen
+- Date: 2026-11-12
+- Decision: Require materially distinct scenario paths with observable activation, invalidation and expiry conditions; preserve immutable revisions and explicit evidence conflicts; keep scenario probability semantics separate from forecast targets and action policy.
+- Consequence: No forced bullish/bearish symmetry, arbitrary probability normalization, vague untestable triggers, hindsight rewriting, or treating a triggered scenario as an order/fill. Any actionable policy must pass current data, economics, deterministic risk, execution and authorization gates. No scenario generation or implementation is authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

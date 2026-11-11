@@ -164,6 +164,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Apply hard validity gates before assessing task relevance, novelty, evidence quality, coverage, evaluation usefulness and cost. Preserve typed inclusion, quarantine and exclusion dispositions with reasons. Cluster overlapping episodes and keep natural-distribution evaluation separate from curated challenge sets.
 - Consequence: No weighted score can compensate for leakage, invalid provenance or unreliable labels. Do not impose fixed sample counts, class quotas or sampling intervals before source feasibility and effective sample size are known.
 
+## D-023 — Training method must follow a measured capability gap
+
+- Status: Accepted as a provisional learning framework; no training method or model selected
+- Date: 2026-11-12
+- Decision: Keep deterministic financial/execution authorities outside the learned model. Evaluate prompt/tool/schema improvements first, then consider SFT/PEFT and only evidence-justified advanced methods. Separate task semantics and post-trade review from decision-time inputs.
+- Consequence: No default DPO/RL, synthetic preference inflation, fixed hyperparameters, model-size choice or training authorization. Each learning stage requires chronological held-out evaluation, safety checks and explicit approval.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

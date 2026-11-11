@@ -302,13 +302,14 @@ The current documents correctly reject random splitting and fixed universal samp
 
 **Required resolution:** once target horizons, late-arrival windows and event confirmation rules are frozen, define a split dependency graph. Group duplicates and overlapping target episodes before assigning splits. Purge/embargo must cover the maximum relevant target/event dependency and source-latency uncertainty, not an arbitrary fixed number of bars.
 
-### 12.11 Partially resolved: task-level field ownership
+### 12.11 Partially resolved: task-level field ownership and nullability
 
-- CANONICAL_FIELD_REGISTRY_AND_SEMANTIC_RECONCILIATION.md now provides a provisional shared field inventory and task projection matrix.
-- SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md now owns scoped enum values and transition rules.
-- DATA_MODEL_AND_SCHEMA_CONTRACTS.md now references the scoped status authority and separates value origin (observed/derived/estimated) from status.
+- CANONICAL_FIELD_REGISTRY_AND_SEMANTIC_RECONCILIATION.md provides the provisional shared field inventory and task projection matrix.
+- SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md owns scoped enum values and transition rules.
+- FIELD_STATUS_BINDING_AND_NULLABILITY_MATRIX.md binds core canonical entities to requiredness, scoped status and value/null rules.
+- DATA_MODEL_AND_SCHEMA_CONTRACTS.md references the scoped status authority and separates value origin (observed/derived/estimated) from status.
 
-**Remaining gate:** inventory every field in every entity, including news, visual, annotation, evaluation and release records; bind each field to one status domain and null/value rule; reconcile every task projection. No operational schema should be generated until this is complete and reviewed.
+**Remaining gate:** complete conditional news, visual, annotation, evaluation, dataset-release and training-run fields; validate every core field binding against the final task projections and source evidence. Exact types, precision and wire-level nullability remain unfrozen. No operational schema should be generated until this is reviewed.
 
 ## 13. Consolidated freeze blockers
 
@@ -328,19 +329,19 @@ Scoped enum/action governance and the T06/T08 boundary are now documented provis
 
 ## 14. Recommended next work item
 
-The canonical field registry and scoped enum governance now exist as provisional documents. The next highest-value design task is a **Field-Level Status Binding and Nullability Matrix**.
+The core field registry, scoped enum governance and provisional nullability matrix are now documented. The next highest-value design task is a **Deterministic Risk Calculation and Policy-Constraint Handoff Contract**.
 
-For every field in each canonical entity, bind:
-- exactly one status domain (or explicitly state that the field has no independent status);
-- whether a value is required, nullable or omitted under each applicable state;
-- whether the field can carry a stale prior value;
-- whether alternatives/evidence must be preserved for ambiguity;
-- source/derivation and availability requirements;
-- consuming tasks and any target/input boundary.
+It should define, without inventing formulas or broker facts:
+- immutable risk request/result identities and versions;
+- exact distinction between user/model proposal, deterministic calculation result and policy permission;
+- required account, instrument specification, quote-side, currency conversion and cost references;
+- freshness/expiry and fail-closed behavior;
+- volume-step rounding and mandatory post-rounding recalculation;
+- aggregate exposure, margin and account-level constraint references;
+- reason codes for rejected, stale, incomplete or recalculation-required results;
+- how T04/T05/T06 consume results without copying or overriding authoritative values.
 
-Start with shared entities and T01–T06, then add conditional T07–T11 fields only where their source/consumer gates are met. Identify unowned, duplicate, status-conflicting and unused fields. Keep the matrix human-readable and provisional.
-
-Do not generate operational JSON Schemas, physical tables, sample records, labels or code. Source-specific timestamp conventions and broker mappings remain deferred until evidence and explicit authorization are available.
+Keep this as a human-readable logical contract. Do not implement a calculator, invent broker parameters, generate samples, or create operational schemas. Actual formulas and broker mappings require source evidence and separate authorization.
 
 ## 15. Audit conclusion
 

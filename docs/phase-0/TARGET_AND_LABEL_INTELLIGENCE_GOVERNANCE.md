@@ -90,20 +90,20 @@ Any change to formula, price side, horizon, threshold, cost model, event-space, 
 
 ## 5. Recommended compact target portfolio — candidates only
 
-Do not instantiate every target family, horizon, timeframe and barrier multiplier. Begin research with a small set that covers distinct learning questions:
+The detailed F01–F08 to Y01–Y06 crosswalk and provisional redundancy decisions are owned by TARGET_PORTFOLIO_AND_REDUNDANCY_DECISION.md. This section summarizes the current design boundary; it does not approve target generation.
 
-| Candidate | Question | Role | Main caution |
-|---|---|---|---|
-| Y01 Fixed-horizon return distribution | How much did price move over a defined horizon? | Core forecasting baseline | Not executable P&L |
-| Y02 Directional partition | Was movement up/down/neutral under a frozen band? | Compact classification view | Neutral band can distort prevalence |
-| Y03 First-passage barriers | Which predeclared barrier was reached first? | Path-sensitive forecast | Intrabar order may be unknown |
-| Y04 MFE/MAE | What favorable/adverse excursion occurred? | Risk/path characterization | Does not establish event order |
-| Y05 Future range/volatility | How large was future movement? | Regime/risk context forecast | Must remain target-only |
-| Y06 State transition | Did a defined regime/state change? | Transition forecasting | Requires reliable state taxonomy |
+| Candidate | Portfolio role | Provisional disposition |
+|---|---|---|
+| Y01 Fixed-horizon return distribution | Primary market-outcome target candidate | Core candidate; exact horizon/source remain open |
+| Y02 Directional partition | Derived projection of Y01 using a frozen neutral band | Not an independent sample family by default |
+| Y03 First-passage barriers | Path-sensitive market-outcome target | Conditional on reliable intrabar order or honest ambiguity handling |
+| Y04 MFE/MAE | Path/risk sidecar | Conditional; not a default standalone target |
+| Y05 Future range/volatility | Future magnitude target | Conditional; separate from current T09 regime state |
+| Y06 State transition | Future state-transition target | Deferred until T01/T09 taxonomies and reliability are stable |
 
-Policy, execution, lifecycle and net-trade outcome targets are separate extensions. They should not be included in the initial market-forecast core unless source and policy provenance justify them.
+Policy, execution, lifecycle, process-quality and net-trade outcome targets are separate namespaces. They are not part of the initial market-forecast core unless their own source/policy provenance and downstream consumer are proven.
 
-The portfolio is intentionally compact. Remove targets that do not support a distinct downstream decision or cannot be resolved reliably.
+Do not instantiate every target family, horizon, timeframe and barrier multiplier. Remove redundant projections and targets without a distinct consumer or reliable resolution rule.
 
 ## 6. Probability semantics and mathematical consistency
 

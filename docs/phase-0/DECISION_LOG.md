@@ -234,6 +234,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Keep the existing conceptual architecture, but do not declare it frozen until T06/T08 ownership, scoped enums, field-level null/status semantics, canonical time/interval/revision rules, snapshot immutability, risk handoff, T01/T09 disposition, task-to-field registry, and target-dependent split rules are reconciled.
 - Consequence: The integrated audit is the coordination record. Canonical semantic owners remain authoritative; related documents must be updated together when a conflict is resolved. No operational schemas, data inspection, generation, implementation, training, or Stage 5 changes are authorized.
 
+## D-033 — Canonical field ownership and T06/T08 boundary
+
+- Status: Accepted as provisional semantic governance; field registry remains unfrozen
+- Date: 2026-11-12
+- Decision: Maintain one semantic owner per shared field and reference canonical values from task projections. T06 owns trade management/lifecycle reasoning (H + J) and may consume verified execution events (I) as context; T08 owns execution-quality and cost targets (I). Correct the malformed SUPERSEDED status token. Preserve scoped status domains and defer source-dependent timestamp/interval and physical-schema decisions.
+- Consequence: Updated TASK_IO_CONTRACTS.md and TASK_TO_SCHEMA_MAPPING.md together; added the canonical field registry and indexed it in README. No data inspection, sample generation, operational schemas, implementation, training, Stage 5 changes or external-project changes are authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

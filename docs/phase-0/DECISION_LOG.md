@@ -269,6 +269,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Separate model/user proposal, immutable risk request, deterministic calculation result, policy constraint evaluation, entry decision, authorized order submission, broker evidence and reconciliation. A calculated result is not permission; permission is not order authorization; an order request is not a fill.
 - Consequence: Added DETERMINISTIC_RISK_AND_POLICY_HANDOFF_CONTRACT.md and indexed it in README. T04/T05/T06 consumption boundaries, freshness, mandatory recalculation and fail-closed behavior are specified. No calculator implementation, source inspection, dataset/label generation, benchmark, training, Stage 5 changes or external project changes are authorized.
 
+## D-038 — Provisional separation of T01 price/structure and T09 volatility regime
+
+- Status: Accepted as a provisional semantic boundary; T09 admission remains conditional
+- Date: 2026-11-12
+- Decision: T01 owns current price/structure state (trend, range, structural transition and indeterminate state). T09 owns volatility-regime characterization (volatility state, expansion/contraction, clustering and volatility transitions). Shared causal features are allowed, but target labels and task rows must not be duplicated.
+- Consequence: Updated TASK_CATALOG.md, TASK_TO_SCHEMA_MAPPING.md, TASK_IO_CONTRACTS.md and INTEGRATED_ARCHITECTURE_AND_CONSISTENCY_AUDIT.md. T09 remains optional until source coverage, effective sample size, target reliability and incremental value are demonstrated. No labels, samples, datasets or benchmarks are authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

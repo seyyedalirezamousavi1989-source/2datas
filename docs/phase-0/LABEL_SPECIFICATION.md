@@ -6,7 +6,7 @@ Labels define what a training target means. A label is not a convenient class na
 
 No labels are being generated in this phase.
 
-## 2. Two disjoint target families
+## 2. Distinct target namespaces
 
 ### 2.1 Market outcome labels
 
@@ -34,6 +34,8 @@ Policy labels require a named policy version, available evidence, constraints, d
 
 NO_TRADE is a valid and important decision. Do not force a directional label when evidence is insufficient or risk constraints prohibit action.
 
+ABSTAIN is distinct from NO_TRADE: ABSTAIN means a reliable policy decision cannot be made from current evidence/state. Existing-position management labels use the separate management_action domain. Execution facts and post-trade/process-quality labels are separate namespaces, not additional policy classes.
+
 ## 3. Required label registry fields
 
 | Field | Meaning |
@@ -50,8 +52,8 @@ NO_TRADE is a valid and important decision. Do not force a directional label whe
 | label_confirmed_at | When target became knowable |
 | ambiguity_rule | Intrabar/path ambiguity handling |
 | censoring_rule | Treatment of incomplete horizon/data |
-| status | resolved, ambiguous, censored, unavailable, invalid |
-| value | Typed label value, present only when status permits |
+| label_status | PENDING, RESOLVED, AMBIGUOUS, CENSORED, UNAVAILABLE, INVALID under the canonical label-resolution domain |
+| label_value | Typed label value, required only when label_status=RESOLVED |
 | provenance | Source IDs and transformation/version references |
 
 ## 4. Ambiguous paths and barrier targets

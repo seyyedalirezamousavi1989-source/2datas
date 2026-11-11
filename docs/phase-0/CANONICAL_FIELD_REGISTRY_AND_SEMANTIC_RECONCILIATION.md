@@ -117,9 +117,12 @@ If a bar touches both target and stop barriers and no finer evidence resolves or
 | scenario_type | Scenario taxonomy | Registered conditional path type | Scenario |
 | trigger_condition_refs/invalidation_condition_refs | Scenario condition registry | Observable activation/invalidation predicates | Falsifiable scenarios |
 | scenario_expires_at | Scenario validity contract | Declared scenario expiry | Time-bounded scenarios |
-| scenario_status | Scenario lifecycle contract | Scenario-specific lifecycle state | Scenario only |
+| scenario_status | Scoped enum governance + scenario contract | DRAFT/CANDIDATE/ACTIVE/TRIGGERED/COMPLETED/INVALIDATED/EXPIRED/CANCELLED/SUPERSEDED lifecycle | Scenario only |
+| scenario_assessment | Scenario contract | SUPPORTED/CONTRADICTED/UNRESOLVED point-in-time assessment, separate from lifecycle | When a separate assessment is required |
+| condition_state | Scenario condition registry | NOT_EVALUATED/TRUE/FALSE/UNKNOWN/STALE/INVALID result for one condition evaluation | Each evaluated condition record |
 | decision_id | Trade decision entity | Stable policy decision identity | Decision records |
-| decision_class | Entry policy registry | LONG/SHORT/NO_TRADE/WATCH/WAIT_FOR_CONFIRMATION/ABSTAIN | Entry policy decisions only |
+| decision_class | Entry policy registry | LONG/SHORT/WATCH/WAIT_FOR_CONFIRMATION/NO_TRADE/ABSTAIN; WAIT is deprecated | Entry policy decisions only |
+| management_action | Management policy registry | HOLD/MOVE_STOP_TO_BREAK_EVEN/TRAIL_STOP/REDUCE_PARTIAL/CLOSE_POSITION/EXTEND_TARGET/TIME_EXIT/EMERGENCY_RISK_REDUCTION/NO_ACTION/ABSTAIN | Existing-position management only |
 | selected_scenario_refs | Decision contract | Scenarios selected/considered by policy | When applicable; may be empty on abstention |
 | reason_code_refs | Policy/reason registry | Typed action/abstention reasons | Auditable policy decisions |
 | decision_expires_at | Decision policy | End of action validity | Time-bounded decisions |

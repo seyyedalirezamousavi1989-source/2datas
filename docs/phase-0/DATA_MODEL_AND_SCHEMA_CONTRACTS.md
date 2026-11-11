@@ -186,25 +186,22 @@ Post-decision data—including realized price path, MFE/MAE, final trade outcome
 
 The join between inputs and targets is permitted only in controlled training/evaluation materialization, after split/purge rules are applied and leakage checks pass.
 
-## 11. Status and missing-value vocabulary
+## 11. Status, value origin and missing-value vocabulary
 
-Use explicit status codes rather than overloading null:
+Status domains and legal transitions are governed exclusively by SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md, with shared field/null semantics in CANONICAL_FIELD_SEMANTICS_AND_STATUS_CONTRACT.md. Each entity/status field must declare exactly one scoped domain; do not copy or invent a universal status list here.
 
-| Status | Meaning |
-|---|---|
-| observed | Directly present in source and valid under source contract |
-| derived | Computed by a versioned deterministic transformation |
-| estimated | Inferred/estimated, with method and uncertainty |
-| unknown | Value cannot be established from available evidence |
-| unavailable | Required source/value was not provided or cannot be accessed |
-| not_applicable | Field does not apply to this entity/task |
-| not_yet_observable | Value becomes knowable only after the current decision time |
-| stale | Value exists but exceeds its declared freshness limit |
-| ambiguous | Evidence supports multiple unresolved interpretations |
-| invalid | Value fails validation or violates its contract |
-| censored | Target outcome cannot be resolved within available observation window |
+Important distinction: observed, derived, estimated and simulated describe value origin/evidence provenance, not availability or lifecycle status. If needed, represent them in a separate typed value_origin field governed by the relevant entity/feature contract.
 
-A status/value pair must obey a validation rule: e.g. a resolved label requires a typed value; an ambiguous or censored label must not carry a fabricated class. Avoid storing both a meaningful status and a contradictory non-null value.
+A status/value pair must obey the canonical field contract:
+- KNOWN requires a present, typed, validated value.
+- UNKNOWN, UNAVAILABLE, NOT_APPLICABLE and NOT_YET_OBSERVABLE must not carry fabricated values.
+- STALE may retain a prior value only with original timestamp/freshness metadata.
+- AMBIGUOUS preserves alternatives or an explicit ambiguity representation.
+- INVALID values are quarantined, not exposed as accepted features.
+- Label resolution uses its own PENDING/RESOLVED/AMBIGUOUS/CENSORED/UNAVAILABLE/INVALID domain.
+- Zero, false, empty string and null are distinct.
+
+The final schema registry must declare nullability and permitted status/value combinations field by field.
 
 ## 12. Identity, deduplication and correction
 

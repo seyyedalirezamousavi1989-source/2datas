@@ -16,33 +16,35 @@ Every lifecycle example must keep three timelines distinct:
 
 Never assume these clocks are identical. Preserve source clock, timezone, offset, receipt time and clock-quality metadata where available.
 
-## 3. Lifecycle state model
+## 3. Aggregate trade-episode projection (not a broker or position status)
 
-A proposed position lifecycle may include:
+The following is a derived workflow projection for grouping a setup and its related order/position lineage. It is not a canonical broker order state or position_status enum. The source-of-truth remains the immutable LifecycleEvent stream plus the separately governed order_status, position_status and reconciliation_status domains in SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md.
 
-- FLAT — no open position is verified.
-- SETUP_WATCH — a possible setup is being monitored; no order exists.
-- ENTRY_ELIGIBLE — activation conditions appear satisfied, but risk/approval checks remain.
-- ORDER_PENDING — an order request was sent; execution is not yet confirmed.
-- PARTIALLY_FILLED — some quantity is broker-confirmed filled.
+Provisional aggregate episode states:
+- FLAT — no position is currently verified and no live entry order remains.
+- SETUP_WATCH — a possible setup is monitored; no entry order exists.
+- ENTRY_ELIGIBLE — activation criteria appear satisfied, but risk/authorization gates remain.
+- ENTRY_ORDER_PENDING — an entry order has been submitted but no fill is yet confirmed.
+- ENTRY_PARTIALLY_FILLED — some entry quantity is confirmed while the entry order/remaining exposure is unresolved.
 - OPEN — a broker-confirmed position exists.
-- REDUCING — a close/reduction request is pending or partially filled.
-- EXIT_PENDING — full exit request is pending; position may still exist.
-- CLOSED — broker-confirmed residual position is zero and reconciliation is complete.
-- REJECTED / CANCELLED / EXPIRED — order/setup terminal status with reason.
-- UNKNOWN / RECONCILIATION_REQUIRED — evidence is conflicting, incomplete or stale.
+- REDUCTION_PENDING — a reduction/partial-close request is pending or partially executed.
+- EXIT_PENDING — a full-exit request is pending; a position may still exist.
+- CLOSED — broker-confirmed residual position is zero and required reconciliation is complete.
+- ENTRY_TERMINAL_NO_POSITION — entry was rejected, cancelled or expired and no position remains.
 
-These states must not be collapsed into a single “trade active” boolean. A transition requires an evidenced event and validation rule. Some broker workflows require additional intermediate states.
+State uncertainty is represented separately by reconciliation_status and the evidence/quality fields; do not add UNKNOWN or RECONCILIATION_REQUIRED as episode lifecycle values. Keep the specific order terminal reason on the order record. This projection must be reproducible from canonical events and must not overwrite them.
+
+These aggregate states must not be collapsed into a single “trade active” boolean. A transition requires an evidenced event and validation rule. Some broker workflows require additional intermediate states.
 
 ## 4. State transition evidence
 
-Examples of valid evidence:
+Examples of valid aggregate projection changes:
 - SETUP_WATCH → ENTRY_ELIGIBLE: trigger condition is satisfied using available market evidence.
-- ENTRY_ELIGIBLE → ORDER_PENDING: authorized order request event exists.
-- ORDER_PENDING → PARTIALLY_FILLED / OPEN: broker execution/deal event confirms quantity.
-- OPEN → REDUCING / EXIT_PENDING: authorized close/modify request is recorded.
-- REDUCING → OPEN / CLOSED: subsequent broker fills and reconciled residual quantity determine state.
-- Any state → RECONCILIATION_REQUIRED: broker events conflict, sequence gaps exist, or state freshness fails.
+- ENTRY_ELIGIBLE → ENTRY_ORDER_PENDING: authorized order submission event exists.
+- ENTRY_ORDER_PENDING → ENTRY_PARTIALLY_FILLED / OPEN: broker-confirmed deal/fill and position evidence.
+- OPEN → REDUCTION_PENDING / EXIT_PENDING: authorized close/reduction request is recorded; position remains open until broker evidence confirms the resulting quantity.
+- REDUCTION_PENDING → OPEN / CLOSED: subsequent broker fills and reconciled residual quantity determine the projection.
+- Any episode projection may be flagged as uncertain through reconciliation_status when broker events conflict, sequence gaps exist or state freshness fails; do not rewrite the underlying order/position status without evidence.
 
 A model's text output is never sufficient evidence of a state transition.
 

@@ -104,6 +104,14 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Interpretive labels require operational definitions, reliability pilots, disagreement reporting and preservation of ambiguity. Policy labels remain distinct from market outcomes.
 - Consequence: Do not scale subjective labeling or force ambiguous cases into binary classes.
 
+
+## D-015 — Temporal trade lifecycle as sequence learning
+
+- Status: Accepted as a provisional behavioral contract
+- Date: 2026-11-12
+- Decision: Treat management as a chronological sequence of point-in-time decisions linked to broker-confirmed lifecycle events, rather than isolated text examples.
+- Consequence: Market event time, knowledge/availability time, and trading-system event time remain distinct. An order request never proves a fill; stale or unreconciled state requires abstention/reconciliation.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

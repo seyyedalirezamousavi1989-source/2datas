@@ -72,16 +72,19 @@ The model may summarize this output, identify inconsistencies, and recommend a l
 
 ## 6. Trade-management action taxonomy
 
-Candidate action vocabulary:
-- HOLD / NO_ACTION;
-- REDUCE_POSITION;
-- MOVE_STOP_TO_DEFINED_LEVEL;
+Use the canonical management_action domain in SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md:
+- HOLD;
 - MOVE_STOP_TO_BREAK_EVEN;
 - TRAIL_STOP;
-- PARTIAL_TAKE_PROFIT;
+- REDUCE_PARTIAL;
 - CLOSE_POSITION;
-- REQUEST_RECALCULATION;
-- ABSTAIN / ESCALATE.
+- EXTEND_TARGET only where an approved policy permits it;
+- TIME_EXIT;
+- EMERGENCY_RISK_REDUCTION;
+- NO_ACTION;
+- ABSTAIN.
+
+Do not create alternate spellings such as REDUCE_POSITION or PARTIAL_TAKE_PROFIT as competing enum values. REQUEST_RECALCULATION is a required control step/reference, not a management action. Escalation/approval is a separate authorization workflow, not a market-management action. WAIT is not a management action; WAIT_FOR_CONFIRMATION belongs only to entry policy.
 
 Every proposed action must include:
 - current verified position/event reference;
@@ -92,7 +95,7 @@ Every proposed action must include:
 - invalidation/expiry;
 - whether human approval is required.
 
-The action must be conditional on the current broker-confirmed state. A stale position snapshot must not trigger an action.
+The action must be conditional on the current broker-confirmed state. A stale or unreconciled position snapshot must lead to ABSTAIN/reconciliation, not an action.
 
 ## 7. Break-even and trailing-stop semantics
 

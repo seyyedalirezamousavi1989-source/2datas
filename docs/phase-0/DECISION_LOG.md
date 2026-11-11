@@ -283,6 +283,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Use event/valid time, knowledge/availability time and processing time as distinct axes; decision_timestamp is the as-of cutoff. Internally normalize intervals to UTC half-open [start,end), preserve raw provider bar timestamp convention, exclude unknown-availability inputs from causal snapshots, and keep snapshots/revisions immutable.
 - Consequence: Added POINT_IN_TIME_INTERVAL_AND_SNAPSHOT_REVISION_CONTRACT.md, extended the canonical field registry and indexed the contract in README. Provider latency, bar construction, clock uncertainty, sessions/DST and correction history remain source-feasibility questions. No archive inspection, data processing, sample/label generation, implementation, training, Stage 5 or AURORA changes are authorized.
 
+## D-040 — Compact target portfolio and redundancy controls
+
+- Status: Accepted as provisional target-priority design; no target generation authorized
+- Date: 2026-11-12
+- Decision: Treat fixed-horizon return (F01/Y01) as the primary market-outcome candidate; directional classes (F02/Y02) are derived projections, not independent sample families by default. Barrier first-passage (F03/Y03) is source-conditional; MFE/MAE is a sidecar unless a management consumer justifies it; time-to-event is not duplicated by default; future volatility/range and state transitions remain conditional; hypothetical net-trade outcomes are excluded from the initial market-forecast core.
+- Consequence: Added TARGET_PORTFOLIO_AND_REDUNDANCY_DECISION.md and aligned target governance, forecast engineering, label specification and annotation status semantics. Exact horizons/thresholds and source feasibility remain open. No samples, labels, datasets, benchmarks, training, Stage 5 or AURORA changes are authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

@@ -185,6 +185,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Represent source, transformation, feature, label, dataset, split, evaluation and review artifacts in a versioned provenance graph. Pin checksums, code/configuration/environment, schema and policy versions. Preserve superseded artifacts and invalidate downstream results when upstream semantics or content changes.
 - Consequence: No mutable paths as sole lineage, no in-place replacement of accepted artifacts, no untraceable model checkpoints, and no proprietary data in Git without rights/security review. Storage technology and physical manifest schemas remain undecided.
 
+## D-026 — One integrated architecture map and semantic owner per shared contract
+
+- Status: Accepted as a Phase 0 coordination rule; design remains provisional
+- Date: 2026-11-12
+- Decision: Maintain one canonical semantic owner for each shared contract and use the integrated architecture audit to reconcile A–M capabilities with T01–T11 tasks. T06 lifecycle management may consume execution events, while T08 owns execution-quality targets; T01 current-state assessment and T09 regime characterization remain distinct only if definitions and consumers justify it.
+- Consequence: Related documents may add task-specific detail but must not independently redefine shared semantics. The audit is a desk review of design documents only, not evidence of source/data validity or implementation correctness. No next phase is authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

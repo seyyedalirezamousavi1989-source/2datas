@@ -41,6 +41,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Sample value and selection policy](docs/phase-0/SAMPLE_VALUE_AND_SELECTION_POLICY.md) — hard validity gates, multi-dimensional information value, episode-aware selection and auditable inclusion/exclusion.
 - [Model learning and training strategy](docs/phase-0/MODEL_LEARNING_AND_TRAINING_STRATEGY.md) — learned-vs-deterministic boundaries, evidence-led method selection, staged curriculum, multi-task controls and release gates.
 - [Data source feasibility framework](docs/phase-0/DATA_SOURCE_FEASIBILITY_FRAMEWORK.md) — source evidence tiers, task dependencies, temporal/rights requirements and task-specific admission gates.
+- [Dataset provenance, versioning and reproducibility](docs/phase-0/DATASET_PROVENANCE_VERSIONING_REPRODUCIBILITY.md) — immutable lineage, run manifests, semantic versioning, split traceability, change impact and release audit.
 - [Data quality principles](docs/phase-0/DATA_QUALITY_PRINCIPLES.md) — inclusion, deduplication, leakage, validation.
 - [Decision log](docs/phase-0/DECISION_LOG.md) — recorded decisions and unresolved questions.
 

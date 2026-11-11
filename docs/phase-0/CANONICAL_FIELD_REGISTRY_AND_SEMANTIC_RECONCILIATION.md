@@ -8,7 +8,8 @@ This document inventories the shared fields needed by the logical entities and p
 
 Semantic owners:
 - DATA_MODEL_AND_SCHEMA_CONTRACTS.md: canonical entities, relationships and record envelope.
-- CANONICAL_FIELD_SEMANTICS_AND_STATUS_CONTRACT.md: field meanings, timestamps, units, price basis, scoped status domains and null/value rules.
+- CANONICAL_FIELD_SEMANTICS_AND_STATUS_CONTRACT.md: field meanings, timestamps, units, price basis and null/value rules.
+- SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md: canonical scoped enum values, action/status separation and legal transitions.
 - TASK_IO_CONTRACTS.md: task behavior and input/output boundaries.
 - TASK_TO_SCHEMA_MAPPING.md: A–M to T01–T11 mapping.
 - Domain specifications: source, feature, target, scenario, risk, lifecycle, evaluation and visual semantics.
@@ -176,11 +177,11 @@ T06 may consume verified I/execution events as context to reconstruct current st
 
 | ID | Finding | Proposed resolution | Status |
 |---|---|---|---|
-| R-01 | T06/T08 previously overlapped on I | T06 owns H+J management/lifecycle; I events are context. T08 owns I execution-quality/cost targets | Proposed coordinated update |
-| R-02 | Malformed token SUPERSEDED) in canonical status contract | Correct spelling to SUPERSEDED and validate scoped tokens | Typographical fix |
-| R-03 | Scenario documents define richer lifecycle than abbreviated status table | Scenario owner publishes complete lifecycle and transitions; shared status contract references it | Open |
-| R-04 | Scenario condition uses UNKNOWN without a dedicated condition state domain | Define TRUE/FALSE/UNKNOWN/STALE/INVALID condition-evaluation domain under scenario owner | Open |
-| R-05 | Risk result status may be confused with policy permission | Risk engine owns calculation status; policy owns permit/reject/recalculate decision | Open |
+| R-01 | T06/T08 previously overlapped on I | T06 owns H+J management/lifecycle; I events are context. T08 owns I execution-quality/cost targets | Resolved provisionally; coordinated task map/I-O updated |
+| R-02 | Malformed token SUPERSEDED) in canonical status contract | Corrected to SUPERSEDED | Resolved; spelling verified |
+| R-03 | Scenario documents define richer lifecycle than abbreviated status table | Canonical scenario lifecycle and transitions now live in scoped enum governance; scenario owner references it | Resolved provisionally; broker/source mapping remains gated |
+| R-04 | Scenario condition uses UNKNOWN without a dedicated condition state domain | Defined NOT_EVALUATED/TRUE/FALSE/UNKNOWN/STALE/INVALID and immutable evaluation records | Resolved provisionally |
+| R-05 | Risk result status may be confused with policy permission | Separate risk_calculation_status from constraint_outcome; deterministic engine owns calculation and policy owns permission | Resolved provisionally; engine/source contract remains unverified |
 | R-06 | Interval/bar timestamp semantics lack source-backed final convention | Defer until source feasibility; no default assumption | Open |
 | R-07 | Generic envelope status may hide entity-specific domains | Every entity declares exactly one scoped status domain | Proposed |
 | R-08 | Feature availability may be confused with admission | Keep field availability separate from feature validation_status | Accepted by semantic owner |
@@ -195,7 +196,7 @@ Before this registry is frozen:
 3. Reconcile every entity's scoped status domain and transitions.
 4. Reconcile all task projections against this registry.
 5. Source-back time, units, price basis, currency and nullability rules.
-6. Update T06/T08 and T01/T09 decisions in all owner documents.
+6. Confirm T06/T08 alignment remains intact; resolve T01/T09 based on distinct definitions and consumers.
 7. Independently audit Stage 5 deliverables after their acceptance.
 8. Establish source feasibility/licensing after explicit authorization.
 9. Obtain explicit user approval for design freeze.

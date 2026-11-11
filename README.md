@@ -42,6 +42,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Model learning and training strategy](docs/phase-0/MODEL_LEARNING_AND_TRAINING_STRATEGY.md) — learned-vs-deterministic boundaries, evidence-led method selection, staged curriculum, multi-task controls and release gates.
 - [Data source feasibility framework](docs/phase-0/DATA_SOURCE_FEASIBILITY_FRAMEWORK.md) — source evidence tiers, task dependencies, temporal/rights requirements and task-specific admission gates.
 - [Dataset provenance, versioning and reproducibility](docs/phase-0/DATASET_PROVENANCE_VERSIONING_REPRODUCIBILITY.md) — immutable lineage, run manifests, semantic versioning, split traceability, change impact and release audit.
+- [Integrated architecture and consistency audit](docs/phase-0/INTEGRATED_ARCHITECTURE_AND_CONSISTENCY_AUDIT.md) — canonical layer ownership, A–M/T01–T11 reconciliation, task boundaries, dependencies and unresolved design decisions.
 - [Data quality principles](docs/phase-0/DATA_QUALITY_PRINCIPLES.md) — inclusion, deduplication, leakage, validation.
 - [Decision log](docs/phase-0/DECISION_LOG.md) — recorded decisions and unresolved questions.
 

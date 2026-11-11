@@ -327,6 +327,14 @@ The current documents correctly reject random splitting and fixed universal samp
 
 **Remaining gate:** exact horizons, thresholds, source/price conventions, sample sufficiency and target-specific split dependencies remain open. This is a provisional portfolio decision, not empirical target acceptance.
 
+### 12.13 Resolved provisionally: target dependencies and split grouping
+
+- TARGET_DEPENDENCY_EPISODE_AND_SPLIT_CONTRACT.md defines snapshot/decision/target/episode/dependency/duplicate/lifecycle identities and target-specific future dependency windows.
+- Derived projections inherit parent dependency groups; overlapping future paths are grouped before chronological split assignment.
+- Purge/embargo is derived from actual target horizons, confirmation delays and source revision/availability bounds; no arbitrary fixed bar count is approved.
+
+**Remaining gate:** exact horizons, source-latency/revision bounds, grouping thresholds, chronological dates, purge/embargo durations and effective independent sample counts remain unfrozen until Stage 5 acceptance and source feasibility.
+
 ## 13. Consolidated freeze blockers
 
 Phase 0 cannot be declared design-frozen until the following are resolved and reviewed:
@@ -345,11 +353,17 @@ Scoped enum/action governance and the T06/T08 boundary are now documented provis
 
 ## 14. Recommended next work item
 
-The target portfolio and its redundancy relationships are now specified provisionally. The next highest-value design task is a **Target Dependency, Episode Grouping and Temporal Split Contract**.
+The core semantic, action/status, risk handoff, temporal, target portfolio and split-dependency contracts are now documented provisionally. The next work item is a **Final Phase 0 Cross-Document Coherence and Freeze-Readiness Audit**.
 
-It should map, for each target family, the input window, future observation window, confirmation/late-arrival dependency, shared underlying path, derived-projection relationship and episode/group identity. It should then define how overlapping targets and duplicate/near-duplicate examples are grouped before chronological split assignment, and how purge/embargo durations are derived from the longest actual target and source-revision dependency.
+That audit should verify that:
+- every canonical field and task points to one semantic owner;
+- task catalog, A–M mapping and T01–T11 I/O contracts agree;
+- all status/action terms use the canonical scoped domains;
+- target projections, episode grouping and split rules do not double-count shared paths;
+- no document silently assumes source availability, broker behavior, model authority or completed Stage 5 compatibility;
+- unresolved decisions are explicitly listed with the evidence/approval gate that can resolve them.
 
-No fixed bar count, universal embargo or 60/20/20 split should be selected before exact horizons and source latency are verified. The contract should remain parameterized and human-readable until those facts are available.
+The outcome should be a truthful readiness report: ready for user design review, not automatically ready for data generation or training.
 
 ## 15. Audit conclusion
 

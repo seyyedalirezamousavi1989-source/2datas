@@ -1,0 +1,63 @@
+# Decision Log
+
+This log records decisions, not assumptions. New decisions must include rationale, evidence, impact, and date. Superseded decisions remain visible.
+
+## D-001 — Design-only authorization
+
+- Status: Accepted
+- Date: 2026-11-12
+- Decision: Current work is limited to technical design and documentation.
+- Consequence: No archive inspection, data download/processing, dataset generation, pipeline implementation, model training, or expensive benchmarks.
+- Revisit condition: Separate explicit user approval.
+
+## D-002 — Independent repository
+
+- Status: Accepted
+- Date: 2026-11-12
+- Decision: This project is maintained in `seyyedalirezamousavi1989-source/2datas` and remains separate from AURORA QUANT implementation and the other Stage 5 dataset project.
+- Consequence: No changes to those external projects under this authorization.
+
+## D-003 — Preserve uploaded archive
+
+- Status: Accepted
+- Date: 2026-11-12
+- Decision: Existing `XAUUSD.zip` is an uninspected source artifact and must remain unchanged.
+- Consequence: No claims are made about its contents, source, completeness, quality, or suitability.
+
+## D-004 — Optimize information value, not dataset size
+
+- Status: Accepted
+- Date: 2026-11-12
+- Decision: Include only fields and examples with explicit purpose, point-in-time validity, reliable definitions, non-duplicative information, and testable value.
+- Consequence: No paraphrase-based sample inflation or indiscriminate indicator collection.
+
+## D-005 — Separate outcomes from decisions
+
+- Status: Accepted
+- Date: 2026-11-12
+- Decision: Objective future market outcomes and policy/action labels are separate target families.
+- Consequence: A profitable hindsight trade is not automatically a correct decision label.
+
+## D-006 — Deterministic risk/execution authority
+
+- Status: Accepted
+- Date: 2026-11-12
+- Decision: Financial calculations and execution safeguards remain deterministic and authoritative; the model interprets verified outputs.
+- Consequence: No model-generated replacement for broker/account facts or authoritative risk calculations.
+
+## Open questions — do not silently resolve
+
+1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.
+2. **Source feasibility:** Which providers offer licensed, point-in-time XAUUSD quotes/ticks/bars, broker specification history, and execution records with adequate coverage?
+3. **Instrument identity:** Which broker/server symbol definitions and contract-specification changes are relevant to the intended deployment?
+4. **Primary decision horizons:** Which trading horizons and decision cadence are genuinely required? Avoid supporting every timeframe merely for completeness.
+5. **Target priority:** Which outcome targets demonstrate value for the intended decisions, and which can be removed?
+6. **News archive:** Is reliable historical publication-time data available under an acceptable license?
+7. **Visual modality:** Do synchronized charts add measurable value over structured data after controlled comparison?
+8. **Annotation reliability:** Which discretionary concepts can be defined consistently enough to label?
+9. **Evaluation protocol:** What date ranges, regimes, purging/embargo rules, and minimum effective sample sizes are justified by source coverage and target horizons?
+10. **Model selection:** Which locally available model and training method fit the final task mix, after representative low-cost feasibility tests are separately approved?
+
+## Next authorized work
+
+Continue Phase 0 design review only. Resolve definitions and dependencies, remove unnecessary overlap, and prepare a concise specification for user approval. Do not advance to source inspection or implementation automatically.

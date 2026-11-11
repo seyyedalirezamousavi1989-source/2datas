@@ -171,6 +171,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Keep deterministic financial/execution authorities outside the learned model. Evaluate prompt/tool/schema improvements first, then consider SFT/PEFT and only evidence-justified advanced methods. Separate task semantics and post-trade review from decision-time inputs.
 - Consequence: No default DPO/RL, synthetic preference inflation, fixed hyperparameters, model-size choice or training authorization. Each learning stage requires chronological held-out evaluation, safety checks and explicit approval.
 
+## D-024 — Source admission is task-specific and rights-first
+
+- Status: Accepted as a provisional feasibility framework; no source approved
+- Date: 2026-11-12
+- Decision: Evaluate sources by rights, identity, temporal semantics, task-specific coverage, quality, reproducibility, incremental value, cost and governance. Prefer the smallest defensible source set and preserve provider/feed identity rather than merging incompatible prices.
+- Consequence: No vendor, archive, uploaded ZIP, date range or license is approved. Tick, news, broker specification and execution history are required only for tasks that depend on their semantics. Source inspection/acquisition remains separately gated.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

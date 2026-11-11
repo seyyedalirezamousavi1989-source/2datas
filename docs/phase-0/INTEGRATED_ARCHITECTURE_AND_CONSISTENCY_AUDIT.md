@@ -260,17 +260,19 @@ The canonical semantic contract and scoped enum governance now separate field av
 
 **Remaining gate:** bind every field in every canonical entity to exactly one status domain, finish field-by-field nullability/value rules, and verify all owner/task documents reference rather than duplicate these definitions. This requires the complete field inventory and final schema review.
 
-### 12.4 High: canonical timestamp and interval semantics need a single field-level contract
+### 12.4 Resolved provisionally: internal temporal and interval semantics
 
-The architecture uses event_time, available_at, recorded_at and decision_timestamp. Time-series and event documents also need interval open/close, source timezone, bar completion, correction/revision, and decision-cutoff semantics.
+- POINT_IN_TIME_INTERVAL_AND_SNAPSHOT_REVISION_CONTRACT.md defines event/valid, knowledge/availability and processing time separately, with decision_timestamp as the as-of cutoff.
+- Internal normalized intervals are UTC half-open [start,end); raw provider timestamp convention is retained separately.
+- Completed/partial bars, MTF as-of selection, late arrivals, correction availability, clock uncertainty, news publication and broker event timing have explicit conceptual rules.
 
-**Required resolution:** specify inclusive/exclusive interval boundaries; bar timestamp convention (open- or close-stamped); UTC normalization and original timezone retention; DST/session handling; event time vs publication/receipt/availability; correction effective time vs correction availability; clock source/precision; and as-of selection for late-arriving revisions. A nominal candle close must not imply the candle was available at that instant.
+**Remaining gate:** provider/broker bar construction, source latency, historical availability, clock precision, session/DST calendars and correction archives require source evidence. No source-specific convention is assumed or frozen.
 
-### 12.5 High: decision snapshot identity and version immutability need precise rules
+### 12.5 Resolved provisionally: immutable snapshot and revision semantics
 
-The architecture depends on a frozen MarketSnapshot, while source corrections and derived feature versions may arrive later.
+The temporal contract defines a MarketSnapshot as an immutable point-in-time selection with exact source/feature revisions, as-of cutoff, materialization time, canonical reference set and content hash after serialization is frozen. Corrections create linked snapshot revisions; they do not rewrite the original decision context.
 
-**Required resolution:** define stable snapshot identity, content hash, source revision set, feature registry versions, as-of cutoff, snapshot creation/recording time, and supersession relationship. A later correction must create a new snapshot revision; it must not mutate the historical information set used by an earlier decision.
+**Remaining gate:** actual snapshot identity/hash construction and historical replay must be tested against approved source revision/availability evidence before any implementation or release.
 
 ### 12.6 Resolved provisionally: deterministic risk and policy handoff
 

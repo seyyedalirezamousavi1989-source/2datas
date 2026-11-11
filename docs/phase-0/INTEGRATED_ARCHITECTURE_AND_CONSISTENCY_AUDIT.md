@@ -119,7 +119,7 @@ The following is the current desk-review result. “Aligned” means the documen
 | A–M vs T01–T11 | TASK_TO_SCHEMA_MAPPING | TASK_CATALOG, TASK_IO_CONTRACTS | Compatible, intentional grouping | Preserve A–M traceability in any future task removal |
 | Canonical entities | DATA_MODEL_AND_SCHEMA_CONTRACTS | TASK_TO_SCHEMA_MAPPING, ARCHITECTURE | Compatible logical model | Resolve exact field types/requiredness after source feasibility |
 | Forecast vs policy | FORECAST_TARGET_ENGINEERING | LABEL_SPECIFICATION, TASK_IO_CONTRACTS, SCENARIO_SPECIFICATION | Aligned | Keep event spaces and policy labels separately versioned |
-| Current state vs regime | TASK_CATALOG | TASK_TO_SCHEMA_MAPPING, FEATURE_POLICY | Potential semantic overlap | Decide T01/T09 merge based on distinct definitions and consumer |
+| Price/structure state vs volatility regime | TASK_CATALOG | TASK_TO_SCHEMA_MAPPING, TASK_IO_CONTRACTS, FEATURE_POLICY | Provisional semantic boundary defined; T09 remains conditional | Require source coverage and incremental-value evidence before T09 admission |
 | Lifecycle vs execution | TRADE_LIFECYCLE_AND_MANAGEMENT_POLICY | TRADE_LIFECYCLE_AND_RISK_INTELLIGENCE, TASK_IO_CONTRACTS | Compatible but task boundary can be confused | Apply T06/T08 split described in this document |
 | Risk authority | RISK_AND_TRADE_MANAGEMENT_SPECIFICATION | DATA_MODEL, TASK_IO_CONTRACTS, lifecycle docs | Aligned | One canonical risk result contract; avoid duplicated competing calculations |
 | Labels and annotation | LABEL_SPECIFICATION | ANNOTATION_AND_LABEL_RELIABILITY, FORECAST_TARGET_ENGINEERING | Aligned conceptually | One registry authority; annotation guide is method, not another label schema |
@@ -280,11 +280,14 @@ The architecture depends on a frozen MarketSnapshot, while source corrections an
 
 **Remaining gate:** verify the actual deterministic engine interface, formulas, broker-specific instrument specifications, conversion/cost sources and authorization controls only after Stage 5 acceptance and separate user approval. No implementation is authorized by this design contract.
 
-### 12.7 Medium: T01/T09 remain a deliberate conditional merge
+### 12.7 Resolved provisionally: T01/T09 semantic boundary
 
-The task catalog and audit agree that T09 is retained only if its taxonomy, target or consumer is distinct from T01. It must not be counted as an independent task merely because volatility fields are present.
+- T01 now owns price/structure state: trend, range, structural transition and indeterminate assessment. Volatility features may be contextual inputs but are not T01 volatility-regime targets.
+- T09 now owns volatility-regime characterization: volatility state, expansion/contraction, clustering and volatility transitions.
+- A–M mapping now assigns A to T01 and D to T09; T02 may consume T09 context where useful.
+- Shared causal features are allowed, but duplicate labels/task rows are not.
 
-**Required resolution:** compare the exact T01 and T09 output/target definitions and downstream consumers. If no independent value is defensible, merge T09 into T01 and preserve A–M traceability. This is not yet an empirical decision.
+**Remaining gate:** T09 remains a conditional extension. Retain it in a release only if source coverage, effective sample size, target reliability and incremental downstream value beyond T01/simple volatility baselines are demonstrated. Otherwise defer/merge without losing D traceability.
 
 ### 12.8 Medium: T07/SMC and T11/visual remain gated extensions
 

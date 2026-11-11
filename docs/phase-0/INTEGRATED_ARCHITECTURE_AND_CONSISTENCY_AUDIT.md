@@ -328,9 +328,19 @@ Scoped enum/action governance and the T06/T08 boundary are now documented provis
 
 ## 14. Recommended next work item
 
-The next highest-value design task is a **Canonical Field Registry and Semantic Reconciliation**. It should inventory existing fields from the logical data model and task contracts, map each to one semantic owner, identify collisions and unresolved requiredness/status rules, and propose a minimal task projection.
+The canonical field registry and scoped enum governance now exist as provisional documents. The next highest-value design task is a **Field-Level Status Binding and Nullability Matrix**.
 
-Do not generate operational JSON Schemas, data tables, sample records, labels or code as part of that reconciliation. A human-readable field registry and conflict report are sufficient for Phase 0.
+For every field in each canonical entity, bind:
+- exactly one status domain (or explicitly state that the field has no independent status);
+- whether a value is required, nullable or omitted under each applicable state;
+- whether the field can carry a stale prior value;
+- whether alternatives/evidence must be preserved for ambiguity;
+- source/derivation and availability requirements;
+- consuming tasks and any target/input boundary.
+
+Start with shared entities and T01–T06, then add conditional T07–T11 fields only where their source/consumer gates are met. Identify unowned, duplicate, status-conflicting and unused fields. Keep the matrix human-readable and provisional.
+
+Do not generate operational JSON Schemas, physical tables, sample records, labels or code. Source-specific timestamp conventions and broker mappings remain deferred until evidence and explicit authorization are available.
 
 ## 15. Audit conclusion
 

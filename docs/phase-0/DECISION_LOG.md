@@ -157,6 +157,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Distinguish point-in-time market observations, conditional scenarios, policy actions, and realized execution/outcomes. Trade lifecycle is represented as immutable events including partial fills, corrections and broker reconciliation. Position sizing and account/broker constraints remain deterministic and authoritative.
 - Consequence: Profitability alone is not a decision-quality label; losses are not automatically bad decisions. NO_TRADE and abstention are first-class. Planned prices are not fills, management requests are not confirmed broker state, and post-trade information must not leak into decision-time inputs.
 
+## D-022 — Sample admission is gated and multi-dimensional, not a single score
+
+- Status: Accepted as a provisional selection policy; implementation remains unapproved
+- Date: 2026-11-12
+- Decision: Apply hard validity gates before assessing task relevance, novelty, evidence quality, coverage, evaluation usefulness and cost. Preserve typed inclusion, quarantine and exclusion dispositions with reasons. Cluster overlapping episodes and keep natural-distribution evaluation separate from curated challenge sets.
+- Consequence: No weighted score can compensate for leakage, invalid provenance or unreliable labels. Do not impose fixed sample counts, class quotas or sampling intervals before source feasibility and effective sample size are known.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

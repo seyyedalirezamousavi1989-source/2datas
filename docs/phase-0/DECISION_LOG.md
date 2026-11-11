@@ -136,6 +136,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Structure events become usable only at their actual confirmation and availability times. MTF synthesis uses as-of snapshots and preserves partial, stale, missing and conflicting timeframe evidence. BOS/CHoCH/SMC concepts require operational definitions rather than assumed universal meanings.
 - Consequence: No pivot backdating, future swing endpoints, forced timeframe consensus, or claims of hidden institutional order flow. Exact algorithms and timeframe selection remain open.
 
+## D-019 — Macro facts, expectations, interpretations and reactions remain separate
+
+- Status: Accepted as a provisional point-in-time contract; source feasibility and modality admission remain pending
+- Date: 2026-11-12
+- Decision: News/event intelligence must preserve actual publication and ingestion times, pre-release expectation snapshots, original values and later revisions as distinct records. Derived surprise, text interpretation and observed market reaction are separate semantic layers.
+- Consequence: No hindsight narrative, revised value, scheduled-but-unreleased event, or post-event price movement may be presented as information known at the earlier decision time. News inclusion requires licensing and incremental-value evidence.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

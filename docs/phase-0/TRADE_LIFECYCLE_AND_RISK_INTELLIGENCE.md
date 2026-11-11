@@ -136,8 +136,8 @@ Support partial fills, multiple orders, multiple positions, corrections, rejecte
 
 Management decisions are conditional on the current position state and current available evidence.
 
-Potential actions:
-- HOLD without change;
+Potential management_action values, governed by SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md:
+- HOLD;
 - MOVE_STOP_TO_BREAK_EVEN;
 - TRAIL_STOP;
 - REDUCE_PARTIAL;
@@ -145,7 +145,10 @@ Potential actions:
 - EXTEND_TARGET only if an approved policy permits it;
 - TIME_EXIT;
 - EMERGENCY_RISK_REDUCTION;
-- NO_ACTION / WAIT.
+- NO_ACTION;
+- ABSTAIN.
+
+WAIT is not a management action. Use NO_ACTION when no change is justified despite sufficient evidence, or ABSTAIN when current state/evidence is not trustworthy. WAIT_FOR_CONFIRMATION is reserved for an entry-policy decision with a named pending trigger.
 
 For each action, require an observable trigger, policy permission, current position/order snapshot, proposed change, estimated incremental risk/cost, and explicit reason. A model suggestion is not proof that a broker modification succeeded; record requested, acknowledged, rejected and confirmed states separately.
 

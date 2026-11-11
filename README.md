@@ -30,6 +30,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [A–M task-to-schema mapping](docs/phase-0/TASK_TO_SCHEMA_MAPPING.md) — maps the original architecture to canonical inputs, outputs and task boundaries.
 - [Task I/O contracts](docs/phase-0/TASK_IO_CONTRACTS.md) — behavioral input/output, abstention and evaluation contracts for T01–T11.
 - [Annotation and label reliability](docs/phase-0/ANNOTATION_AND_LABEL_RELIABILITY.md) — operational definitions, independent review, ambiguity and label provenance.
+- [Trade lifecycle and management policy](docs/phase-0/TRADE_LIFECYCLE_AND_MANAGEMENT_POLICY.md) — chronological position states, management decisions, broker reconciliation and sequence evaluation.
 - [Dataset composition and redundancy](docs/phase-0/DATASET_COMPOSITION_AND_REDUNDANCY.md) — information density, overlap control, event coverage and split-safe sampling.
 - [Data quality principles](docs/phase-0/DATA_QUALITY_PRINCIPLES.md) — inclusion, deduplication, leakage, validation.
 - [Decision log](docs/phase-0/DECISION_LOG.md) — recorded decisions and unresolved questions.

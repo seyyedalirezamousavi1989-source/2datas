@@ -152,10 +152,15 @@ Quality flags remain non-exclusive diagnostics such as `GAP`, `DUPLICATE_CANDIDA
 
 ### 6.4 Scenario and decision status
 
-Scenario lifecycle and policy decision class are different fields:
-- Scenario status: `DRAFT`, `ACTIVE`, `INVALIDATED`, `EXPIRED`, `SUPERSEDED`.
-- Decision class: `LONG`, `SHORT`, `NO_TRADE`, `WATCH`, `WAIT_FOR_CONFIRMATION`.
-- Decision review status, if needed, is a separate domain and must not alter the original decision.
+Scenario lifecycle, scenario assessment, condition evaluation and entry-policy action are separate domains. Their canonical values and transitions are owned by SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md and detailed by SCENARIO_SPECIFICATION.md.
+
+- Scenario lifecycle uses DRAFT, CANDIDATE, ACTIVE, TRIGGERED, COMPLETED, INVALIDATED, EXPIRED, CANCELLED and SUPERSEDED.
+- Scenario assessment, when required, uses SUPPORTED, CONTRADICTED or UNRESOLVED; this is not a lifecycle state.
+- Condition evaluation uses NOT_EVALUATED, TRUE, FALSE, UNKNOWN, STALE or INVALID.
+- Entry decision class uses LONG, SHORT, WATCH, WAIT_FOR_CONFIRMATION, NO_TRADE or ABSTAIN.
+- WAIT is deprecated as a standalone entry action. NO_TRADE is a policy conclusion; ABSTAIN means a reliable decision cannot be made.
+- Existing-position management actions use a separate management_action domain.
+- Decision review status, if needed, is separate and must not alter the original decision.
 
 ### 6.5 Order, deal and position status
 

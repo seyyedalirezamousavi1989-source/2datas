@@ -230,3 +230,112 @@ Phase 0 should not be declared complete merely because documents exist. Before r
 After this consolidation, the most valuable remaining Phase 0 task is a **field-level semantic reconciliation** of the canonical entities and universal statuses. That work should identify one authoritative definition for every shared field, enumerate required/optional/applicable-by-task fields, and build a machine-readable schema plan without yet creating operational JSON Schemas or code.
 
 Only after that should a concise design-freeze package be prepared for user review. Source inspection, archive inspection, data acquisition, implementation and training remain separate authorization gates.
+
+
+## 12. Follow-up desk audit — concrete cross-document blockers
+
+This section records issues found by comparing the current task catalog, task I/O contracts, task/schema mapping, dataset composition, selection policy, target governance, scenario contract and reasoning contract. These are specification findings only; no data or code was inspected.
+
+### 12.1 Critical: T06/T08 ownership is not yet fully consistent
+
+- This document's task map describes T06 as H + J, with I events consumed as evidence, and T08 as the execution-process assessment.
+- `TASK_IO_CONTRACTS.md` currently describes T06 as H + I + J.
+- The same lifecycle/execution evidence can legitimately be referenced by both tasks, but task ownership and target ownership must not overlap.
+
+**Required resolution before schema freeze:** T06 owns management decisions and position-state reasoning; it may reference verified execution events as context. T08 owns execution quality/cost outcomes. The canonical LifecycleEvent is stored once. T06 must not independently label slippage/fill quality; T08 must not label management actions. Update task I/O and mapping together when this decision is approved.
+
+### 12.2 High: task action vocabularies need one canonical registry
+
+Across task and scenario documents, action vocabularies vary between WAIT, WAIT_FOR_CONFIRMATION, ABSTAIN, NO_TRADE, WATCH, and management-specific actions. These are not interchangeable.
+
+**Required resolution:** define separate, scoped enums for:
+- entry-policy decision;
+- scenario lifecycle;
+- scenario condition state;
+- management recommendation;
+- broker order lifecycle;
+- field/record/target quality status.
+
+Do not create one universal status enum. Specify allowed transitions and invalid combinations. Decide whether WAIT is deprecated in favor of WAIT_FOR_CONFIRMATION or has a distinct documented meaning. This audit does not silently rename existing fields.
+
+### 12.3 High: epistemic and quality statuses must be field-scoped
+
+The canonical status contract must be the sole authority for distinctions such as UNKNOWN, UNAVAILABLE, NOT_APPLICABLE, PENDING, STALE, AMBIGUOUS, CENSORED, INVALID and PROVISIONAL. Some are epistemic values, some describe data quality, and some describe lifecycle/target resolution; a single undifferentiated enum would be semantically unsafe.
+
+**Required resolution:** define status domains by entity/field, permitted transitions, whether a status may coexist with a value, and which status is required when a value is null. Explicitly separate “not yet observable” from “source unavailable” and “not applicable.” Every task contract should reference these domains, not restate or invent alternatives.
+
+### 12.4 High: canonical timestamp and interval semantics need a single field-level contract
+
+The architecture uses event_time, available_at, recorded_at and decision_timestamp. Time-series and event documents also need interval open/close, source timezone, bar completion, correction/revision, and decision-cutoff semantics.
+
+**Required resolution:** specify inclusive/exclusive interval boundaries; bar timestamp convention (open- or close-stamped); UTC normalization and original timezone retention; DST/session handling; event time vs publication/receipt/availability; correction effective time vs correction availability; clock source/precision; and as-of selection for late-arriving revisions. A nominal candle close must not imply the candle was available at that instant.
+
+### 12.5 High: decision snapshot identity and version immutability need precise rules
+
+The architecture depends on a frozen MarketSnapshot, while source corrections and derived feature versions may arrive later.
+
+**Required resolution:** define stable snapshot identity, content hash, source revision set, feature registry versions, as-of cutoff, snapshot creation/recording time, and supersession relationship. A later correction must create a new snapshot revision; it must not mutate the historical information set used by an earlier decision.
+
+### 12.6 High: risk authority and policy handoff require a strict contract
+
+The architecture correctly reserves authoritative sizing and constraints for deterministic services. Task contracts must consistently distinguish a model's interpretation/request from a calculator's result and from broker acknowledgement.
+
+**Required resolution:** define request/result IDs, calculator and instrument-spec versions, account-currency conversion references, quote timestamp/side, cost assumptions, volume-step rounding, post-rounding recalculation, stale-result behavior, and fail-closed status. A proposed risk change requires a new calculation; model prose cannot override a rejected result.
+
+### 12.7 Medium: T01/T09 remain a deliberate conditional merge
+
+The task catalog and audit agree that T09 is retained only if its taxonomy, target or consumer is distinct from T01. It must not be counted as an independent task merely because volatility fields are present.
+
+**Required resolution:** compare the exact T01 and T09 output/target definitions and downstream consumers. If no independent value is defensible, merge T09 into T01 and preserve A–M traceability. This is not yet an empirical decision.
+
+### 12.8 Medium: T07/SMC and T11/visual remain gated extensions
+
+SMC/structure interpretation and chart-image reasoning have clear candidate boundaries, but their admission depends on reproducibility, source alignment, reviewer agreement and incremental value.
+
+**Required resolution:** do not promote either into the minimum core by default. For T07, freeze event confirmation and independent reproducibility. For T11, require image-renderer lineage, exact snapshot linkage, and structured-only versus structured-plus-image ablation. No image-only future information or hidden-order claims.
+
+### 12.9 Medium: news, execution and account history are conditional on provenance
+
+T08/T10 and account/risk tasks require evidence that cannot be inferred from ordinary OHLC. Provider marketing claims or a small sample do not establish historical availability or rights.
+
+**Required resolution:** maintain task-specific source dossiers. If point-in-time news, historical instrument specifications, bid/ask/tick, or broker-confirmed order/deal history cannot be proven, remove or narrow the dependent target rather than substituting generic assumptions.
+
+### 12.10 Medium: split and episode policy must be derived from target dependencies
+
+The current documents correctly reject random splitting and fixed universal sampling intervals, but the exact episode clustering, purge and embargo algorithms remain open.
+
+**Required resolution:** once target horizons, late-arrival windows and event confirmation rules are frozen, define a split dependency graph. Group duplicates and overlapping target episodes before assigning splits. Purge/embargo must cover the maximum relevant target/event dependency and source-latency uncertainty, not an arbitrary fixed number of bars.
+
+### 12.11 Medium: task-level schema ownership is not yet machine-checkable
+
+The documents describe canonical entity ownership and task-specific references, but a field-level inventory is still required before JSON Schema or Parquet contracts are frozen.
+
+**Required resolution:** create one field registry with entity, field path, semantic owner, type/unit, requiredness, applicability, value/status relationship, timestamp role, source/derivation, version and consuming tasks. Then generate/review task projections from that registry; do not hand-maintain competing field definitions.
+
+## 13. Consolidated freeze blockers
+
+Phase 0 cannot be declared design-frozen until the following are resolved and reviewed:
+1. T06/T08 task and target ownership.
+2. Scoped action/status enums and transition rules.
+3. Field-level null/missing/unknown/applicability semantics.
+4. Canonical timestamp, interval, correction and as-of rules.
+5. Snapshot identity, immutability and supersession.
+6. Risk request/result and policy handoff contract.
+7. T01/T09 merge decision.
+8. Task-to-field registry and task projection consistency.
+9. Target-dependent episode, purge and embargo rules.
+10. Stage 5 compatibility after independent acceptance.
+11. Source feasibility and rights after explicit authorization.
+12. User review and explicit design-freeze approval.
+
+## 14. Recommended next work item
+
+The next highest-value design task is a **Canonical Field Registry and Semantic Reconciliation**. It should inventory existing fields from the logical data model and task contracts, map each to one semantic owner, identify collisions and unresolved requiredness/status rules, and propose a minimal task projection.
+
+Do not generate operational JSON Schemas, data tables, sample records, labels or code as part of that reconciliation. A human-readable field registry and conflict report are sufficient for Phase 0.
+
+## 15. Audit conclusion
+
+The conceptual architecture is coherent and consistently prioritizes causal evidence, target separation, deterministic risk authority, provenance and information efficiency. However, the documents are not yet ready to be frozen: the blockers in Section 13 must be reconciled first. The presence of extensive documentation is not evidence of source feasibility, label reliability, empirical usefulness, or implementation correctness.
+
+No source archive has been inspected; no market data, sample, label, benchmark, pipeline or model has been produced. The separate Stage 5 project and AURORA QUANT remain untouched. This audit does not authorize progression to another phase.

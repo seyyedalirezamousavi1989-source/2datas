@@ -110,3 +110,162 @@ A scenario framework is useful only if it demonstrates:
 - incremental benefit to downstream decisions after costs and risk constraints.
 
 Long, persuasive explanations are not evidence of predictive value.
+
+## 9. Scenario set: coverage without forced symmetry
+
+A decision snapshot may have zero, one, or several scenarios. The system must not invent a bullish and bearish scenario merely to appear balanced.
+
+A scenario set should:
+- cover materially distinct paths that could change the downstream decision;
+- avoid paraphrases and cosmetic variants of the same path;
+- retain a neutral/range or unresolved possibility when supported;
+- identify omitted plausible paths when the evidence space is incomplete;
+- distinguish a primary working hypothesis from alternatives without implying certainty;
+- preserve scenario identity across revisions within the same decision episode.
+
+Scenarios are not automatically mutually exclusive or exhaustive. If a probabilistic partition is required, define a separate exhaustive event space and its target contract. Do not normalize arbitrary scenario scores into probabilities.
+
+## 10. Operational conditions and falsifiability
+
+Every activation, invalidation, and expiry condition must be expressible as an observable predicate or an explicitly typed human-review condition.
+
+A condition definition should specify:
+- condition_id and definition_version;
+- referenced source/feature/event IDs;
+- comparison/operator and threshold, where applicable;
+- price side and unit;
+- timeframe and bar-completion rule;
+- observation/availability requirement;
+- persistence/debounce rule, if any;
+- evaluation window and expiry;
+- unknown/stale/missing-data behavior;
+- whether the condition is a trigger, supporting evidence, invalidation, or safety gate.
+
+Avoid vague conditions such as “strong momentum”, “institutional confirmation”, or “price reacts well” unless translated into a registered operational definition. If a condition cannot be evaluated from available evidence, its state is UNKNOWN—not satisfied.
+
+Do not select thresholds after seeing the future path. Thresholds and parameters must be frozen ex ante or derived only from data available at the decision timestamp.
+
+## 11. Scenario lifecycle and immutable revisions
+
+Use a lifecycle that distinguishes hypothesis creation from activation and outcome:
+
+    DRAFT → CANDIDATE → ACTIVE → TRIGGERED → (COMPLETED | INVALIDATED | EXPIRED | CANCELLED)
+
+Not every scenario must pass through every state. UNRESOLVED is an assessment state for insufficient or conflicting evidence, not a synonym for an expired scenario. Exact enum names remain subject to the canonical status contract.
+
+Rules:
+- Creation records the original hypothesis and evidence snapshot.
+- Activation requires the registered trigger predicate to be observed and available.
+- Triggered means the scenario condition occurred; it does not mean an order was submitted or filled.
+- Invalidation and expiry are distinct: invalidation is evidence against the thesis; expiry is the end of its declared validity window.
+- Cancellation is an explicit policy/user action, not a market outcome.
+- Completion requires a registered terminal event definition.
+- Later evidence creates an append-only revision/event; it never rewrites what was known at the original decision time.
+- Corrections to source data create traceable revisions and must not backdate knowledge availability.
+
+A scenario revision should include prior_revision_id, new_revision_id, revision_time, available_at, reason_code, changed_fields, new_evidence_refs and actor/policy version. Preserve the original and all intermediate revisions.
+
+## 12. Scenario-to-policy decision gate
+
+The scenario layer proposes conditional hypotheses. The policy layer independently decides whether any action is justified.
+
+A future policy evaluation should check, in order:
+1. Input validity: is the snapshot complete enough, fresh, correctly synchronized and point-in-time valid?
+2. Evidence sufficiency: does at least one scenario have traceable supporting evidence, with material contradictions disclosed?
+3. Trigger state: is the required trigger confirmed, or is WAIT_FOR_CONFIRMATION the correct output?
+4. Invalidation/expiry: is the scenario still valid and within its declared horizon?
+5. Forecast semantics: are probabilities tied to the exact target, event space and horizon, with calibration evidence?
+6. Trade economics: are entry type, price-side convention, costs, gap/slippage assumptions and cost-adjusted reward/risk defined?
+7. Deterministic risk: has the authoritative risk engine returned a current, valid, permitted result?
+8. Execution feasibility: are spread, market state, broker availability and order constraints acceptable and evidenced?
+9. Action authorization: does the named policy permit the proposed action and size?
+
+If a mandatory gate is failed or unknown, the policy must choose the appropriate non-entry/abstention outcome, request fresh evidence, or require deterministic recalculation. A plausible scenario alone never authorizes LONG or SHORT.
+
+## 13. Action output must remain distinct from scenario description
+
+A decision record references scenario IDs and separately identifies:
+- action class: LONG, SHORT, NO_TRADE, WATCH, WAIT_FOR_CONFIRMATION, or ABSTAIN;
+- action/policy definition version;
+- decision timestamp and expiry;
+- selected scenario and rejected/retained alternatives;
+- trigger state and evidence references;
+- entry intent/type and permitted range, if applicable;
+- stop/invalidation and target logic;
+- cost and execution assumptions;
+- deterministic risk result reference and constraint status;
+- reason codes and unresolved conditions.
+
+The scenario record itself must not claim that an order was placed, accepted, filled, or that a position exists. Those facts belong to the execution/lifecycle event stream. A policy recommendation is not an instruction to bypass authorization or broker safeguards.
+
+## 14. Contradiction and uncertainty handling
+
+Contradictions must be represented, not hidden by a single aggregate score.
+
+Examples include:
+- higher timeframe trend conflicts with lower timeframe trigger;
+- price structure conflicts with momentum/volatility evidence;
+- two feeds disagree beyond a declared tolerance;
+- a news interpretation conflicts with the primary source record;
+- a partial bar suggests a condition that is absent on completed bars;
+- scenario probability estimates disagree across models or regimes.
+
+For each material conflict, preserve both evidence references, their availability/freshness, the conflict type and its decision relevance. Do not average incompatible sources without a registered reconciliation rule.
+
+Uncertainty should distinguish at least missing/stale source evidence, provisional/unconfirmed structure, target/event ambiguity, model estimation uncertainty, calibration uncertainty, source disagreement, and policy/constraint uncertainty.
+
+A model's fluent explanation or self-reported confidence is not a substitute for calibrated uncertainty.
+
+## 15. Scenario evaluation and audit metrics
+
+Evaluate scenario quality separately from language quality and realized trade P&L.
+
+Candidate evaluation dimensions:
+- Definition validity: proportion of conditions reproducibly evaluable from registered evidence.
+- Temporal validity: trigger/invalidation/expiry availability-time correctness.
+- Coverage: whether material outcome paths are represented without forced scenario inflation.
+- Distinctness: duplicate/paraphrase rate among scenarios in the same set.
+- Falsifiability: proportion with testable activation and invalidation predicates.
+- Probability quality: proper scoring and calibration only for approved, well-defined events.
+- Revision discipline: whether updates preserve prior versions and use only newly available evidence.
+- Policy usefulness: incremental decision value over simple scenario-free baselines after costs and constraints.
+- Abstention quality: unsafe-action avoidance and performance/coverage trade-off.
+- Robustness: stability across chronological periods, regimes, sessions and source/feed changes.
+
+Report denominators, unresolved cases, missing evidence, sample/episode counts and uncertainty intervals. Do not score a scenario highly merely because its narrative resembles the realized path after the fact.
+
+## 16. Dataset representation and anti-duplication
+
+The canonical snapshot, feature, forecast, risk and lifecycle records remain separately owned. A scenario dataset should reference these entities by stable IDs and versions rather than copying their full payloads into every example.
+
+Store one scenario-set identity per decision snapshot and task definition; stable scenario identity and append-only revision history; evidence references rather than repeated prose summaries as pseudo-evidence; explicit scenario/decision policy version; independent outcome labels in the target namespace; and episode/group identity for overlapping snapshots and related scenarios.
+
+Do not create multiple training rows from minor wording variations of the same scenario. If several scenarios share the same evidence and differ only in narrative phrasing, deduplicate or keep one canonical representation. Preserve genuinely distinct conditional paths only when their trigger, invalidation, expected path, or downstream consequence differs materially.
+
+## 17. Minimum viable scenario capability — research priority only
+
+The first scenario capability should be deliberately narrow:
+- current snapshot and evidence references;
+- only materially distinct bullish, bearish, range/neutral, or unresolved hypotheses supported by evidence;
+- explicit trigger, invalidation, expiry and next-observation conditions;
+- separate supporting and conflicting evidence;
+- no numeric scenario probability unless the event is registered and calibrated;
+- separate policy action with NO_TRADE/WAIT/ABSTAIN options;
+- reference to deterministic risk feasibility for any actionable plan.
+
+Advanced path trees, many nested sub-scenarios, free-form price projections, news narratives, image-only scenarios and model-generated trade sizing are not core requirements. Add them only if a named task needs them and incremental value is demonstrated.
+
+## 18. Freeze and promotion gates
+
+Before scenario definitions can be frozen:
+1. Reconcile this contract with the canonical data model, field/status semantics, T04 task I/O and lifecycle policy.
+2. Define exact scenario types and status domains without duplicating generic field-status enums.
+3. Specify condition predicate semantics and unknown/stale handling.
+4. Define scenario-set identity, revision and episode grouping.
+5. Select only task-relevant decision horizons after source feasibility.
+6. Freeze probability event spaces separately from scenario taxonomy.
+7. Define evaluation baselines, abstention metrics and chronological split protections.
+8. Confirm Stage 5 compatibility after its independent acceptance.
+9. Obtain explicit user approval.
+
+This document does not authorize data inspection, scenario generation, label creation, implementation, backtesting, model training, or changes to AURORA QUANT or Stage 5.

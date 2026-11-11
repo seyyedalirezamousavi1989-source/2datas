@@ -27,6 +27,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Multi-timeframe and market structure](docs/phase-0/MULTI_TIMEFRAME_AND_MARKET_STRUCTURE.md) — causal swing confirmation, BOS/CHoCH, SMC definitions, as-of synchronization and conflict-aware MTF reasoning.
 - [News and macro event intelligence](docs/phase-0/NEWS_AND_MACRO_EVENT_INTELLIGENCE.md) — point-in-time releases, consensus snapshots, revisions, market reactions, event risk and licensing gates.
 - [Chart and visual intelligence](docs/phase-0/CHART_AND_VISUAL_INTELLIGENCE.md) — causal chart snapshots, image/data consistency, visual leakage controls, annotation lineage and modality ablation.
+- [Trade lifecycle and risk intelligence](docs/phase-0/TRADE_LIFECYCLE_AND_RISK_INTELLIGENCE.md) — policy actions, conditional scenarios, deterministic risk authority, event-sourced trade management, execution and post-trade review.
 - [Scenario specification](docs/phase-0/SCENARIO_SPECIFICATION.md) — conditional market paths, evidence, activation, invalidation, calibrated probabilities.
 - [Risk and trade management](docs/phase-0/RISK_AND_TRADE_MANAGEMENT_SPECIFICATION.md) — deterministic risk boundary and event-based lifecycle.
 - [Evaluation protocol](docs/phase-0/EVALUATION_PROTOCOL.md) — chronological testing, baselines, uncertainty, cost-aware policy evaluation.

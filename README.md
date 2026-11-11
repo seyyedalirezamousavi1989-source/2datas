@@ -22,6 +22,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Architecture](docs/phase-0/ARCHITECTURE.md) — data layers, task boundaries, causal contract.
 - [Task catalog](docs/phase-0/TASK_CATALOG.md) — prioritized, non-overlapping learning objectives.
 - [Feature admission policy](docs/phase-0/FEATURE_POLICY.md) — feature registry, incremental value, redundancy control.
+- [Feature intelligence and information-value system](docs/phase-0/FEATURE_INTELLIGENCE_AND_INFORMATION_VALUE_SYSTEM.md) — candidate families, causal dependencies, normalization, redundancy, ablation and feature promotion gates.
 - [Label specification](docs/phase-0/LABEL_SPECIFICATION.md) — outcome vs policy labels, ambiguity, leakage firewall.
 - [Forecast target engineering](docs/phase-0/FORECAST_TARGET_ENGINEERING.md) — precise future-event targets, horizons, price conventions, probability semantics and censoring.
 - [Multi-timeframe and market structure](docs/phase-0/MULTI_TIMEFRAME_AND_MARKET_STRUCTURE.md) — causal swing confirmation, BOS/CHoCH, SMC definitions, as-of synchronization and conflict-aware MTF reasoning.

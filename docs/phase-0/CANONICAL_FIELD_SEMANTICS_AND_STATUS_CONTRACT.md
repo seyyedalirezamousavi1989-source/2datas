@@ -1,4 +1,4 @@
-# Canonical Field Semantics and Universal Status Contract — Phase 0
+# Canonical Field Semantics and Scoped Status Contract — Phase 0
 
 ## 1. Status and boundary
 

@@ -28,7 +28,8 @@ Describe an action under a specified information set and policy:
 - SHORT;
 - NO_TRADE;
 - WATCH;
-- WAIT_FOR_CONFIRMATION.
+- WAIT_FOR_CONFIRMATION;
+- ABSTAIN.
 
 Policy labels require a named policy version, available evidence, constraints, decision rules, and rationale provenance. They must not be inferred from future profitability alone.
 

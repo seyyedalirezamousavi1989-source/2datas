@@ -27,6 +27,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Target and label intelligence governance](docs/phase-0/TARGET_AND_LABEL_INTELLIGENCE_GOVERNANCE.md) — target ontology, compact target portfolio, probability semantics, policy-label safeguards, censoring and leakage gates.
 - [Forecast target engineering](docs/phase-0/FORECAST_TARGET_ENGINEERING.md) — precise future-event targets, horizons, price conventions, probability semantics and censoring.
 - [Target portfolio and redundancy decision](docs/phase-0/TARGET_PORTFOLIO_AND_REDUNDANCY_DECISION.md) — F01–F08/Y01–Y06 crosswalk, primary targets, derived projections and conditional extensions.
+- [Target dependency, episode and split contract](docs/phase-0/TARGET_DEPENDENCY_EPISODE_AND_SPLIT_CONTRACT.md) — shared future-path grouping, duplicate clusters, purge/embargo derivation and chronological split safeguards.
 - [Multi-timeframe and market structure](docs/phase-0/MULTI_TIMEFRAME_AND_MARKET_STRUCTURE.md) — causal swing confirmation, BOS/CHoCH, SMC definitions, as-of synchronization and conflict-aware MTF reasoning.
 - [Market reasoning and evidence synthesis](docs/phase-0/MARKET_REASONING_AND_EVIDENCE_SYNTHESIS.md) — cross-task evidence graph, causal reasoning sequence, conflict taxonomy, calibrated forecast discipline and safe abstention.
 - [News and macro event intelligence](docs/phase-0/NEWS_AND_MACRO_EVENT_INTELLIGENCE.md) — point-in-time releases, consensus snapshots, revisions, market reactions, event risk and licensing gates.

@@ -272,11 +272,13 @@ The architecture depends on a frozen MarketSnapshot, while source corrections an
 
 **Required resolution:** define stable snapshot identity, content hash, source revision set, feature registry versions, as-of cutoff, snapshot creation/recording time, and supersession relationship. A later correction must create a new snapshot revision; it must not mutate the historical information set used by an earlier decision.
 
-### 12.6 High: risk authority and policy handoff require a strict contract
+### 12.6 Resolved provisionally: deterministic risk and policy handoff
 
-The architecture correctly reserves authoritative sizing and constraints for deterministic services. Task contracts must consistently distinguish a model's interpretation/request from a calculator's result and from broker acknowledgement.
+- DETERMINISTIC_RISK_AND_POLICY_HANDOFF_CONTRACT.md now defines the sequence from proposal to immutable request, deterministic calculation, policy constraint evaluation, entry decision, separately authorized order submission, broker evidence and reconciliation.
+- It separates risk_calculation_status from constraint_outcome and defines freshness, expiry, mandatory recalculation and fail-closed behavior.
+- T04/T05/T06 consumption boundaries are specified.
 
-**Required resolution:** define request/result IDs, calculator and instrument-spec versions, account-currency conversion references, quote timestamp/side, cost assumptions, volume-step rounding, post-rounding recalculation, stale-result behavior, and fail-closed status. A proposed risk change requires a new calculation; model prose cannot override a rejected result.
+**Remaining gate:** verify the actual deterministic engine interface, formulas, broker-specific instrument specifications, conversion/cost sources and authorization controls only after Stage 5 acceptance and separate user approval. No implementation is authorized by this design contract.
 
 ### 12.7 Medium: T01/T09 remain a deliberate conditional merge
 
@@ -329,19 +331,20 @@ Scoped enum/action governance and the T06/T08 boundary are now documented provis
 
 ## 14. Recommended next work item
 
-The core field registry, scoped enum governance and provisional nullability matrix are now documented. The next highest-value design task is a **Deterministic Risk Calculation and Policy-Constraint Handoff Contract**.
+The core field registry, scoped enum governance, nullability matrix and deterministic risk handoff are now documented provisionally. The next highest-value design task is a **T01/T09 Distinctness and Redundancy Decision**.
 
-It should define, without inventing formulas or broker facts:
-- immutable risk request/result identities and versions;
-- exact distinction between user/model proposal, deterministic calculation result and policy permission;
-- required account, instrument specification, quote-side, currency conversion and cost references;
-- freshness/expiry and fail-closed behavior;
-- volume-step rounding and mandatory post-rounding recalculation;
-- aggregate exposure, margin and account-level constraint references;
-- reason codes for rejected, stale, incomplete or recalculation-required results;
-- how T04/T05/T06 consume results without copying or overriding authoritative values.
+Compare the exact market-state and regime/volatility outputs by:
+- operational definition and label ontology;
+- decision-time inputs and causal feature dependencies;
+- prediction/assessment horizon and confirmation delay;
+- downstream consumer and decisions changed by each output;
+- evaluation target and metrics;
+- incremental value beyond the other task and simple baselines;
+- risk of duplicate labels, highly correlated examples and redundant training gradients.
 
-Keep this as a human-readable logical contract. Do not implement a calculator, invent broker parameters, generate samples, or create operational schemas. Actual formulas and broker mappings require source evidence and separate authorization.
+Decide one of three outcomes: retain both with explicitly non-overlapping contracts; merge T09 into T01 while preserving D/regime sub-capability traceability; or defer T09 until source/sample evidence exists. Do not decide based on document count or feature availability alone.
+
+Keep the decision at the conceptual contract level. Do not generate labels, samples, datasets or benchmarks, and do not inspect data sources without separate authorization.
 
 ## 15. Audit conclusion
 

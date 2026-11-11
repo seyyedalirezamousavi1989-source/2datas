@@ -276,6 +276,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: T01 owns current price/structure state (trend, range, structural transition and indeterminate state). T09 owns volatility-regime characterization (volatility state, expansion/contraction, clustering and volatility transitions). Shared causal features are allowed, but target labels and task rows must not be duplicated.
 - Consequence: Updated TASK_CATALOG.md, TASK_TO_SCHEMA_MAPPING.md, TASK_IO_CONTRACTS.md and INTEGRATED_ARCHITECTURE_AND_CONSISTENCY_AUDIT.md. T09 remains optional until source coverage, effective sample size, target reliability and incremental value are demonstrated. No labels, samples, datasets or benchmarks are authorized.
 
+## D-039 — Point-in-time, interval and snapshot revision contract
+
+- Status: Accepted as provisional internal temporal contract; source-specific behavior remains unverified
+- Date: 2026-11-12
+- Decision: Use event/valid time, knowledge/availability time and processing time as distinct axes; decision_timestamp is the as-of cutoff. Internally normalize intervals to UTC half-open [start,end), preserve raw provider bar timestamp convention, exclude unknown-availability inputs from causal snapshots, and keep snapshots/revisions immutable.
+- Consequence: Added POINT_IN_TIME_INTERVAL_AND_SNAPSHOT_REVISION_CONTRACT.md, extended the canonical field registry and indexed the contract in README. Provider latency, bar construction, clock uncertainty, sessions/DST and correction history remain source-feasibility questions. No archive inspection, data processing, sample/label generation, implementation, training, Stage 5 or AURORA changes are authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

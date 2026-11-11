@@ -37,7 +37,7 @@ Objective future quantities/events, independent of trading policy:
 ### 3.2 Policy/action targets
 
 Decision outputs generated under a named, frozen policy:
-- LONG, SHORT, NO_TRADE, WATCH, WAIT_FOR_CONFIRMATION;
+- LONG, SHORT, WATCH, WAIT_FOR_CONFIRMATION, NO_TRADE, ABSTAIN for entry policy; existing-position management uses the separate management_action domain;
 - scenario acceptance/rejection;
 - hold/reduce/modify/trail/partial exit/close/abstain, where the state and authority are defined.
 
@@ -151,14 +151,15 @@ Horizon is a target property, not automatically equal to chart timeframe. Select
 
 ## 8. Ambiguity, censoring and resolution rules
 
-Keep these statuses distinct:
-- RESOLVED: target outcome determined under its registered rule;
-- AMBIGUOUS: multiple outcomes remain possible under available evidence;
-- CENSORED: observation ends before the target is resolved;
-- PENDING: target window/confirmation is not complete;
-- UNAVAILABLE: required source evidence is absent;
-- INVALID: target construction fails validation;
-- NOT_APPLICABLE: target does not apply to this record.
+Keep the canonical label_status domain distinct:
+- PENDING: target window/confirmation is not complete.
+- RESOLVED: target outcome is determined under its registered rule.
+- AMBIGUOUS: multiple outcomes remain possible under available evidence.
+- CENSORED: observation definitively ends before target resolution under the censoring rule.
+- UNAVAILABLE: required source evidence is absent.
+- INVALID: target construction fails validation.
+
+NOT_APPLICABLE belongs to field/entity applicability, not label resolution. A target that does not apply should be omitted or represented through a separately defined applicability field; do not add NOT_APPLICABLE to label_status.
 
 Specific rules:
 - If both barriers are touched within an OHLC bar and no valid intrabar sequence exists, label AMBIGUOUS.

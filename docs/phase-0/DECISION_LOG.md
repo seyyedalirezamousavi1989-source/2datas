@@ -81,6 +81,14 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Select by distinct information contribution, preserve independent source corroboration, and account for overlapping windows/episodes.
 - Consequence: Do not count paraphrases, adjacent highly overlapping windows, or oversampled copies as independent market evidence. Keep natural-distribution evaluation data.
 
+
+## D-012 — Preserve A–M through canonical task mapping
+
+- Status: Accepted as a logical mapping; individual task schemas remain provisional
+- Date: 2026-11-12
+- Decision: Preserve the initial A–M capability architecture and map it to canonical shared entities. T01–T11 are prioritization/grouping, not a replacement architecture.
+- Consequence: Do not drop a capability merely because the compact task catalog groups it with another. Split or merge only when target semantics, inputs, consumers, and evaluation justify it.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

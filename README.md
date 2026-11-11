@@ -32,6 +32,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Risk and trade management](docs/phase-0/RISK_AND_TRADE_MANAGEMENT_SPECIFICATION.md) — deterministic risk boundary and event-based lifecycle.
 - [Evaluation protocol](docs/phase-0/EVALUATION_PROTOCOL.md) — chronological testing, baselines, uncertainty, cost-aware policy evaluation.
 - [Canonical data model and schema contracts](docs/phase-0/DATA_MODEL_AND_SCHEMA_CONTRACTS.md) — shared entities, record boundaries, identity, timestamps and typed statuses.
+- [Canonical field semantics and status contract](docs/phase-0/CANONICAL_FIELD_SEMANTICS_AND_STATUS_CONTRACT.md) — shared timestamp, units, identity, availability and scoped lifecycle/status meanings.
 - [A–M task-to-schema mapping](docs/phase-0/TASK_TO_SCHEMA_MAPPING.md) — maps the original architecture to canonical inputs, outputs and task boundaries.
 - [Task I/O contracts](docs/phase-0/TASK_IO_CONTRACTS.md) — behavioral input/output, abstention and evaluation contracts for T01–T11.
 - [Annotation and label reliability](docs/phase-0/ANNOTATION_AND_LABEL_RELIABILITY.md) — operational definitions, independent review, ambiguity and label provenance.

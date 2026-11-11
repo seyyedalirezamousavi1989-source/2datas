@@ -255,6 +255,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: The trade-episode workflow is a derived projection over immutable lifecycle events, not a replacement for broker-native/normalized order_status, position_status or reconciliation_status. Position state is not conflated with setup eligibility, order pending, partial fill or execution uncertainty.
 - Consequence: Updated TRADE_LIFECYCLE_AND_MANAGEMENT_POLICY.md, aligned management action vocabulary, and expanded the canonical field registry. Actual broker-state mappings remain source-dependent and unfrozen. No data inspection, implementation, labeling, training, Stage 5 changes or external project changes are authorized.
 
+## D-036 — Field-level status and nullability binding
+
+- Status: Accepted as provisional matrix; entity coverage and wire-level rules remain incomplete
+- Date: 2026-11-12
+- Decision: Bind core canonical fields to explicit requiredness, scoped status domains and value/null rules. Use record validation for record admission, field availability for epistemic absence, label resolution for future targets, and separate scenario/order/position/risk/constraint states. Required missing fields block admission; optional absence is represented only where it changes downstream interpretation.
+- Consequence: Added FIELD_STATUS_BINDING_AND_NULLABILITY_MATRIX.md and indexed it in README. Conditional news/visual/annotation/evaluation/release/training fields remain pending. No data inspection, dataset generation, implementation, training, Stage 5 changes or external project changes are authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

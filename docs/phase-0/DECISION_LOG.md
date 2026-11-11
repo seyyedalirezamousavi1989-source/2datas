@@ -59,6 +59,28 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Market outcome labels and policy/action labels have separate semantics and provenance.
 - Consequence: Future profitability cannot be used as a shortcut to infer the correctness of a historical decision.
 
+
+## D-009 — Canonical shared data model
+
+- Status: Accepted as a logical design contract; physical schemas remain pending
+- Date: 2026-11-12
+- Decision: Use canonical source observations and point-in-time snapshots referenced by task-specific Forecast, Scenario, TradeDecision, RiskCalculation, and LifecycleEvent records.
+- Consequence: Do not duplicate the same market context across task datasets. Final JSON Schema, physical layout, and Stage 5 compatibility mapping remain deferred.
+
+## D-010 — Typed status semantics
+
+- Status: Accepted
+- Date: 2026-11-12
+- Decision: Distinguish observed, derived, estimated, unknown, unavailable, not_applicable, not_yet_observable, stale, ambiguous, invalid, and censored states.
+- Consequence: Do not overload null or force unresolved evidence into a confident class.
+
+## D-011 — Information-density composition policy
+
+- Status: Accepted as a design rule; empirical sampling remains pending
+- Date: 2026-11-12
+- Decision: Select by distinct information contribution, preserve independent source corroboration, and account for overlapping windows/episodes.
+- Consequence: Do not count paraphrases, adjacent highly overlapping windows, or oversampled copies as independent market evidence. Keep natural-distribution evaluation data.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

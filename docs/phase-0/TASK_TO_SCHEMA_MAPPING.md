@@ -46,7 +46,7 @@ The names in the “logical task output” column are conceptual boundaries, not
 | T03 Probabilistic outcome forecast | E | Forecast, OutcomeLabel |
 | T04 Conditional setup decision | F + scenario evidence from A–E | Scenario, TradeDecision, PolicyLabel |
 | T05 Risk-plan interpretation | G | RiskCalculation |
-| T06 Trade lifecycle reasoning | H + I + J | LifecycleEvent, RiskCalculation, logical ManagementAssessment |
+| T06 Trade lifecycle reasoning | H + J (consumes verified I events as context) | LifecycleEvent, RiskCalculation, logical ManagementAssessment |
 | T07 Structure-event interpretation | A + selected B concepts | FeatureValue, logical StructureAssessment, OutcomeLabel if objectively defined |
 | T08 Execution-cost interpretation | I | LifecycleEvent, InstrumentSpecification, logical ExecutionAssessment |
 | T09 Regime/volatility characterization | D | FeatureValue, logical RegimeAssessment |

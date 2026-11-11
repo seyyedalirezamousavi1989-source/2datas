@@ -19,13 +19,13 @@ Every future task example must resolve to:
 
 The materialized model input contains only information available at decision time. The target is stored separately and joined only in controlled training/evaluation materialization.
 
-## 3. T01 — Market-state assessment (A + selected D)
+## 3. T01 — Price/structure state assessment (A)
 
 **Question:** What is the current observable market state, without claiming what happens next?
 
-**Inputs:** Canonical MarketSnapshot; completed and partial timeframe states with availability timestamps; approved structure, return, volatility and trend features; data-quality and freshness flags.
+**Inputs:** Canonical MarketSnapshot; completed and partial timeframe states with availability timestamps; approved structure, price/return and trend features; volatility features may be referenced as context but are not T01 volatility-regime targets; data-quality and freshness flags.
 
-**Output:** Current state under a versioned taxonomy; structural observations with evidence references; trend/range/transition/uncertain assessment where defined; confirmed vs provisional events; conflicting evidence; validity/expiry or next observation condition.
+**Output:** Current price/structure state under a versioned taxonomy; trend/range/structural transition/indeterminate assessment; confirmed vs provisional structure events; supporting/conflicting evidence; validity/expiry or next observation condition. Do not emit a duplicate volatility-regime label owned by T09.
 
 **Prohibitions:** No future outcomes; no treating unconfirmed swings/breaks as confirmed; no confusing description with forecast or trade advice.
 
@@ -115,17 +115,17 @@ The materialized model input contains only information available at decision tim
 
 **Evaluation:** Cost estimation error, fill-state classification, exception handling and sensitivity to incomplete data.
 
-## 11. T09 — Regime and volatility characterization (D)
+## 11. T09 — Volatility-regime characterization (D; conditional extension)
 
-**Question:** Which versioned market regime/volatility state is supported by currently available data?
+**Question:** Which distinct volatility regime/state is supported by causally available range/return evidence, independent of T01 price/structure classification?
 
 **Inputs:** Snapshot; approved non-redundant return/volatility features; frozen taxonomy and transition rules.
 
-**Output:** Current regime and volatility state; evidence and transition status; uncertainty/confirmation delay; current state distinguished from future transition forecast.
+**Output:** Versioned volatility state and, where defined, expansion/contraction, clustering and volatility-transition assessment; evidence and confirmation/availability time; uncertainty; current state distinguished from future transition forecast. Do not duplicate T01 trend/range/structure labels.
 
-**Prohibitions:** No duplicate T01 labels without distinct definition/consumer; no future-window volatility; no forced confident class.
+**Prohibitions:** No duplicate T01 price/structure labels; no future-window volatility; no forced confident class; do not retain T09 unless it has a distinct downstream consumer and incremental value.
 
-**Evaluation:** Temporal stability, transition timing, calibration where probabilistic, and incremental value beyond T01.
+**Evaluation:** Temporal stability, volatility-transition timing, calibration where probabilistic, and incremental value beyond T01 and simple volatility baselines. T09 remains conditional until source/sample adequacy is established.
 
 ## 12. T10 — News and fundamental context (K)
 

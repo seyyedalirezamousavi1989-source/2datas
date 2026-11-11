@@ -199,6 +199,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Standardize event, availability, receive, ingestion, decision, confirmation and creation timestamps as distinct concepts. Require explicit price/volume/currency/rate units. Split the overloaded status vocabulary into field-availability, label-resolution, record-validation, scenario/decision, order/deal/position and artifact/release domains.
 - Consequence: Null is not a missing-value explanation; each field must define nullability and allowed status/value combinations. Generic confidence/value/price/volume fields are not accepted where they hide distinct meanings. Exact wire types, precision, task requiredness and broker mappings remain evidence-dependent. No implementation or schema freeze is authorized.
 
+## D-028 — Feature admission is evidence-led and minimizes redundant information
+
+- Status: Accepted as a provisional feature-governance rule; no feature approved
+- Date: 2026-11-12
+- Decision: Treat raw observations, canonical representations, derived features, interpretations, forecasts, policy outputs and future outcomes as separate information classes. Require each feature to have a versioned definition, causal availability, explicit units/dependencies, a named task consumer, redundancy review and chronological incremental-value evidence.
+- Consequence: No indicator collection or feature family is admitted by popularity or count. Prefer the smallest robust feature set. Preprocessing is fit on training only; final test is protected from feature selection. Candidate feature families in the new document are hypotheses only. No feature computation or implementation is authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

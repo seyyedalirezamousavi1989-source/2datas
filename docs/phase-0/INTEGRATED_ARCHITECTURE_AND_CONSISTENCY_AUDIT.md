@@ -245,25 +245,20 @@ This section records issues found by comparing the current task catalog, task I/
 
 **Status:** Coordinated task-map and I/O updates are committed. Remaining broker-event semantics and source feasibility remain separate open gates.
 
-### 12.2 High: task action vocabularies need one canonical registry
+### 12.2 Resolved provisionally: scoped action and lifecycle domains
 
-Across task and scenario documents, action vocabularies vary between WAIT, WAIT_FOR_CONFIRMATION, ABSTAIN, NO_TRADE, WATCH, and management-specific actions. These are not interchangeable.
+- SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md now defines separate domains for entry decision, scenario lifecycle/assessment, condition evaluation, management action, order lifecycle, deal/fill events, position state, reconciliation, risk calculation, policy constraint, artifact/release, annotation, field availability, record validation and label resolution.
+- WAIT is deprecated as a standalone entry action and management action. WAIT_FOR_CONFIRMATION is reserved for a named pending entry trigger; management uses NO_ACTION or ABSTAIN as defined.
+- Scenario UNRESOLVED is an assessment value, not a lifecycle state.
+- T04 and T06 task I/O and scenario/lifecycle owner documents have been aligned to the scoped vocabularies.
 
-**Required resolution:** define separate, scoped enums for:
-- entry-policy decision;
-- scenario lifecycle;
-- scenario condition state;
-- management recommendation;
-- broker order lifecycle;
-- field/record/target quality status.
+**Remaining gate:** broker-native state mapping and every entity's field-level status binding require source evidence and final schema review. This is a provisional design resolution, not a frozen wire contract.
 
-Do not create one universal status enum. Specify allowed transitions and invalid combinations. Decide whether WAIT is deprecated in favor of WAIT_FOR_CONFIRMATION or has a distinct documented meaning. This audit does not silently rename existing fields.
+### 12.3 Partially resolved: field-scoped epistemic and quality statuses
 
-### 12.3 High: epistemic and quality statuses must be field-scoped
+The canonical semantic contract and scoped enum governance now separate field availability, label resolution, record validation, feature admission, scenario lifecycle/assessment, condition evaluation, order/position/reconciliation, risk calculation/permission, annotation and release states. Null/value consistency principles are defined centrally.
 
-The canonical status contract must be the sole authority for distinctions such as UNKNOWN, UNAVAILABLE, NOT_APPLICABLE, PENDING, STALE, AMBIGUOUS, CENSORED, INVALID and PROVISIONAL. Some are epistemic values, some describe data quality, and some describe lifecycle/target resolution; a single undifferentiated enum would be semantically unsafe.
-
-**Required resolution:** define status domains by entity/field, permitted transitions, whether a status may coexist with a value, and which status is required when a value is null. Explicitly separate “not yet observable” from “source unavailable” and “not applicable.” Every task contract should reference these domains, not restate or invent alternatives.
+**Remaining gate:** bind every field in every canonical entity to exactly one status domain, finish field-by-field nullability/value rules, and verify all owner/task documents reference rather than duplicate these definitions. This requires the complete field inventory and final schema review.
 
 ### 12.4 High: canonical timestamp and interval semantics need a single field-level contract
 

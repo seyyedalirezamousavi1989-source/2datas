@@ -21,19 +21,20 @@ A profitable trade is not automatically a good decision; a losing trade is not a
 
 Do not use hindsight profitability as the sole ground truth for LONG/SHORT labels. Preserve the strategy/policy version and constraints that produced each action.
 
-## 3. Decision action space
+## 3. Decision and management action domains
 
-The action vocabulary should be compact and explicit:
+Entry-policy actions use the canonical decision_class domain in SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md:
+- LONG or SHORT only when the approved policy and all required gates pass.
+- WATCH when a relevant condition should be monitored but no specific trigger is pending/actionable.
+- WAIT_FOR_CONFIRMATION only when a named, observable entry trigger is still missing.
+- NO_TRADE when the policy evaluates the evidence and concludes no entry is justified or a known constraint prohibits entry.
+- ABSTAIN when critical evidence/state is unknown, invalid, stale, unavailable or irreconcilably contradictory and a reliable decision cannot be made.
 
-- LONG: a long setup satisfies the approved policy and all required gates.
-- SHORT: a short setup satisfies the approved policy and all required gates.
-- WATCH: a potentially relevant condition exists, but no actionable setup is confirmed.
-- WAIT_FOR_CONFIRMATION: a named, observable trigger is still missing.
-- NO_TRADE: no trade is justified, evidence is insufficient, or constraints prohibit entry.
-- MANAGE_OPEN_POSITION: an existing position requires a management decision.
-- EXIT: a defined exit condition is satisfied.
+WAIT is deprecated as a standalone entry action. NO_TRADE is a policy conclusion; ABSTAIN is inability to reach a reliable conclusion. These are policy actions, not market truth labels.
 
-These are policy actions, not market truth labels. NO_TRADE is a valid, important outcome, not a failure class to be balanced away. Preserve reason codes such as insufficient evidence, conflicting timeframes, poor reward/risk, excessive spread, event restriction, stale data, invalid setup, risk limit, or execution unavailable.
+Existing-position actions use the separate management_action domain: HOLD, MOVE_STOP_TO_BREAK_EVEN, TRAIL_STOP, REDUCE_PARTIAL, CLOSE_POSITION, EXTEND_TARGET (only under an approved policy), TIME_EXIT, EMERGENCY_RISK_REDUCTION, NO_ACTION or ABSTAIN. MANAGE_OPEN_POSITION and EXIT are not entry decision classes. A management recommendation is not proof that an order or position state changed.
+
+Preserve typed reason codes such as insufficient evidence, conflicting timeframes, poor reward/risk, excessive spread, event restriction, stale data, invalid setup, risk limit, execution unavailable or unreconciled broker state.
 
 ## 4. Scenario contract
 
@@ -51,7 +52,7 @@ Each scenario should identify:
 - target logic and horizon/expiry;
 - estimated costs and execution assumptions;
 - risk budget and constraints;
-- scenario status (candidate, active, triggered, invalidated, expired, cancelled, completed);
+- scenario lifecycle status under the canonical domain (DRAFT, CANDIDATE, ACTIVE, TRIGGERED, COMPLETED, INVALIDATED, EXPIRED, CANCELLED, SUPERSEDED);
 - time created, time activated and time invalidated/expired.
 
 Store alternative scenarios where plausible. Do not force one direction if both bullish and bearish paths remain credible. If no scenario meets the policy, explicitly choose NO_TRADE or WATCH.

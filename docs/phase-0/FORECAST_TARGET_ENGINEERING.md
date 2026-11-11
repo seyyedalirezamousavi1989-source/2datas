@@ -49,6 +49,8 @@ The target registry must be separate from model input fields. A target's confirm
 
 ## 4. Candidate target families
 
+The canonical portfolio priority, F01–F08/Y01–Y06 crosswalk and redundancy decisions are governed by TARGET_PORTFOLIO_AND_REDUNDANCY_DECISION.md. The families below define possible target semantics; their presence here does not imply independent dataset rows or approval. Derived projections and alternative parameterizations must share episode lineage.
+
 ### F01 — Fixed-horizon forward return
 
 **Question:** What was the price return over a defined future horizon?

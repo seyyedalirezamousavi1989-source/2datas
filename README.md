@@ -39,6 +39,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Information-value roadmap](docs/phase-0/INFORMATION_VALUE_AND_TASK_ROADMAP.md) — capability priorities, feature admission, redundancy rules and task promotion gates.
 - [Dataset composition and redundancy](docs/phase-0/DATASET_COMPOSITION_AND_REDUNDANCY.md) — information density, overlap control, event coverage and split-safe sampling.
 - [Sample value and selection policy](docs/phase-0/SAMPLE_VALUE_AND_SELECTION_POLICY.md) — hard validity gates, multi-dimensional information value, episode-aware selection and auditable inclusion/exclusion.
+- [Model learning and training strategy](docs/phase-0/MODEL_LEARNING_AND_TRAINING_STRATEGY.md) — learned-vs-deterministic boundaries, evidence-led method selection, staged curriculum, multi-task controls and release gates.
 - [Data quality principles](docs/phase-0/DATA_QUALITY_PRINCIPLES.md) — inclusion, deduplication, leakage, validation.
 - [Decision log](docs/phase-0/DECISION_LOG.md) — recorded decisions and unresolved questions.
 

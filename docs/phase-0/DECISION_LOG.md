@@ -290,6 +290,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Treat fixed-horizon return (F01/Y01) as the primary market-outcome candidate; directional classes (F02/Y02) are derived projections, not independent sample families by default. Barrier first-passage (F03/Y03) is source-conditional; MFE/MAE is a sidecar unless a management consumer justifies it; time-to-event is not duplicated by default; future volatility/range and state transitions remain conditional; hypothetical net-trade outcomes are excluded from the initial market-forecast core.
 - Consequence: Added TARGET_PORTFOLIO_AND_REDUNDANCY_DECISION.md and aligned target governance, forecast engineering, label specification and annotation status semantics. Exact horizons/thresholds and source feasibility remain open. No samples, labels, datasets, benchmarks, training, Stage 5 or AURORA changes are authorized.
 
+## D-041 — Target dependency grouping and chronological split protection
+
+- Status: Accepted as a provisional split-governance contract; dates/horizons/embargo remain unfrozen
+- Date: 2026-11-12
+- Decision: Group examples by shared snapshots, episodes, overlapping target windows, derived projections, shared future paths, duplicate clusters and lifecycle lineage before chronological split assignment. Derived targets inherit their parent's dependency group. Purge/embargo must be derived from target horizons, confirmation delays and source revision/availability bounds, never arbitrary fixed bars.
+- Consequence: Added TARGET_DEPENDENCY_EPISODE_AND_SPLIT_CONTRACT.md and indexed it in README. No split manifest or data operation is authorized; exact dates and durations await Stage 5 acceptance and source feasibility.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

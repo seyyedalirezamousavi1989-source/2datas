@@ -334,20 +334,18 @@ Scoped enum/action governance and the T06/T08 boundary are now documented provis
 
 ## 14. Recommended next work item
 
-The core field registry, scoped enum governance, nullability matrix and deterministic risk handoff are now documented provisionally. The next highest-value design task is a **T01/T09 Distinctness and Redundancy Decision**.
+The core field registry, scoped enum governance, nullability matrix, deterministic risk handoff and provisional T01/T09 separation are now documented. The next highest-value design task is a **Point-in-Time, Interval and Snapshot Revision Contract**.
 
-Compare the exact market-state and regime/volatility outputs by:
-- operational definition and label ontology;
-- decision-time inputs and causal feature dependencies;
-- prediction/assessment horizon and confirmation delay;
-- downstream consumer and decisions changed by each output;
-- evaluation target and metrics;
-- incremental value beyond the other task and simple baselines;
-- risk of duplicate labels, highly correlated examples and redundant training gradients.
+It should establish:
+- event/valid time, knowledge/availability time and processing time without conflation;
+- internal interval boundaries and provider-specific raw bar timestamp conventions;
+- completed versus partial bar handling and higher-timeframe as-of selection;
+- late-arriving records, source corrections and revision availability;
+- clock precision/uncertainty, UTC normalization, timezone/session and DST provenance;
+- immutable snapshot identity, exact source/feature revision set and supersession;
+- rules for records whose historical availability cannot be reconstructed.
 
-Decide one of three outcomes: retain both with explicitly non-overlapping contracts; merge T09 into T01 while preserving D/regime sub-capability traceability; or defer T09 until source/sample evidence exists. Do not decide based on document count or feature availability alone.
-
-Keep the decision at the conceptual contract level. Do not generate labels, samples, datasets or benchmarks, and do not inspect data sources without separate authorization.
+The contract may define internal conventions, but source-specific bar construction, latency and clock behavior remain unverified until source feasibility is authorized. Do not inspect archives, generate data, or implement snapshot materialization.
 
 ## 15. Audit conclusion
 

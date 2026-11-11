@@ -182,6 +182,13 @@ Deal/fill records are immutable execution events. Use event types FILL_CONFIRMED
 
 Field: position_status. Values: OPEN, CLOSE_PENDING, CLOSED.
 
+Allowed transitions:
+- OPEN → CLOSE_PENDING when an authorized close request is submitted and the broker confirms the request/state.
+- CLOSE_PENDING → CLOSED only when broker evidence confirms zero residual quantity.
+- CLOSE_PENDING → OPEN when the close request is cancelled/rejected or otherwise resolved and a nonzero position remains.
+- A partial reduction that leaves nonzero quantity remains OPEN; append the fill/position event and update verified remaining quantity.
+- CLOSED is terminal for that position identity; a new position identity or explicit broker correction is required for later exposure.
+
 Partial reduction appends a position event and updates verified remaining quantity; it is not a terminal state. Additions/reductions respect broker netting/hedging semantics. CLOSED requires broker-confirmed zero remaining quantity or an authoritative close event. Unknown/divergent state belongs in reconciliation_status.
 
 ## 12. Reconciliation status domain
@@ -205,17 +212,44 @@ Field: constraint_outcome. Values: PERMITTED, PROHIBITED, RECALCULATION_REQUIRED
 
 A CALCULATED result may still prohibit the proposed trade. Constraint outcome references policy version, risk result, account/instrument state and reason codes. Model text cannot override it.
 
+Risk calculation transitions:
+- REQUESTED → VALIDATING, EXPIRED or FAILED.
+- VALIDATING → CALCULATED, REJECTED_INPUT, STALE_INPUT or FAILED.
+- CALCULATED → EXPIRED or SUPERSEDED when its validity ends or a newer calculation replaces it.
+- REJECTED_INPUT, STALE_INPUT and FAILED are terminal for that request; corrected inputs require a new request/result identity.
+
+constraint_outcome is an evaluation result, not a calculation lifecycle. It must be recomputed under a new policy/account/risk snapshot when material inputs change; never mutate a prior result.
+
 ## 14. Artifact and dataset release domains
 
 artifact_status: DRAFT, CANDIDATE, ACCEPTED, QUARANTINED, REJECTED, SUPERSEDED.
 
 release_status: PROPOSED, UNDER_REVIEW, APPROVED, REJECTED, WITHDRAWN.
 
+Allowed artifact transitions:
+- DRAFT → CANDIDATE or REJECTED.
+- CANDIDATE → ACCEPTED, QUARANTINED or REJECTED.
+- ACCEPTED → SUPERSEDED or QUARANTINED when a later defect is discovered.
+- QUARANTINED → ACCEPTED or REJECTED after explicit review.
+- REJECTED and SUPERSEDED are terminal for that artifact revision.
+
+Allowed dataset release transitions:
+- PROPOSED → UNDER_REVIEW or WITHDRAWN.
+- UNDER_REVIEW → APPROVED, REJECTED or WITHDRAWN.
+- APPROVED → WITHDRAWN only through an explicit release withdrawal record; retain the original approval and manifest.
+- REJECTED and WITHDRAWN are terminal for that release attempt. A new candidate release receives a new release identity.
+
 Release approval requires reviewer, scope, evidence, timestamp and immutable manifest reference. Artifact acceptance does not approve a dataset release.
 
 ## 15. Annotation/adjudication domain
 
 annotation_status: UNREVIEWED, INDEPENDENTLY_ANNOTATED, DISAGREEMENT, ADJUDICATED, UNRESOLVED, REJECTED.
+
+Allowed transitions:
+- UNREVIEWED → INDEPENDENTLY_ANNOTATED or REJECTED.
+- INDEPENDENTLY_ANNOTATED → DISAGREEMENT, ADJUDICATED or REJECTED after comparison/quality review.
+- DISAGREEMENT → ADJUDICATED or UNRESOLVED.
+- ADJUDICATED, UNRESOLVED and REJECTED are terminal for that annotation attempt; a new independent review is a new linked attempt.
 
 Preserve independent annotations. Adjudication is an additional record with method, reviewer, rationale and evidence; never overwrite disagreement.
 

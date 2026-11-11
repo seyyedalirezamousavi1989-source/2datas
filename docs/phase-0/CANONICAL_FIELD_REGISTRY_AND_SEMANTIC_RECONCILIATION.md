@@ -56,15 +56,20 @@ This registry does not override an owner document. Conflicts must be resolved in
 | source_timestamp | Source adapter | Original provider timestamp, timezone and precision semantics | When supplied; preserve original representation |
 | event_time | Source/event contract | When represented event occurred | Time-dependent observations/events |
 | interval_start/interval_end | Bar/interval contract | Start and end of represented interval | Bars and interval aggregates |
+| bar_timestamp_convention | Source adapter | OPEN_STAMPED/CLOSE_STAMPED/PROVIDER_DEFINED/UNKNOWN raw timestamp mapping | Bar sources; UNKNOWN blocks normalized causal use |
+| availability_basis | Causal-time contract | LIVE_RECEIPT/PROVIDER_PUBLICATION/DOCUMENTED_LATENCY_RECONSTRUCTION/UNKNOWN basis for available_at | Decision-time inputs; provenance of availability claim |
+| clock_source_id/clock_precision/clock_uncertainty | Clock provenance contract | Source clock identity, resolution and known timing uncertainty | Time-dependent evidence where available |
+| source_revision_id | Source revision contract | Provider-native or adapter revision identity | Correctable/revised source records |
 | received_at | Ingestion contract | When receiving system actually received record | When receipt telemetry exists |
 | available_at | Causal-time contract | Earliest defensible time information was available to decision system | Mandatory for decision-time inputs |
 | ingested_at | Provenance | When durably recorded in this project | Ingested records |
+| materialized_at | Snapshot/provenance contract | When a historical or live snapshot was assembled by this project | Snapshot records; distinct from decision_timestamp |
 | decision_timestamp | Snapshot/task contract | Frozen cutoff for eligible inputs | Forecast, scenario, policy and decision examples |
 | confirmed_at | Event/label definition | When condition/target became confirmable | Conditional; never substitute event time by assumption |
 | expires_at | Entity-specific validity contract | End of forecast/scenario/decision/request validity | Time-bounded entities |
 | revision_available_at | Revision/causal-time contract | When correction/revision became knowable | Revised evidence |
 
-Unresolved time decisions: interval inclusivity, provider bar timestamp convention, clock synchronization tolerance, source latency reconstruction, DST/session calendar, late-arrival selection and correction semantics. These require source evidence; no default assumptions are approved.
+Internal interval convention is half-open [interval_start, interval_end) in UTC; raw provider timestamp convention must be retained separately. Provider bar timestamp convention, clock synchronization tolerance, source latency reconstruction, DST/session calendar, late-arrival selection and correction semantics remain source-dependent and unverified.
 
 ## 5. Market observations, features and snapshots
 

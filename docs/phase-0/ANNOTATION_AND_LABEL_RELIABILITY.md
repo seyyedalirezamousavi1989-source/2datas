@@ -70,7 +70,7 @@ Kappa-like metrics can be distorted by prevalence imbalance. Never report one co
 
 ## 7. Ambiguity and abstention policy
 
-Allowed statuses include resolved_positive, resolved_negative, ambiguous, unknown, not_applicable, insufficient_evidence, censored and invalidated_by_source_correction.
+Use the canonical label_status domain for target resolution: PENDING, RESOLVED, AMBIGUOUS, CENSORED, UNAVAILABLE or INVALID. When RESOLVED, the positive/negative/class value belongs in label_value, not in the status. Use annotation_status separately for workflow: UNREVIEWED, INDEPENDENTLY_ANNOTATED, DISAGREEMENT, ADJUDICATED, UNRESOLVED or REJECTED. Insufficient evidence is a reason code; NOT_APPLICABLE is a field/entity applicability state; source correction is a revision event/reason, not a label status.
 
 Do not force ambiguous cases into positive/negative merely to simplify training. Report ambiguity rate by task, period, regime, source and annotator.
 

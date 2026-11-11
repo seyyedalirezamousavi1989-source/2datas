@@ -136,7 +136,7 @@ A TradeDecision references:
 - snapshot_id;
 - scenario references;
 - policy version;
-- decision class (LONG, SHORT, NO_TRADE, WATCH, WAIT_FOR_CONFIRMATION);
+- entry decision class (LONG, SHORT, WATCH, WAIT_FOR_CONFIRMATION, NO_TRADE, ABSTAIN) under the canonical scoped action domain;
 - trigger/preconditions and invalidation/expiry;
 - deterministic risk calculation reference, if applicable;
 - evidence, conflicts, uncertainty, and abstention/rejection reason codes.

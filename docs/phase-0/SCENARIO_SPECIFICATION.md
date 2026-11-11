@@ -41,7 +41,7 @@ A future scenario record should contain the following conceptual fields. Final m
 | probability | Optional calibrated probability tied to a defined event space |
 | probability_model_version | Required whenever probability is supplied |
 | uncertainty | Explicit limitations, ambiguity, and data-quality constraints |
-| status | candidate, active, invalidated, expired, or unresolved |
+| scenario_status | DRAFT/CANDIDATE/ACTIVE/TRIGGERED/COMPLETED/INVALIDATED/EXPIRED/CANCELLED/SUPERSEDED lifecycle; see scoped enum governance |
 | next_observation | What new evidence would change the assessment |
 
 A scenario must not contain a probability unless its event is precisely defined and calibration has been evaluated. Qualitative plausibility rankings must not be disguised as numeric probabilities.

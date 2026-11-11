@@ -241,6 +241,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Maintain one semantic owner per shared field and reference canonical values from task projections. T06 owns trade management/lifecycle reasoning (H + J) and may consume verified execution events (I) as context; T08 owns execution-quality and cost targets (I). Correct the malformed SUPERSEDED status token. Preserve scoped status domains and defer source-dependent timestamp/interval and physical-schema decisions.
 - Consequence: Updated TASK_IO_CONTRACTS.md and TASK_TO_SCHEMA_MAPPING.md together; added the canonical field registry and indexed it in README. No data inspection, sample generation, operational schemas, implementation, training, Stage 5 changes or external-project changes are authorized.
 
+## D-034 — Scoped enum and state transition governance
+
+- Status: Accepted as provisional semantic governance; exact wire values and broker mappings remain unfrozen
+- Date: 2026-11-12
+- Decision: Use separate domains for field availability, record validation, label resolution, feature admission, scenario lifecycle and assessment, condition evaluation, entry decision actions, management actions, order lifecycle, deal/fill events, position state, reconciliation, risk calculation, policy constraint, annotation, artifact and dataset release. WAIT is deprecated as a standalone entry/management action; WAIT_FOR_CONFIRMATION is reserved for a named pending entry trigger, while management uses NO_ACTION or ABSTAIN.
+- Consequence: Added SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md and aligned scenario, canonical status, task I/O, management policy, field registry, README and integrated audit documents. No archive/data inspection, data generation, implementation, training, Stage 5 changes or external project changes are authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

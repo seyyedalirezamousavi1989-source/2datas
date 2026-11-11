@@ -236,13 +236,14 @@ Only after that should a concise design-freeze package be prepared for user revi
 
 This section records issues found by comparing the current task catalog, task I/O contracts, task/schema mapping, dataset composition, selection policy, target governance, scenario contract and reasoning contract. These are specification findings only; no data or code was inspected.
 
-### 12.1 Critical: T06/T08 ownership is not yet fully consistent
+### 12.1 Resolved: T06/T08 ownership boundary
 
-- This document's task map describes T06 as H + J, with I events consumed as evidence, and T08 as the execution-process assessment.
-- `TASK_IO_CONTRACTS.md` currently describes T06 as H + I + J.
-- The same lifecycle/execution evidence can legitimately be referenced by both tasks, but task ownership and target ownership must not overlap.
+- Decision D-033 resolves the former mismatch.
+- `TASK_IO_CONTRACTS.md` and `TASK_TO_SCHEMA_MAPPING.md` now define T06 as H + J management/lifecycle reasoning; verified I execution events may be consumed as context to reconstruct state.
+- T08 owns I execution-quality and cost assessment targets.
+- The canonical LifecycleEvent is stored once. T06 does not label slippage/fill quality; T08 does not label management actions.
 
-**Required resolution before schema freeze:** T06 owns management decisions and position-state reasoning; it may reference verified execution events as context. T08 owns execution quality/cost outcomes. The canonical LifecycleEvent is stored once. T06 must not independently label slippage/fill quality; T08 must not label management actions. Update task I/O and mapping together when this decision is approved.
+**Status:** Coordinated task-map and I/O updates are committed. Remaining broker-event semantics and source feasibility remain separate open gates.
 
 ### 12.2 High: task action vocabularies need one canonical registry
 
@@ -315,7 +316,7 @@ The documents describe canonical entity ownership and task-specific references, 
 ## 13. Consolidated freeze blockers
 
 Phase 0 cannot be declared design-frozen until the following are resolved and reviewed:
-1. T06/T08 task and target ownership.
+1. Remaining scoped enum/status transition rules (T06/T08 ownership is resolved by D-033).
 2. Scoped action/status enums and transition rules.
 3. Field-level null/missing/unknown/applicability semantics.
 4. Canonical timestamp, interval, correction and as-of rules.

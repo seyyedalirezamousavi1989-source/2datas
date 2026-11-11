@@ -206,6 +206,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Treat raw observations, canonical representations, derived features, interpretations, forecasts, policy outputs and future outcomes as separate information classes. Require each feature to have a versioned definition, causal availability, explicit units/dependencies, a named task consumer, redundancy review and chronological incremental-value evidence.
 - Consequence: No indicator collection or feature family is admitted by popularity or count. Prefer the smallest robust feature set. Preprocessing is fit on training only; final test is protected from feature selection. Candidate feature families in the new document are hypotheses only. No feature computation or implementation is authorized.
 
+## D-029 — Market outcomes, forecasts, policy decisions, execution and realized results are separate target families
+
+- Status: Accepted as a provisional target-governance rule; target catalog remains unfrozen
+- Date: 2026-11-12
+- Decision: Define distinct ontologies for market outcome, forecast, policy/action, broker execution and post-trade outcome. Preserve NO_TRADE/abstention as first-class policy outcomes. Require exact event-space semantics, price basis, horizon, confirmation, ambiguity/censoring, overlap and provenance for each target.
+- Consequence: Profitability cannot be used as a proxy for decision correctness; a forecast probability cannot be relabeled as trade success probability; simulated fills cannot be presented as observed broker fills. Only a compact subset of target candidates should be promoted after source feasibility and Stage 5 review. No label generation or implementation is authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

@@ -18,7 +18,7 @@ Priorities are provisional design priorities, not a commitment to implementation
 
 | ID | Task | Input focus | Output/target concept | Why it earns a place |
 |---|---|---|---|---|
-| T01 | Market-state assessment | Recent price/structure and volatility context | Trend, range, transition, or indeterminate state with evidence | Provides compact context for downstream reasoning |
+| T01 | Price/structure state assessment | Recent price action, market structure and return context; volatility features may be context only | Trend, range, structural transition or indeterminate price/structure state | Provides the current structural context without owning a volatility-regime target |
 | T02 | Multi-timeframe synthesis | As-of snapshots of selected timeframes | Alignment, conflict, dominant context, and missing/partial context | Prevents isolated timeframe reasoning |
 | T03 | Probabilistic outcome forecast | Causal market state and explicit horizon | Probabilities for a defined future event space | Separates forecasting from trading policy |
 | T04 | Conditional setup decision | T01–T03 evidence plus verified constraints | LONG, SHORT, NO_TRADE, WATCH, or WAIT with conditions and invalidation | Teaches disciplined action and abstention |
@@ -31,7 +31,7 @@ Priorities are provisional design priorities, not a commitment to implementation
 |---|---|---|---|---|
 | T07 | Structure-event interpretation | Price history and a frozen operational definition | Confirmed/provisional swing, break, failure, invalidation | Retain only if labeling reliability and incremental value are demonstrated |
 | T08 | Execution-cost interpretation | Bid/ask, spread, slippage, commission, fills, order constraints | Cost/quality assessment and execution-state explanation | Requires trustworthy quote/fill history |
-| T09 | Regime and volatility characterization | Non-redundant returns/range/volatility measures | Regime and transition descriptors | Merge into T01 if no distinct target is justified |
+| T09 | Volatility-regime characterization | Causally available range/return/volatility features and their temporal context | Volatility state, expansion/contraction, clustering and volatility transition | Keep separate only as a distinct volatility target with an independent consumer and incremental value; otherwise merge/defer |
 | T10 | News-context interpretation | Point-in-time published facts and source metadata | Fact/expectation/interpretation separation and relevance | Requires licensed archives with actual publication/availability timestamps |
 | T11 | Visual chart reasoning | Chart image synchronized with canonical numeric snapshot | Evidence extraction and consistency check | Retain only if controlled tests show value beyond structured inputs |
 
@@ -53,7 +53,7 @@ Avoid building one full duplicated sample for every task. Represent:
 - task-specific target and evaluation metadata;
 - only the minimal task-specific context needed to interpret the target.
 
-For example, T01 and T09 may share features, but must not create duplicate records if they are merely two names for the same regime label. T03 forecast probabilities must not be copied into T04 as if they were observed facts; T04 may consume a versioned forecast output as an input to a separately defined policy decision.
+T01 and T09 may reference some of the same causal volatility features, but T01 owns price/structure-state outputs while T09 owns volatility-regime outputs. Do not duplicate a shared label or create two task rows for one target; T09 remains conditional on independent value. T03 forecast probabilities must not be copied into T04 as if they were observed facts; T04 may consume a versioned forecast output as an input to a separately defined policy decision.
 
 ## Output contract principles
 

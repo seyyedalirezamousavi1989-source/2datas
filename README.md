@@ -40,6 +40,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Scoped enum and state transition governance](docs/phase-0/SCOPED_ENUM_AND_STATE_TRANSITION_GOVERNANCE.md) — distinct status/action domains, legal transitions, terminal-state rules and evidence requirements.
 - [Field status binding and nullability matrix](docs/phase-0/FIELD_STATUS_BINDING_AND_NULLABILITY_MATRIX.md) — provisional field-by-field value/status/null rules for core canonical entities.
 - [Deterministic risk and policy handoff contract](docs/phase-0/DETERMINISTIC_RISK_AND_POLICY_HANDOFF_CONTRACT.md) — immutable risk requests/results, policy permission boundary, freshness, recalculation and fail-closed rules.
+- [Point-in-time, interval and snapshot revision contract](docs/phase-0/POINT_IN_TIME_INTERVAL_AND_SNAPSHOT_REVISION_CONTRACT.md) — causal availability, half-open intervals, partial bars, late revisions, immutable snapshots and temporal leakage controls.
 - [A–M task-to-schema mapping](docs/phase-0/TASK_TO_SCHEMA_MAPPING.md) — maps the original architecture to canonical inputs, outputs and task boundaries.
 - [Task I/O contracts](docs/phase-0/TASK_IO_CONTRACTS.md) — behavioral input/output, abstention and evaluation contracts for T01–T11.
 - [Annotation and label reliability](docs/phase-0/ANNOTATION_AND_LABEL_RELIABILITY.md) — operational definitions, independent review, ambiguity and label provenance.

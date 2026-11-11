@@ -146,7 +146,7 @@ Used for source/derived records:
 - `VALID_WITH_WARNINGS`
 - `QUARANTINED`
 - `REJECTED`
-- `SUPERSEDED)
+- `SUPERSEDED`
 
 Quality flags remain non-exclusive diagnostics such as `GAP`, `DUPLICATE_CANDIDATE`, `CLOCK_UNCERTAIN`, `PARTIAL_BAR`, `LATE_ARRIVAL`, `SOURCE_REVISION`, `CROSSED_QUOTE`, `STALE_QUOTE`, and `OUTLIER_REVIEW_REQUIRED`. The flag registry must define each flag and its trigger.
 

@@ -227,6 +227,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Keep observation, measurement, interpretation, forecast and policy/action as distinct epistemic layers. Reason from an immutable decision-time snapshot and canonical evidence references. Preserve timeframe/source/price-basis conflicts, typed uncertainty and abstention; do not force consensus or invent probabilities.
 - Consequence: This document coordinates existing semantic owners and does not redefine feature, structure, target, scenario, schema or policy contracts. Retain only non-duplicative reasoning examples with traceable evidence and named task value. No data inspection, annotation, generation, implementation or training is authorized.
 
+## D-032 — Phase 0 requires field-level semantic reconciliation before design freeze
+
+- Status: Accepted; freeze blockers remain open
+- Date: 2026-11-12
+- Decision: Keep the existing conceptual architecture, but do not declare it frozen until T06/T08 ownership, scoped enums, field-level null/status semantics, canonical time/interval/revision rules, snapshot immutability, risk handoff, T01/T09 disposition, task-to-field registry, and target-dependent split rules are reconciled.
+- Consequence: The integrated audit is the coordination record. Canonical semantic owners remain authoritative; related documents must be updated together when a conflict is resolved. No operational schemas, data inspection, generation, implementation, training, or Stage 5 changes are authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

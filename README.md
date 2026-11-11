@@ -27,6 +27,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Risk and trade management](docs/phase-0/RISK_AND_TRADE_MANAGEMENT_SPECIFICATION.md) — deterministic risk boundary and event-based lifecycle.
 - [Evaluation protocol](docs/phase-0/EVALUATION_PROTOCOL.md) — chronological testing, baselines, uncertainty, cost-aware policy evaluation.
 - [Canonical data model and schema contracts](docs/phase-0/DATA_MODEL_AND_SCHEMA_CONTRACTS.md) — shared entities, record boundaries, identity, timestamps and typed statuses.
+- [A–M task-to-schema mapping](docs/phase-0/TASK_TO_SCHEMA_MAPPING.md) — maps the original architecture to canonical inputs, outputs and task boundaries.
 - [Dataset composition and redundancy](docs/phase-0/DATASET_COMPOSITION_AND_REDUNDANCY.md) — information density, overlap control, event coverage and split-safe sampling.
 - [Data quality principles](docs/phase-0/DATA_QUALITY_PRINCIPLES.md) — inclusion, deduplication, leakage, validation.
 - [Decision log](docs/phase-0/DECISION_LOG.md) — recorded decisions and unresolved questions.

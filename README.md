@@ -20,6 +20,9 @@ Maximize verified information value per example—not row count, feature count, 
 
 - [Project charter](docs/phase-0/PROJECT_CHARTER.md) — goals, exclusions, acceptance gates.
 - [Architecture](docs/phase-0/ARCHITECTURE.md) — data layers, task boundaries, causal contract.
+- [Task catalog](docs/phase-0/TASK_CATALOG.md) — prioritized, non-overlapping learning objectives.
+- [Feature admission policy](docs/phase-0/FEATURE_POLICY.md) — feature registry, incremental value, redundancy control.
+- [Label specification](docs/phase-0/LABEL_SPECIFICATION.md) — outcome vs policy labels, ambiguity, leakage firewall.
 - [Data quality principles](docs/phase-0/DATA_QUALITY_PRINCIPLES.md) — inclusion, deduplication, leakage, validation.
 - [Decision log](docs/phase-0/DECISION_LOG.md) — recorded decisions and unresolved questions.
 

@@ -262,6 +262,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Bind core canonical fields to explicit requiredness, scoped status domains and value/null rules. Use record validation for record admission, field availability for epistemic absence, label resolution for future targets, and separate scenario/order/position/risk/constraint states. Required missing fields block admission; optional absence is represented only where it changes downstream interpretation.
 - Consequence: Added FIELD_STATUS_BINDING_AND_NULLABILITY_MATRIX.md and indexed it in README. Conditional news/visual/annotation/evaluation/release/training fields remain pending. No data inspection, dataset generation, implementation, training, Stage 5 changes or external project changes are authorized.
 
+## D-037 — Deterministic risk request/result and policy handoff
+
+- Status: Accepted as a provisional logical contract; formulas, interfaces and broker mappings remain unverified
+- Date: 2026-11-12
+- Decision: Separate model/user proposal, immutable risk request, deterministic calculation result, policy constraint evaluation, entry decision, authorized order submission, broker evidence and reconciliation. A calculated result is not permission; permission is not order authorization; an order request is not a fill.
+- Consequence: Added DETERMINISTIC_RISK_AND_POLICY_HANDOFF_CONTRACT.md and indexed it in README. T04/T05/T06 consumption boundaries, freshness, mandatory recalculation and fail-closed behavior are specified. No calculator implementation, source inspection, dataset/label generation, benchmark, training, Stage 5 changes or external project changes are authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

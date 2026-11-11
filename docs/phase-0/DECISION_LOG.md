@@ -192,6 +192,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Maintain one canonical semantic owner for each shared contract and use the integrated architecture audit to reconcile A–M capabilities with T01–T11 tasks. T06 lifecycle management may consume execution events, while T08 owns execution-quality targets; T01 current-state assessment and T09 regime characterization remain distinct only if definitions and consumers justify it.
 - Consequence: Related documents may add task-specific detail but must not independently redefine shared semantics. The audit is a desk review of design documents only, not evidence of source/data validity or implementation correctness. No next phase is authorized.
 
+## D-027 — Shared fields require one semantic definition and scoped status domains
+
+- Status: Accepted as a provisional semantic contract; schema freeze remains pending
+- Date: 2026-11-12
+- Decision: Standardize event, availability, receive, ingestion, decision, confirmation and creation timestamps as distinct concepts. Require explicit price/volume/currency/rate units. Split the overloaded status vocabulary into field-availability, label-resolution, record-validation, scenario/decision, order/deal/position and artifact/release domains.
+- Consequence: Null is not a missing-value explanation; each field must define nullability and allowed status/value combinations. Generic confidence/value/price/volume fields are not accepted where they hide distinct meanings. Exact wire types, precision, task requiredness and broker mappings remain evidence-dependent. No implementation or schema freeze is authorized.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

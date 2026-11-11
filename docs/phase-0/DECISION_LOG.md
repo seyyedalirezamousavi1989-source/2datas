@@ -45,6 +45,20 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Financial calculations and execution safeguards remain deterministic and authoritative; the model interprets verified outputs.
 - Consequence: No model-generated replacement for broker/account facts or authoritative risk calculations.
 
+## D-007 — Compact task catalog and feature admission
+
+- Status: Accepted as a design rule; empirical admission remains pending
+- Date: 2026-11-12
+- Decision: Learning objectives are prioritized and merged when they do not have distinct targets/evaluation. Features require defined purpose, causal availability, reliability, and evidence of incremental value.
+- Consequence: Task families and candidate feature categories are not blanket approval to generate labels or calculate every candidate.
+
+## D-008 — Outcome and policy labels remain disjoint
+
+- Status: Accepted
+- Date: 2026-11-12
+- Decision: Market outcome labels and policy/action labels have separate semantics and provenance.
+- Consequence: Future profitability cannot be used as a shortcut to infer the correctness of a historical decision.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.
@@ -56,7 +70,7 @@ This log records decisions, not assumptions. New decisions must include rational
 7. **Visual modality:** Do synchronized charts add measurable value over structured data after controlled comparison?
 8. **Annotation reliability:** Which discretionary concepts can be defined consistently enough to label?
 9. **Evaluation protocol:** What date ranges, regimes, purging/embargo rules, and minimum effective sample sizes are justified by source coverage and target horizons?
-10. **Model selection:** Which locally available model and training method fit the final task mix, after representative low-cost feasibility tests are separately approved?
+10. **Model selection:** Which locally available model and training method fit the final task mix, after representative low-cost feasibility tests?
 
 ## Next authorized work
 

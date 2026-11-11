@@ -150,6 +150,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Every chart image must be a reproducible, point-in-time rendering linked to an immutable source snapshot and renderer manifest. Visual inputs must be compared against structured-only baselines on identical chronological samples.
 - Consequence: No future candles, hindsight annotations, target-revealing metadata, or cross-split image variants. Images are excluded from the core dataset unless they demonstrate reliable incremental value and pass licensing, provenance and resource gates.
 
+## D-021 — Trade policy, realized outcome and deterministic risk authority are separate
+
+- Status: Accepted as a provisional behavioral contract; implementation remains unapproved
+- Date: 2026-11-12
+- Decision: Distinguish point-in-time market observations, conditional scenarios, policy actions, and realized execution/outcomes. Trade lifecycle is represented as immutable events including partial fills, corrections and broker reconciliation. Position sizing and account/broker constraints remain deterministic and authoritative.
+- Consequence: Profitability alone is not a decision-quality label; losses are not automatically bad decisions. NO_TRADE and abstention are first-class. Planned prices are not fills, management requests are not confirmed broker state, and post-trade information must not leak into decision-time inputs.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

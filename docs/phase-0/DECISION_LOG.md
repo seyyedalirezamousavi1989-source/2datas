@@ -143,6 +143,13 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: News/event intelligence must preserve actual publication and ingestion times, pre-release expectation snapshots, original values and later revisions as distinct records. Derived surprise, text interpretation and observed market reaction are separate semantic layers.
 - Consequence: No hindsight narrative, revised value, scheduled-but-unreleased event, or post-event price movement may be presented as information known at the earlier decision time. News inclusion requires licensing and incremental-value evidence.
 
+## D-020 — Visual inputs must prove incremental value over structured market data
+
+- Status: Accepted as a provisional admission policy; image modality remains unapproved
+- Date: 2026-11-12
+- Decision: Every chart image must be a reproducible, point-in-time rendering linked to an immutable source snapshot and renderer manifest. Visual inputs must be compared against structured-only baselines on identical chronological samples.
+- Consequence: No future candles, hindsight annotations, target-revealing metadata, or cross-split image variants. Images are excluded from the core dataset unless they demonstrate reliable incremental value and pass licensing, provenance and resource gates.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

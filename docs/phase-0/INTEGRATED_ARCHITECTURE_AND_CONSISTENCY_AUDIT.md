@@ -318,6 +318,15 @@ The current documents correctly reject random splitting and fixed universal samp
 
 **Remaining gate:** complete conditional news, visual, annotation, evaluation, dataset-release and training-run fields; validate every core field binding against the final task projections and source evidence. Exact types, precision and wire-level nullability remain unfrozen. No operational schema should be generated until this is reviewed.
 
+### 12.12 Resolved provisionally: target portfolio and redundancy boundary
+
+- TARGET_PORTFOLIO_AND_REDUNDANCY_DECISION.md reconciles F01–F08 with Y01–Y06.
+- F01/Y01 fixed-horizon return is the primary market-outcome candidate; F02/Y02 is a derived directional projection, not an independent sample family by default.
+- F03/Y03 is conditional on intrabar resolution; F04/Y04 is a sidecar unless a distinct management consumer exists; F05 is not duplicated by default; F06/F07 remain conditional; F08 is excluded from the initial market-forecast core.
+- Policy, execution, process-quality and post-trade outcomes remain separate namespaces.
+
+**Remaining gate:** exact horizons, thresholds, source/price conventions, sample sufficiency and target-specific split dependencies remain open. This is a provisional portfolio decision, not empirical target acceptance.
+
 ## 13. Consolidated freeze blockers
 
 Phase 0 cannot be declared design-frozen until the following are resolved and reviewed:
@@ -336,18 +345,11 @@ Scoped enum/action governance and the T06/T08 boundary are now documented provis
 
 ## 14. Recommended next work item
 
-The core field registry, scoped enum governance, nullability matrix, deterministic risk handoff and provisional T01/T09 separation are now documented. The next highest-value design task is a **Point-in-Time, Interval and Snapshot Revision Contract**.
+The target portfolio and its redundancy relationships are now specified provisionally. The next highest-value design task is a **Target Dependency, Episode Grouping and Temporal Split Contract**.
 
-It should establish:
-- event/valid time, knowledge/availability time and processing time without conflation;
-- internal interval boundaries and provider-specific raw bar timestamp conventions;
-- completed versus partial bar handling and higher-timeframe as-of selection;
-- late-arriving records, source corrections and revision availability;
-- clock precision/uncertainty, UTC normalization, timezone/session and DST provenance;
-- immutable snapshot identity, exact source/feature revision set and supersession;
-- rules for records whose historical availability cannot be reconstructed.
+It should map, for each target family, the input window, future observation window, confirmation/late-arrival dependency, shared underlying path, derived-projection relationship and episode/group identity. It should then define how overlapping targets and duplicate/near-duplicate examples are grouped before chronological split assignment, and how purge/embargo durations are derived from the longest actual target and source-revision dependency.
 
-The contract may define internal conventions, but source-specific bar construction, latency and clock behavior remain unverified until source feasibility is authorized. Do not inspect archives, generate data, or implement snapshot materialization.
+No fixed bar count, universal embargo or 60/20/20 split should be selected before exact horizons and source latency are verified. The contract should remain parameterized and human-readable until those facts are available.
 
 ## 15. Audit conclusion
 

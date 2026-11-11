@@ -21,7 +21,7 @@ Priorities are provisional design priorities, not a commitment to implementation
 | T01 | Price/structure state assessment | Recent price action, market structure and return context; volatility features may be context only | Trend, range, structural transition or indeterminate price/structure state | Provides the current structural context without owning a volatility-regime target |
 | T02 | Multi-timeframe synthesis | As-of snapshots of selected timeframes | Alignment, conflict, dominant context, and missing/partial context | Prevents isolated timeframe reasoning |
 | T03 | Probabilistic outcome forecast | Causal market state and explicit horizon | Probabilities for a defined future event space | Separates forecasting from trading policy |
-| T04 | Conditional setup decision | T01–T03 evidence plus verified constraints | LONG, SHORT, NO_TRADE, WATCH, or WAIT with conditions and invalidation | Teaches disciplined action and abstention |
+| T04 | Conditional setup decision | T01–T03 evidence plus verified constraints | LONG, SHORT, WATCH, WAIT_FOR_CONFIRMATION, NO_TRADE, or ABSTAIN with conditions and invalidation | Teaches disciplined action and abstention |
 | T05 | Risk-plan interpretation | Deterministic calculator outputs and broker/account facts | Explain feasibility, constraints, and risk warnings | Connects analysis to risk without asking the model to calculate authoritative values |
 | T06 | Trade lifecycle reasoning | Ordered, timestamped trade/market events | Hold, reduce, protect, exit, or no-action rationale | Covers management after entry, not just entry selection |
 

@@ -112,6 +112,14 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Treat management as a chronological sequence of point-in-time decisions linked to broker-confirmed lifecycle events, rather than isolated text examples.
 - Consequence: Market event time, knowledge/availability time, and trading-system event time remain distinct. An order request never proves a fill; stale or unreconciled state requires abstention/reconciliation.
 
+
+## D-016 — Optimize verified information value, not volume
+
+- Status: Accepted as a prioritization policy; empirical task promotion remains pending
+- Date: 2026-11-12
+- Decision: Prioritize a compact core of causal market state, multi-timeframe synthesis, explicit forecasts, conditional decisions, deterministic risk interpretation, and event-based lifecycle reasoning. Optional execution, regime refinement, news, and visual tasks require independent feasibility and incremental-value evidence.
+- Consequence: No fixed row target, blanket indicator library, automatic SMC inclusion, or expensive modality is approved. Hard provenance, causality, definition, and licensing gates cannot be traded off against predictive scores.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

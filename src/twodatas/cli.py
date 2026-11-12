@@ -63,7 +63,8 @@ def main() -> None:
         for source in read_zip(str(args.archive), symbol_aliases=broker_config.get("symbol_aliases", {})):
             rows = compute_price_action_features(source.rows, broker_profile=profile, source_sha256=source.source_sha256, include_last_bar=args.include_last_bar)
             instrument = source.rows[0].instrument if source.rows else "UNKNOWN"
-            source_key = source.source_sha256[:12]\n            target = args.output_dir / f"{instrument}_{source.timeframe}_{source_key}.jsonl"
+            source_key = source.source_sha256[:12]
+            target = args.output_dir / f"{instrument}_{source.timeframe}_{source_key}.jsonl"
             with target.open("w", encoding="utf-8") as handle:
                 for row in rows:
                     handle.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + chr(10))

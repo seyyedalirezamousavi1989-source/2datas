@@ -412,9 +412,11 @@ def test_broker_sidecar_symbol_alias_maps_gold_to_canonical_xauusd(tmp_path):
         "server_timezone": "Europe/Helsinki",
         "bar_timestamp_convention": "interval_start",
         "symbol_aliases": {"GOLD": "XAUUSD"},
+        "instrument_specs": {"GOLD": {"canonical_instrument": "XAUUSD", "digits": 2, "point_size": "0.01", "tick_size": "0.01", "contract_size": "100", "price_currency": "USD", "profit_currency": "USD", "spread_unit": "points", "volume_semantics": "tick_count", "effective_from": "2024-01-01", "evidence": "Test fixture only; not broker facts."}},
     }))
     manifest = normalize_archive(str(source), str(tmp_path / "normalized"))
     assert manifest["instruments"] == ["XAUUSD"]
+    assert manifest["instrument_specification_audit"]["status"] == "COMPLETE_FOR_SOURCE_SYMBOLS"
     partition = next((tmp_path / "normalized" / "instrument=XAUUSD" / "timeframe=M5").glob("bars-*.csv.gz"))
     assert partition.is_file()
     import csv

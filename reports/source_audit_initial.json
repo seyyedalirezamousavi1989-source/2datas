@@ -125,12 +125,20 @@
     "real_volume_nonzero_rows": 0
   },
   "critical_unknowns": [
-    "broker/provider identity",
+    "exact Alpari MT5 server identity and whether it matches a published MT5 server",
     "source timezone",
-    "bar timestamp open/close convention",
     "session and holiday calendar",
     "spread point size and contract specification",
     "data license and redistribution rights"
   ],
-  "interpretation": "Interval gap counts include all elapsed intervals larger than nominal timeframe. They are not classified as missing trading bars: weekend closures, holidays, session breaks and true omissions remain mixed until the broker calendar and timezone are verified. Zero spread values are preserved and flagged for source-semantic review, not silently imputed. Real volume is zero in all six exports; tick volume is the only nonzero volume field."
+  "interpretation": "Interval gap counts include all elapsed intervals larger than nominal timeframe. They are not classified as missing trading bars: weekend closures, holidays, session breaks and true omissions remain mixed until the broker calendar and timezone are verified. Zero spread values are preserved and flagged for source-semantic review, not silently imputed. Real volume is zero in all six exports; tick volume is the only nonzero volume field. Alpari has been identified by the user; the exact MT5 server remains unconfirmed. MT5 bar timestamps are period-start labels; timezone conversion is not retroactively applied to this initial normalized artifact.",
+  "broker_context": {
+    "broker_name": "Alpari (user-reported)",
+    "exact_mt5_server_name": "UNKNOWN_PENDING_USER_CONFIRMATION",
+    "candidate_server_timezone": "Europe/Helsinki",
+    "documented_server_clock": "GMT+2 in winter; GMT+3 during daylight saving time; transitions on last Sundays of March and October",
+    "bar_timestamp_convention": "interval_start",
+    "bar_timestamp_evidence": "MetaTrader 5 timeseries documentation defines bar time as the bar opening/period-start time.",
+    "utc_conversion_status": "NOT_APPLIED_TO_THIS_INITIAL_NORMALIZED_BUILD; exact server identity still pending"
+  }
 }

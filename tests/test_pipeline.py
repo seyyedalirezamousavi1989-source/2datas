@@ -447,3 +447,55 @@ def test_normalizer_never_overwrites_same_symbol_timeframe_source_files(tmp_path
         "XAUUSD_M5_part_a.csv", "XAUUSD_M5_part_b.csv"
     }
     assert sum(item["row_count"] for item in manifest["partitions"]) == 2
+
+
+def test_instrument_spec_registry_validates_units_and_effective_dates():
+    from twodatas.instrument_specs import validate_instrument_specs, audit_instrument_specs
+
+    specs = validate_instrument_specs({
+        "GOLD": {
+            "canonical_instrument": "XAUUSD",
+            "digits": 2,
+            "point_size": "0.01",
+            "tick_size": "0.01",
+            "contract_size": "100",
+            "price_currency": "USD",
+            "profit_currency": "USD",
+            "spread_unit": "points",
+            "volume_semantics": "tick_count",
+            "effective_from": "2024-01-01",
+            "evidence": "Verified broker symbol specification document, revision 2024-01.",
+        }
+    })
+    report = audit_instrument_specs(specs, source_symbols={"GOLD", "XAUUSD"})
+    assert specs["GOLD"].canonical_instrument == "XAUUSD"
+    assert report["status"] == "INCOMPLETE"
+    assert report["missing_source_symbols"] == ["XAUUSD"]
+
+
+def test_instrument_spec_registry_rejects_invalid_point_size_and_dates():
+    import pytest
+    from twodatas.instrument_specs import validate_instrument_spec
+
+    raw = {
+        "canonical_instrument": "XAUUSD", "digits": 2, "point_size": "0",
+        "tick_size": "0.01", "contract_size": "100", "price_currency": "USD",
+        "profit_currency": "USD", "spread_unit": "points", "volume_semantics": "tick_count",
+        "effective_from": "2024-01-01", "effective_to": "2023-01-01", "evidence": "test",
+    }
+    with pytest.raises(ValueError):
+        validate_instrument_spec("GOLD", raw)
+
+
+def test_normalizer_manifest_reports_unconfigured_instrument_spec_registry(tmp_path):
+    import zipfile
+    from twodatas.normalize import normalize_archive
+
+    header = ["<DATE>", "<TIME>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"]
+    row = ["2024.01.01", "10:00:00", "2000", "2002", "1999", "2001", "120", "0", "12"]
+    source = tmp_path / "source.zip"
+    with zipfile.ZipFile(source, "w") as archive:
+        archive.writestr("GOLD_M5_test.csv", (chr(9).join(header) + chr(10) + chr(9).join(row) + chr(10)).encode())
+    manifest = normalize_archive(str(source), str(tmp_path / "normalized"))
+    assert manifest["instrument_specification_audit"]["status"] == "NOT_CONFIGURED"
+    assert manifest["instrument_specification_audit"]["missing_source_symbols"] == ["GOLD"]

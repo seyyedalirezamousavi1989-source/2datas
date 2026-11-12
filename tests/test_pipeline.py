@@ -413,4 +413,11 @@ def test_broker_sidecar_symbol_alias_maps_gold_to_canonical_xauusd(tmp_path):
     }))
     manifest = normalize_archive(str(source), str(tmp_path / "normalized"))
     assert manifest["instruments"] == ["XAUUSD"]
-    assert (tmp_path / "normalized" / "instrument=XAUUSD" / "timeframe=M5" / "bars.csv.gz").is_file()
+    partition = tmp_path / "normalized" / "instrument=XAUUSD" / "timeframe=M5" / "bars.csv.gz"
+    assert partition.is_file()
+    import csv
+    import gzip
+    with gzip.open(partition, "rt", encoding="utf-8", newline="") as handle:
+        record = next(csv.DictReader(handle))
+    assert record["instrument"] == "XAUUSD"
+    assert record["source_instrument"] == "GOLD"

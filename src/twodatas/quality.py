@@ -64,7 +64,8 @@ def audit_file(result: FileIngestResult) -> dict:
         },
         "interval_gap_count": len(gaps),
         "largest_gaps": sorted(gaps, key=lambda g: g["elapsed_minutes"], reverse=True)[:20],
-        "quality_status": "PASS" if rows and ordered and duplicate_count == 0 and bad_ohlc == 0 and nonpositive == 0 and zero_tick == 0 and negative_spread == 0 else "REVIEW_REQUIRED",
+        "quality_status": "STRUCTURAL_PASS" if rows and ordered and duplicate_count == 0 and bad_ohlc == 0 and nonpositive == 0 and zero_tick == 0 and negative_spread == 0 else "STRUCTURAL_FAIL",
+        "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW",
         "limitations": [
             "Timezone is unknown; timestamps are preserved as source-local/naive values.",
             "MT5 bar timestamp convention is unconfirmed; no UTC conversion or bar shifting is applied.",
@@ -83,6 +84,7 @@ def audit_archive(results: Iterable[FileIngestResult]) -> dict:
         "source_format": "MetaTrader tab-delimited CSV inside ZIP",
         "files": files,
         "total_rows": sum(item["row_count"] for item in files),
-        "overall_status": "PASS_WITH_LIMITATIONS" if files and all(f["quality_status"] == "PASS" for f in files) else "REVIEW_REQUIRED",
+        "overall_status": "STRUCTURAL_PASS_WITH_LIMITATIONS" if files and all(f["quality_status"] == "STRUCTURAL_PASS" for f in files) else "STRUCTURAL_REVIEW_REQUIRED",
+        "dataset_admission_status": "NOT_ADMITTED_PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW",
         "critical_unknowns": ["source timezone", "bar timestamp convention", "broker identity", "symbol contract/point size", "historical session calendar", "data license/redistribution rights"],
     }

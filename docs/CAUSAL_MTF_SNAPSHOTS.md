@@ -32,7 +32,7 @@ All timeframes in one run must come from the same instrument and source-clock pr
 After generating features:
 
 ```bash
-2datas mtf data/features/price_action --output-dir data/features/mtf --decision-timeframes M1,M5,M15,M30,H1,H4
+2datas mtf data/features/price_action --output-dir data/features/mtf --decision-timeframes M5,M15,M30,H1,H4
 ```
 
 The output is one JSONL partition per instrument/decision timeframe plus a manifest containing the source feature-manifest hash, broker profile, selected timeframes, counts and admission status.

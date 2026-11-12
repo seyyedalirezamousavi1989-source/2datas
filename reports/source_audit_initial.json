@@ -5,7 +5,7 @@
   "source_archive": "XAUUSD.zip",
   "archive_size_bytes": 11199961,
   "total_rows": 681227,
-  "overall_status": "PASS_WITH_LIMITATIONS",
+  "overall_status": "STRUCTURAL_PASS_WITH_LIMITATIONS",
   "files": [
     {
       "timeframe": "D1",
@@ -116,6 +116,7 @@
       }
     }
   ],
+  "dataset_admission_status": "NOT_ADMITTED_PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW",
   "global_checks": {
     "duplicate_timestamps": 0,
     "invalid_ohlc_rows": 0,

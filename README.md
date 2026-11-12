@@ -29,6 +29,8 @@ Maximize verified information value per example—not row count, feature count, 
 
 These authored examples are a starter corpus, not a complete or production-approved training dataset. The six-timeframe market source inventory is recorded separately; no market-derived SFT samples or trade outcomes have been generated yet.
 
+- [Broker-neutral ingestion standard](docs/phase-0/BROKER_NEUTRAL_MARKET_DATA_INGESTION.md) — common provider profile, adapter interface, arbitrary supported timeframes, timezone/DST policy, and source-quality gates.
+
 ## Uploaded XAUUSD source archive
 
 - [Six-timeframe source manifest](dataset/market_data/xauusd_source_manifest.json) — file hashes, row counts, date ranges and unresolved source semantics.

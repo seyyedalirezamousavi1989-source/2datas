@@ -1,0 +1,348 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2datas.example/schemas/ingestion/provider-profile.schema.json",
+  "title": "Broker-neutral market-data source profile",
+  "description": "Explicit, versioned metadata for mapping one provider/feed export or adapter into the canonical market-data contract. It does not connect to providers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_id",
+    "profile_version",
+    "provider_id",
+    "feed_id",
+    "adapter_kind",
+    "instrument_mappings",
+    "timeframes",
+    "timestamp",
+    "bar_semantics",
+    "price_semantics",
+    "field_mapping",
+    "volume_semantics",
+    "spread_semantics",
+    "capabilities",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "provider_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "feed_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "adapter_kind": {
+      "enum": [
+        "csv_export",
+        "json_export",
+        "mt5_terminal",
+        "broker_api",
+        "vendor_api",
+        "websocket",
+        "custom"
+      ]
+    },
+    "instrument_mappings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "instrument_id",
+          "provider_symbol",
+          "asset_class"
+        ],
+        "properties": {
+          "instrument_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider_symbol": {
+            "type": "string",
+            "minLength": 1
+          },
+          "asset_class": {
+            "enum": [
+              "forex",
+              "metal",
+              "index",
+              "commodity",
+              "equity",
+              "crypto",
+              "bond",
+              "other"
+            ]
+          },
+          "contract_specification_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "timeframes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supported",
+        "native_only",
+        "aggregation_allowed"
+      ],
+      "properties": {
+        "supported": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*(s|m|h|d|w|mo)$"
+          }
+        },
+        "native_only": {
+          "type": "boolean"
+        },
+        "aggregation_allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "timestamp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_timezone",
+        "timezone_kind",
+        "timestamp_field_semantics",
+        "ambiguous_dst_policy",
+        "nonexistent_dst_policy",
+        "precision"
+      ],
+      "properties": {
+        "source_timezone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timezone_kind": {
+          "enum": [
+            "iana",
+            "fixed_offset",
+            "utc",
+            "unknown"
+          ]
+        },
+        "timestamp_field_semantics": {
+          "enum": [
+            "bar_open",
+            "bar_close",
+            "event_time",
+            "provider_defined",
+            "unknown"
+          ]
+        },
+        "ambiguous_dst_policy": {
+          "enum": [
+            "reject",
+            "provider_sequence_required",
+            "explicit_fold_required"
+          ]
+        },
+        "nonexistent_dst_policy": {
+          "const": "reject"
+        },
+        "precision": {
+          "enum": [
+            "second",
+            "millisecond",
+            "microsecond",
+            "nanosecond",
+            "provider_native",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "bar_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "boundary",
+        "session_calendar_ref",
+        "partial_bar_policy",
+        "correction_policy"
+      ],
+      "properties": {
+        "boundary": {
+          "enum": [
+            "left_closed_right_open",
+            "right_closed_left_open",
+            "provider_defined",
+            "unknown"
+          ]
+        },
+        "session_calendar_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "partial_bar_policy": {
+          "enum": [
+            "preserve_flag",
+            "exclude",
+            "provider_defined"
+          ]
+        },
+        "correction_policy": {
+          "enum": [
+            "append_revision",
+            "replace_with_lineage",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "price_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "price_basis",
+        "quote_currency",
+        "price_scale_policy"
+      ],
+      "properties": {
+        "price_basis": {
+          "enum": [
+            "bid",
+            "ask",
+            "mid",
+            "last",
+            "mark",
+            "index",
+            "provider_defined",
+            "unknown"
+          ]
+        },
+        "quote_currency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "price_scale_policy": {
+          "enum": [
+            "raw_decimal",
+            "provider_native",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "field_mapping": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "minProperties": 4
+    },
+    "volume_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meaning",
+        "unit"
+      ],
+      "properties": {
+        "meaning": {
+          "enum": [
+            "tick_count",
+            "traded_volume",
+            "contracts",
+            "lots",
+            "base_units",
+            "quote_units",
+            "not_provided",
+            "unknown"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "spread_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meaning",
+        "unit"
+      ],
+      "properties": {
+        "meaning": {
+          "enum": [
+            "price_units",
+            "points",
+            "ticks",
+            "pips",
+            "bid_ask_difference",
+            "not_provided",
+            "unknown"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "historical_ohlcv",
+          "live_quotes",
+          "ticks",
+          "bid_ask",
+          "market_depth",
+          "instrument_specs",
+          "trading_sessions"
+        ]
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

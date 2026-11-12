@@ -54,7 +54,7 @@ def normalize_archive(
         instrument = result.rows[0].instrument if result.rows else "UNKNOWN"
         target_dir = root / f"instrument={instrument}" / f"timeframe={result.timeframe}"
         target_dir.mkdir(parents=True, exist_ok=True)
-        source_key = hashlib.sha256(result.source_file.encode("utf-8")).hexdigest()[:12]
+        source_key = hashlib.sha256((result.source_file + result.source_sha256).encode("utf-8")).hexdigest()[:12]
         target = target_dir / f"bars-{source_key}.csv.gz"
 
         with target.open("wb") as raw:

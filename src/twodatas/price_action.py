@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import asdict
-from datetime import datetime
 from math import isfinite
 from typing import Iterable
 
@@ -73,9 +71,6 @@ def compute_price_action_features(
             "displacement": None,
             "volatility_ratio": None,
             "volatility_state": "WARMUP",
-            "displacement": None,
-            "volatility_ratio": None,
-            "volatility_state": "WARMUP",
             "close_location": (bar.close - bar.low) / (bar.high - bar.low) if bar.high > bar.low else 0.5,
             "return_1": (bar.close / previous_close - 1.0) if previous_close else None,
             "swing_high_confirmed": False,
@@ -123,7 +118,7 @@ def compute_price_action_features(
             last_structure = direction
 
         if a and i >= 2:
-            older, middle = rows[i-2], rows[i-1]
+            older = rows[i-2]
             min_gap = a * fvg_min_atr
             if bar.low - older.high >= min_gap and bar.low > older.high:
                 event["fvg"] = {"type": "BULLISH_FVG", "lower": older.high, "upper": bar.low, "size": bar.low-older.high}

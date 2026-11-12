@@ -336,7 +336,7 @@ def test_mtf_loader_verifies_feature_partition_checksum_and_lineage(tmp_path):
 
     source_hash = "a" * 64
     event = {
-        "feature_version": "price-action-0.2.0",
+        "feature_version": "price-action-0.3.0",
         "instrument": "XAUUSD",
         "timeframe": "M5",
         "event_index": 0,
@@ -346,7 +346,7 @@ def test_mtf_loader_verifies_feature_partition_checksum_and_lineage(tmp_path):
     partition = tmp_path / "XAUUSD_M5.jsonl"
     partition.write_text(json.dumps(event) + chr(10), encoding="utf-8")
     manifest = {
-        "feature_version": "price-action-0.2.0",
+        "feature_version": "price-action-0.3.0",
         "partitions": [{
             "instrument": "XAUUSD", "timeframe": "M5",
             "source_sha256": source_hash, "events": 1,

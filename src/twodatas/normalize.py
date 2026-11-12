@@ -34,14 +34,16 @@ def normalize_archive(archive_path: str, output_dir: str) -> dict:
 
     for result in read_zip(archive_path):
         audit = audit_file(result)
-        instrument = result.rows[0].instrument if result.rows else "UNKNOWN"\n        target_dir = root / f"instrument={instrument}" / f"timeframe={result.timeframe}"
+        instrument = result.rows[0].instrument if result.rows else "UNKNOWN"
+        target_dir = root / f"instrument={instrument}" / f"timeframe={result.timeframe}"
         target_dir.mkdir(parents=True, exist_ok=True)
         target = target_dir / "bars.csv.gz"
         with target.open("wb") as raw:
             with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as compressed:
                 import io
                 text = io.TextIOWrapper(compressed, encoding="utf-8", newline="")
-                writer = csv.DictWriter(text, fieldnames=FIELDS, lineterminator="\n")
+                writer = csv.DictWriter(text, fieldnames=FIELDS, lineterminator="
+")
                 writer.writeheader()
                 for row_number, bar in enumerate(result.rows, start=2):
                     writer.writerow({
@@ -78,7 +80,8 @@ def normalize_archive(archive_path: str, output_dir: str) -> dict:
         })
 
     manifest = {
-        "dataset": "XAUUSD",
+        "dataset": "multi-instrument",
+        "instruments": sorted({p["path"].split("/")[0].split("=", 1)[-1] for p in partitions}),
         "schema_version": SCHEMA_VERSION,
         "normalizer_version": "0.1.0",
         "source_archive_sha256": _sha256(Path(archive_path)),
@@ -93,5 +96,6 @@ def normalize_archive(archive_path: str, output_dir: str) -> dict:
         ],
     }
     manifest_path = root / "manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "
+", encoding="utf-8")
     return manifest

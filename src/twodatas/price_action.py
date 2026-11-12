@@ -54,6 +54,7 @@ def compute_price_action_features(
     last_broken_high_origin: int | None = None
     last_broken_low_origin: int | None = None
     previous_close = None
+    prior_atr_values: list[float] = []
 
     for i, bar in enumerate(rows):
         a = atr[i]
@@ -69,6 +70,9 @@ def compute_price_action_features(
             "true_range": tr[i],
             "body": abs(bar.close - bar.open),
             "body_to_range": abs(bar.close - bar.open) / (bar.high - bar.low) if bar.high > bar.low else 0.0,
+            "displacement": None,
+            "volatility_ratio": None,
+            "volatility_state": "WARMUP",
             "displacement": None,
             "volatility_ratio": None,
             "volatility_state": "WARMUP",
@@ -166,6 +170,12 @@ def compute_price_action_features(
         if a and isfinite(a) and a > 0:
             event["range_to_atr"] = (bar.high-bar.low)/a
             event["body_to_atr"] = abs(bar.close-bar.open)/a
+            event["displacement"] = bool(event["body_to_atr"] >= 1.5 and event["body_to_range"] >= 0.65)
+            baseline = _median(prior_atr_values[-100:]) if len(prior_atr_values) >= 20 else None
+            if baseline and baseline > 0:
+                event["volatility_ratio"] = a / baseline
+                event["volatility_state"] = "EXPANSION" if a / baseline >= 1.5 else "CONTRACTION" if a / baseline <= 0.67 else "NORMAL"
+            prior_atr_values.append(a)
         else:
             event["range_to_atr"] = None
             event["body_to_atr"] = None

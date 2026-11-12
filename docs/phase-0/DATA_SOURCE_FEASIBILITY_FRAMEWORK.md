@@ -4,7 +4,7 @@
 
 Define what evidence a future source-feasibility review must collect before any provider or archive is accepted.
 
-**Design only.** No provider has been contacted or approved; no website, API, archive or uploaded file has been inspected; no market data has been downloaded or processed. The existing XAUUSD.zip remains an uninspected, unchanged artifact. This document does not authorize Stage 5 inspection, source acquisition, extraction, labeling, pipeline implementation or training.
+**Active source-feasibility work.** The user-provided XAUUSD.zip has been inspected and structurally audited, and a first normalized base-bar build has been produced within 2datas. No external provider has yet been contacted or admitted. The supplied archive's broker identity, timezone, bar timestamp convention, session calendar, instrument specification and data-use rights remain unverified. This document governs the next source-admission decisions; it creates no dependency on the separate `datas` repository or any other Stage 5 project.
 
 The objective is to acquire the smallest set of licensed, trustworthy source records that can support the approved tasks. More data sources are not inherently better.
 
@@ -276,7 +276,7 @@ A source may be admitted to a later pipeline only when:
 - independent-source differences are not hidden;
 - limitations are represented in schemas;
 - source-to-task value is justified;
-- Stage 5 compatibility has been reviewed at the authorized milestone;
+- The source adapter, canonical schema and provenance contract are internally consistent within 2datas;
 - the user separately approves source inspection/acquisition and the next phase.
 
 ## 16. Explicit non-decisions

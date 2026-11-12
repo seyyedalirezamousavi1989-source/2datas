@@ -43,13 +43,13 @@ Authorized within 2datas:
 - Add tests and CI for this repository.
 
 Still excluded unless separately approved:
-- Modify the separate `datas` repository, the unrelated Stage 5 project, AURORA QUANT, or any other external project.
+- Modify the separate `datas` repository, AURORA QUANT, or any other external project.
 - Purchase paid data, accept paid subscriptions, or use private credentials/accounts.
 - Train/fine-tune models or run expensive benchmarks.
 - Deploy a model, connect to live trading, or place/modify broker orders.
 - Merge into `main`, rewrite Git history, or delete existing repository assets without review.
 
-This project is self-contained. It has no prerequisite compatibility gate against another repository or another project's Stage 5 deliverables.
+This project is self-contained and has no prerequisite compatibility gate against another repository or external project.
 
 ## 4. Design principles
 

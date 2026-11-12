@@ -126,6 +126,9 @@ def test_price_action_fvg_and_confirmed_swing_are_causal():
     assert events[3]["swing_high_confirmed"] is True
     assert events[2]["fvg"]["type"] == "BULLISH_FVG"
     assert events[3]["swing_high_origin_index"] == 2
+    assert events[0]["source_row_number"] == 2
+    assert events[0]["source_sha256"] == source.source_sha256
+    assert events[0]["feature_parameters"]["pivot_right"] == 1
     from twodatas.broker_profiles import resolve_profile
     profile = resolve_profile(server_timezone="America/New_York", bar_timestamp_convention="interval_start")
     timed = compute_price_action_features(source.rows, pivot_left=1, pivot_right=1, atr_period=2, broker_profile=profile)

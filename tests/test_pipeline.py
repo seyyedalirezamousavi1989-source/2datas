@@ -276,3 +276,38 @@ def test_order_block_candidate_tracks_mitigation_and_invalidation():
     assert candidate["type"] == "BULLISH_ORDER_BLOCK_CANDIDATE"
     assert events[5]["order_block_updates"][0]["status"] == "MITIGATED"
     assert events[6]["order_block_updates"][0]["status"] == "INVALIDATED"
+
+
+def test_mtf_snapshots_never_select_future_higher_timeframe_events():
+    from twodatas.multi_timeframe import build_mtf_snapshots
+
+    events = {
+        "XAUUSD": {
+            "M1": [
+                {"instrument": "XAUUSD", "timeframe": "M1", "event_index": 0, "available_at_utc": "2024-01-01T10:01:00+00:00", "source_timestamp": "2024.01.01 10:00:00", "close": 2001.0},
+                {"instrument": "XAUUSD", "timeframe": "M1", "event_index": 1, "available_at_utc": "2024-01-01T10:02:00+00:00", "source_timestamp": "2024.01.01 10:01:00", "close": 2002.0},
+            ],
+            "H1": [
+                {"instrument": "XAUUSD", "timeframe": "H1", "event_index": 0, "available_at_utc": "2024-01-01T10:00:00+00:00", "source_timestamp": "2024.01.01 09:00:00", "structure_direction": "BULLISH"},
+                {"instrument": "XAUUSD", "timeframe": "H1", "event_index": 1, "available_at_utc": "2024-01-01T11:00:00+00:00", "source_timestamp": "2024.01.01 10:00:00", "structure_direction": "BEARISH"},
+            ],
+        }
+    }
+    snapshots, stats = build_mtf_snapshots(events, decision_timeframes=["M1"])
+    rows = snapshots["XAUUSD_M1"]
+    assert rows[0]["context_by_timeframe"]["H1"]["features"]["structure_direction"] == "BULLISH"
+    assert rows[1]["context_by_timeframe"]["H1"]["features"]["structure_direction"] == "BULLISH"
+    assert rows[1]["context_by_timeframe"]["H1"]["available_at_utc"] == "2024-01-01T10:00:00+00:00"
+    assert stats["snapshots_written"] == 2
+
+
+def test_mtf_snapshots_exclude_unresolved_decision_events():
+    from twodatas.multi_timeframe import build_mtf_snapshots
+
+    events = {"GOLD": {"M5": [
+        {"instrument": "GOLD", "timeframe": "M5", "event_index": 0, "available_at_utc": None},
+        {"instrument": "GOLD", "timeframe": "M5", "event_index": 1, "available_at_utc": "2024-01-01T10:05:00+00:00"},
+    ]}}
+    snapshots, stats = build_mtf_snapshots(events, decision_timeframes=["M5"])
+    assert len(snapshots["GOLD_M5"]) == 1
+    assert stats["unresolved_decision_events"] == 1

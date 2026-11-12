@@ -421,3 +421,27 @@ def test_broker_sidecar_symbol_alias_maps_gold_to_canonical_xauusd(tmp_path):
         record = next(csv.DictReader(handle))
     assert record["instrument"] == "XAUUSD"
     assert record["source_instrument"] == "GOLD"
+
+
+def test_normalizer_never_overwrites_same_symbol_timeframe_source_files(tmp_path):
+    import zipfile
+    from twodatas.normalize import normalize_archive
+
+    header = ["<DATE>", "<TIME>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"]
+    first = ["2024.01.01", "10:00:00", "2000", "2002", "1999", "2001", "120", "0", "12"]
+    second = ["2024.01.01", "10:05:00", "2001", "2003", "2000", "2002", "130", "0", "12"]
+    source = tmp_path / "two_exports.zip"
+    with zipfile.ZipFile(source, "w") as archive:
+        archive.writestr("XAUUSD_M5_part_a.csv", (chr(9).join(header) + chr(10) + chr(9).join(first) + chr(10)).encode())
+        archive.writestr("XAUUSD_M5_part_b.csv", (chr(9).join(header) + chr(10) + chr(9).join(second) + chr(10)).encode())
+
+    output = tmp_path / "normalized"
+    manifest = normalize_archive(str(source), str(output))
+    partition_dir = output / "instrument=XAUUSD" / "timeframe=M5"
+    files = sorted(partition_dir.glob("bars-*.csv.gz"))
+    assert len(files) == 2
+    assert len(manifest["partitions"]) == 2
+    assert {item["source_file"] for item in manifest["partitions"]} == {
+        "XAUUSD_M5_part_a.csv", "XAUUSD_M5_part_b.csv"
+    }
+    assert sum(item["row_count"] for item in manifest["partitions"]) == 2

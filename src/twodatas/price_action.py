@@ -84,7 +84,6 @@ def compute_price_action_features(
             "event_index": i,
             "available_at_utc": available_at_utc,
             "availability_time_status": availability_status,
-            "available_at_source_timestamp": bar.source_timestamp,
             "atr": a,
             "true_range": tr[i],
             "body": abs(bar.close - bar.open),

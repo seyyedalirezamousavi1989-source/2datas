@@ -18,9 +18,10 @@ pip install -e ".[test]"
 pytest
 2datas audit path/to/XAUUSD.zip --output reports/source_audit.json
 2datas normalize path/to/XAUUSD.zip --output-dir data/processed/xauusd
+2datas alignment path/to/XAUUSD.zip --output reports/timeframe_alignment.json
 ```
 
-The normalizer writes one deterministic gzip CSV partition per timeframe and a manifest with source/output hashes and row-level source references. Generated data remains local and is not committed to Git.\n\nOr run without installation:
+The normalizer writes one deterministic gzip CSV partition per timeframe and a manifest with source/output hashes and row-level source references. The alignment audit tests whether lower-timeframe OHLC and tick volume aggregate exactly to native higher-timeframe bars under an explicitly provisional source-clock bucket hypothesis. Generated data remains local and is not committed to Git.\n\nOr run without installation:
 
 ```bash
 PYTHONPATH=src python -m twodatas audit path/to/XAUUSD.zip

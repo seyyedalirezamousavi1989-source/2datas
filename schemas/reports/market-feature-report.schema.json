@@ -1,0 +1,16 @@
+{
+"$schema":"https://json-schema.org/draft/2020-12/schema",
+"$id":"https://2datas.example/schemas/reports/market-feature-report.schema.json",
+"title":"Causal Market Feature Report","type":"object","additionalProperties":false,
+"required":["schema_version","engine","decision_timestamp","instrument_id","provider","price_basis","timeframe","admitted_bar_count","events","atr","diagnostics","feature_fingerprint"],
+"properties":{
+"schema_version":{"const":"1.0.0"},"engine":{"const":"causal_market_features"},
+"decision_timestamp":{"type":"string","format":"date-time"},
+"instrument_id":{"type":["string","null"]},"provider":{"type":["string","null"]},"price_basis":{"type":["string","null"]},"timeframe":{"type":["string","null"]},
+"admitted_bar_count":{"type":"integer","minimum":0},
+"events":{"type":"array","items":{"type":"object","required":["event_type","event_record_id","event_time","available_at","causal"],"properties":{
+"event_type":{"enum":["SWING_HIGH","SWING_LOW","BOS_BULLISH","BOS_BEARISH","CHOCH_BULLISH","CHOCH_BEARISH","BUYSIDE_LIQUIDITY_SWEEP","SELLSIDE_LIQUIDITY_SWEEP","FVG_BULLISH","FVG_BEARISH"]},
+"event_record_id":{"type":"string"},"event_time":{"type":"string","format":"date-time"},"available_at":{"type":"string","format":"date-time"},"causal":{"const":true}}}},
+"atr":{"type":"array","items":{"type":"object","required":["record_id","available_at","true_range","atr","period","causal"],"properties":{"record_id":{"type":"string"},"available_at":{"type":"string","format":"date-time"},"true_range":{"type":"string"},"atr":{"type":"string"},"period":{"type":"integer","minimum":1},"causal":{"const":true}}}},
+"diagnostics":{"type":"object","required":["future_bars_used","input_mutated","network_access","market_data_written","order_blocks_emitted"],"properties":{"future_bars_used":{"const":false},"input_mutated":{"const":false},"network_access":{"const":false},"market_data_written":{"const":false},"order_blocks_emitted":{"const":false}}},
+"feature_fingerprint":{"type":"string","pattern":"^[a-f0-9]{64}$"}}}

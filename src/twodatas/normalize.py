@@ -115,7 +115,7 @@ def normalize_archive(
         "schema_version": SCHEMA_VERSION,
         "normalizer_version": "0.2.0",
         "source_archive_sha256": _sha256(Path(archive_path)),
-        "broker_config": broker_config,\n        "broker_config": broker_config,
+        "broker_config": broker_config,
         "broker_profile": {
             "profile_id": profile.profile_id,
             "broker_name": profile.broker_name,

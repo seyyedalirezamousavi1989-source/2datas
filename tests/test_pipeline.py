@@ -393,3 +393,24 @@ def test_market_csv_does_not_guess_tick_volume_from_generic_volume():
     ).encode()
     with pytest.raises(ValueError, match="TICKVOL"):
         read_mt5_csv(payload, "XAUUSD_M5_export.csv")
+
+
+def test_broker_sidecar_symbol_alias_maps_gold_to_canonical_xauusd(tmp_path):
+    import json
+    import zipfile
+    from twodatas.normalize import normalize_archive
+
+    header = ["<DATE>", "<TIME>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"]
+    row = ["2024.01.15", "10:00:00", "2000", "2002", "1999", "2001", "120", "0", "12"]
+    source = tmp_path / "gold_export.zip"
+    with zipfile.ZipFile(source, "w") as archive:
+        archive.writestr("GOLD_M5_test.csv", (chr(9).join(header) + chr(10) + chr(9).join(row) + chr(10)).encode())
+    (tmp_path / "gold_export.zip.broker.json").write_text(json.dumps({
+        "schema_version": "2datas-broker-clock-1",
+        "server_timezone": "Europe/Helsinki",
+        "bar_timestamp_convention": "interval_start",
+        "symbol_aliases": {"GOLD": "XAUUSD"},
+    }))
+    manifest = normalize_archive(str(source), str(tmp_path / "normalized"))
+    assert manifest["instruments"] == ["XAUUSD"]
+    assert (tmp_path / "normalized" / "instrument=XAUUSD" / "timeframe=M5" / "bars.csv.gz").is_file()

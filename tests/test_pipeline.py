@@ -92,7 +92,7 @@ def test_alpari_candidate_does_not_silently_resolve_timezone():
     profile = resolve_profile("alpari_mt5_candidate")
     utc_value, status = to_utc("2024.01.15 10:00:00", "second", profile)
     assert utc_value is None
-    assert status == "UNRESOLVED_SOURCE_TIME"
+    assert status == "BROKER_PROFILE_NOT_VERIFIED"
 
 
 def test_user_configured_timezone_resolves_and_dst_ambiguity_is_quarantined():

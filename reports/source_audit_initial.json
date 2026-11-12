@@ -1,0 +1,135 @@
+{
+  "dataset": "XAUUSD",
+  "report_type": "initial_source_integrity_audit",
+  "audit_version": "0.1.0",
+  "source_archive": "XAUUSD.zip",
+  "archive_size_bytes": 11000000,
+  "total_rows": 681227,
+  "overall_status": "PASS_WITH_LIMITATIONS",
+  "files": [
+    {
+      "timeframe": "D1",
+      "source_file": "XAUUSD_Daily_202011110000_202611100000.csv",
+      "sha256": "bee6ced85602ab97742c26ca41be063c079f4e3d284c4f0be1f60acedacea76b",
+      "rows": 1548,
+      "first": "2020.11.11",
+      "last": "2026.11.10",
+      "duplicates": 0,
+      "invalid_ohlc": 0,
+      "zero_tick_volume": 0,
+      "interval_gaps": 317,
+      "spread_points": {
+        "median": 9,
+        "p95": 16,
+        "max": 17,
+        "zero_count": 85
+      }
+    },
+    {
+      "timeframe": "H1",
+      "source_file": "XAUUSD_H1_202011110100_202611102300.csv",
+      "sha256": "310675c9b61b86153768b4615b969bc588997b1c6117b979c61c51e11991cd39",
+      "rows": 35464,
+      "first": "2020.11.11 01:00:00",
+      "last": "2026.11.10 23:00:00",
+      "duplicates": 0,
+      "invalid_ohlc": 0,
+      "zero_tick_volume": 0,
+      "interval_gaps": 1547,
+      "spread_points": {
+        "median": 12,
+        "p95": 20,
+        "max": 59,
+        "zero_count": 1324
+      }
+    },
+    {
+      "timeframe": "H4",
+      "source_file": "XAUUSD_H4_202011110000_202611102000.csv",
+      "sha256": "0231127d4928aa40ee304021342468045b2b6235cf218d933c93b06e223418d5",
+      "rows": 9278,
+      "first": "2020.11.11 00:00:00",
+      "last": "2026.11.10 20:00:00",
+      "duplicates": 0,
+      "invalid_ohlc": 0,
+      "zero_tick_volume": 0,
+      "interval_gaps": 324,
+      "spread_points": {
+        "median": 11,
+        "p95": 18,
+        "max": 27,
+        "zero_count": 425
+      }
+    },
+    {
+      "timeframe": "M15",
+      "source_file": "XAUUSD_M15_202011110100_202611102345.csv",
+      "sha256": "0d8490c9769849fb7632848552663742a6ed9ee18737699783c99ed997844612",
+      "rows": 141767,
+      "first": "2020.11.11 01:00:00",
+      "last": "2026.11.10 23:45:00",
+      "duplicates": 0,
+      "invalid_ohlc": 0,
+      "zero_tick_volume": 0,
+      "interval_gaps": 1547,
+      "spread_points": {
+        "median": 12,
+        "p95": 20,
+        "max": 179,
+        "zero_count": 3759
+      }
+    },
+    {
+      "timeframe": "M30",
+      "source_file": "XAUUSD_M30_202011110100_202611102330.csv",
+      "sha256": "e7177dd9daab8c95a371b64498bee58da3eeb175b60564b8250b761ae5156d9d",
+      "rows": 70896,
+      "first": "2020.11.11 01:00:00",
+      "last": "2026.11.10 23:30:00",
+      "duplicates": 0,
+      "invalid_ohlc": 0,
+      "zero_tick_volume": 0,
+      "interval_gaps": 1547,
+      "spread_points": {
+        "median": 12,
+        "p95": 20,
+        "max": 161,
+        "zero_count": 2285
+      }
+    },
+    {
+      "timeframe": "M5",
+      "source_file": "XAUUSD_M5_202011110105_202611102350.csv",
+      "sha256": "8a4c315e12c487944b13b3c78b456052c3748258011a7aa608fcd361c10905f3",
+      "rows": 422274,
+      "first": "2020.11.11 01:05:00",
+      "last": "2026.11.10 23:50:00",
+      "duplicates": 0,
+      "invalid_ohlc": 0,
+      "zero_tick_volume": 0,
+      "interval_gaps": 1547,
+      "spread_points": {
+        "median": 12,
+        "p95": 20,
+        "max": 179,
+        "zero_count": 7561
+      }
+    }
+  ],
+  "global_checks": {
+    "duplicate_timestamps": 0,
+    "invalid_ohlc_rows": 0,
+    "nonpositive_price_rows": 0,
+    "zero_tick_volume_rows": 0,
+    "real_volume_nonzero_rows": 0
+  },
+  "critical_unknowns": [
+    "broker/provider identity",
+    "source timezone",
+    "bar timestamp open/close convention",
+    "session and holiday calendar",
+    "spread point size and contract specification",
+    "data license and redistribution rights"
+  ],
+  "interpretation": "Interval gap counts include all elapsed intervals larger than nominal timeframe. They are not classified as missing trading bars: weekend closures, holidays, session breaks and true omissions remain mixed until the broker calendar and timezone are verified. Zero spread values are preserved and flagged for source-semantic review, not silently imputed. Real volume is zero in all six exports; tick volume is the only nonzero volume field."
+}

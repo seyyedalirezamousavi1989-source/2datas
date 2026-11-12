@@ -50,12 +50,12 @@ def normalize_archive(
     partitions = []
     source_symbols: set[str] = set()
     source_periods: dict[str, tuple[str, str]] = {}
-    specs = validate_instrument_specs(broker_config.get("instrument_specs", {}))
     profile, broker_config = resolve_profile_for_archive(
         archive_path, config_path=broker_config_path, profile_id=broker_profile_id,
         broker_name=broker_name, server_name=server_name, server_timezone=server_timezone,
         bar_timestamp_convention=bar_timestamp_convention,
     )
+    specs = validate_instrument_specs(broker_config.get("instrument_specs", {}))
 
     for result in read_zip(archive_path, symbol_aliases=broker_config.get("symbol_aliases", {})):
         for row in result.rows:

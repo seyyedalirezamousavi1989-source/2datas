@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+import re
 
 
 @dataclass(frozen=True)
@@ -31,6 +32,22 @@ BUILTIN_PROFILES = {
 }
 
 
+def _clock_zone(value: str):
+    fixed = re.fullmatch(r"UTC([+-])(\\d{2}):(\\d{2})", value.upper())
+    if fixed:
+        hours, minutes = int(fixed.group(2)), int(fixed.group(3))
+        if hours > 14 or minutes > 59 or (hours == 14 and minutes != 0):
+            raise ValueError(f"Invalid fixed UTC offset: {value}")
+        delta = timedelta(hours=hours, minutes=minutes)
+        if fixed.group(1) == "-":
+            delta = -delta
+        return timezone(delta, name=value)
+    try:
+        return ZoneInfo(value)
+    except ZoneInfoNotFoundError as exc:
+        raise ValueError(f"Unknown IANA timezone or fixed UTC offset: {value}") from exc
+
+
 def resolve_profile(
     profile_id: str | None = None,
     *,
@@ -40,10 +57,7 @@ def resolve_profile(
     bar_timestamp_convention: str | None = None,
 ) -> BrokerProfile:
     if server_timezone:
-        try:
-            ZoneInfo(server_timezone)
-        except ZoneInfoNotFoundError as exc:
-            raise ValueError(f"Unknown IANA timezone: {server_timezone}") from exc
+        _clock_zone(server_timezone)
         if bar_timestamp_convention not in {"interval_start", "interval_end"}:
             raise ValueError("Explicit timezone requires bar_timestamp_convention=interval_start|interval_end")
         return BrokerProfile(
@@ -87,7 +101,7 @@ def to_utc(source_timestamp: str, precision: str, profile: BrokerProfile) -> tup
         return None, "UNRESOLVED_SOURCE_TIME"
     fmt = "%Y.%m.%d %H:%M:%S" if precision == "second" else "%Y.%m.%d"
     local_naive = datetime.strptime(source_timestamp, fmt)
-    zone = ZoneInfo(profile.server_timezone)
+    zone = _clock_zone(profile.server_timezone)
     candidate = local_naive.replace(tzinfo=zone)
     roundtrip = candidate.astimezone(timezone.utc).astimezone(zone).replace(tzinfo=None)
     if roundtrip != local_naive:

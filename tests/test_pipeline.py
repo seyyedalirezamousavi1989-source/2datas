@@ -47,7 +47,9 @@ def test_normalizer_writes_partition_and_lineage(tmp_path):
         archive.writestr("XAUUSD_H1_test.csv", (chr(9).join(header) + chr(10) + chr(9).join(row) + chr(10)).encode())
     manifest = normalize_archive(str(source), str(tmp_path / "out"))
     assert manifest["total_rows"] == 1
-    partition = tmp_path / "out" / "instrument=XAUUSD" / "timeframe=H1" / "bars.csv.gz"
+    partitions = list((tmp_path / "out" / "instrument=XAUUSD" / "timeframe=H1").glob("bars-*.csv.gz"))
+    assert len(partitions) == 1
+    partition = partitions[0]
     with gzip.open(partition, "rt", encoding="utf-8", newline="") as handle:
         records = list(csv.DictReader(handle))
     assert records[0]["source_row_number"] == "2"

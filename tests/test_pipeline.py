@@ -125,3 +125,27 @@ def test_price_action_fvg_and_confirmed_swing_are_causal():
     assert events[3]["swing_high_confirmed"] is True
     assert events[2]["fvg"]["type"] == "BULLISH_FVG"
     assert events[3]["swing_high_origin_index"] == 2
+
+
+def test_normalizer_records_configured_broker_time_contract(tmp_path):
+    import csv
+    import gzip
+    import zipfile
+    from twodatas.normalize import normalize_archive
+
+    header = ["<DATE>", "<TIME>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"]
+    row = ["2024.01.15", "10:00:00", "2000", "2002", "1999", "2001", "120", "0", "12"]
+    source = tmp_path / "source.zip"
+    with zipfile.ZipFile(source, "w") as archive:
+        archive.writestr("GOLD_M5_test.csv", (chr(9).join(header) + chr(10) + chr(9).join(row) + chr(10)).encode())
+    manifest = normalize_archive(
+        str(source), str(tmp_path / "normalized"),
+        broker_name="ExampleBroker", server_timezone="America/New_York",
+        bar_timestamp_convention="interval_start",
+    )
+    partition = tmp_path / "normalized" / "instrument=GOLD" / "timeframe=M5" / "bars.csv.gz"
+    with gzip.open(partition, "rt", encoding="utf-8", newline="") as handle:
+        record = next(csv.DictReader(handle))
+    assert record["timestamp_utc"] == "2024-01-15T15:00:00+00:00"
+    assert record["timestamp_resolution_status"] == "RESOLVED_INTERVAL_START"
+    assert manifest["broker_profile"]["status"] == "user_configured"

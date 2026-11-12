@@ -44,6 +44,7 @@ def normalize_archive(
     root = Path(output_dir)
     root.mkdir(parents=True, exist_ok=True)
     partitions = []
+    source_symbols: set[str] = set()
     profile, broker_config = resolve_profile_for_archive(
         archive_path, config_path=broker_config_path, profile_id=broker_profile_id,
         broker_name=broker_name, server_name=server_name, server_timezone=server_timezone,
@@ -51,6 +52,7 @@ def normalize_archive(
     )
 
     for result in read_zip(archive_path, symbol_aliases=broker_config.get("symbol_aliases", {})):
+        source_symbols.update(row.source_instrument for row in result.rows)
         audit = audit_file(result)
         instrument = result.rows[0].instrument if result.rows else "UNKNOWN"
         target_dir = root / f"instrument={instrument}" / f"timeframe={result.timeframe}"

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://2datas.example/schemas/provenance/artifact-manifest.schema.json",
+  "$id": "urn:2datas:schema:provenance:artifact-manifest:1",
   "title": "2datas Immutable Artifact Manifest",
   "type": "object",
   "additionalProperties": false,
@@ -184,6 +184,26 @@
     },
     "metadata": {
       "type": "object"
+    }
+  },
+  "$defs": {
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "sha256"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        }
+      }
     }
   }
 }

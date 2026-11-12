@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import io
+import math
 import re
 import zipfile
 from dataclasses import dataclass
@@ -10,7 +11,10 @@ from datetime import datetime
 from pathlib import PurePosixPath
 from typing import Iterator
 
-TF_PATTERN = re.compile(r"(?:^|_)(Daily|MN\d+|W\d+|D1|H\d+|M\d+)(?=_|$)", re.IGNORECASE)
+TF_PATTERN = re.compile(
+    r"(?P<symbol>[A-Za-z0-9.]+)_(?P<timeframe>Daily|MN\d+|W\d+|D1|H\d+|M\d+)(?=_|$)",
+    re.IGNORECASE,
+)
 REQUIRED = {"<DATE>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"}
 
 
@@ -40,20 +44,12 @@ class FileIngestResult:
     header: list[str]
 
 
-def _timeframe_from_name(name: str) -> str:
-    match = TF_PATTERN.search(PurePosixPath(name).name)
-    if not match:
-        raise ValueError(f"Cannot infer supported timeframe from filename: {name}")
-    value = match.group(1)
-    return "D1" if value.lower() == "daily" else value.upper()
-
-
 def _parse_float(value: str, field: str, source: str, line: int) -> float:
     try:
         result = float(value)
     except (TypeError, ValueError) as exc:
         raise ValueError(f"{source}:{line}: invalid numeric {field}={value!r}") from exc
-    if result != result or result in (float("inf"), float("-inf")):
+    if not math.isfinite(result):
         raise ValueError(f"{source}:{line}: non-finite {field}")
     return result
 
@@ -68,11 +64,27 @@ def _timestamp(row: dict[str, str]) -> tuple[str, str]:
     return date, "day"
 
 
-def read_mt5_csv(payload: bytes, source_file: str) -> FileIngestResult:
-    """Read MT5 tab-delimited export without guessing timezone/bar timestamp semantics."""
-    timeframe = _timeframe_from_name(source_file)
+def read_mt5_csv(
+    payload: bytes,
+    source_file: str,
+    *,
+    instrument: str | None = None,
+    timeframe: str | None = None,
+) -> FileIngestResult:
+    """Read an MT5 tab-delimited export; never infer broker clock semantics."""
+    stem = PurePosixPath(source_file).stem
+    match = TF_PATTERN.search(stem)
+    if timeframe is None and match is None:
+        raise ValueError(f"Cannot infer timeframe from filename; provide an override: {source_file}")
+    inferred_timeframe = match.group("timeframe") if match else timeframe
+    normalized_timeframe = "D1" if inferred_timeframe.lower() == "daily" else inferred_timeframe.upper()
+    inferred_instrument = match.group("symbol").upper() if match else None
+    normalized_instrument = (instrument or inferred_instrument or "").upper()
+    if not normalized_instrument:
+        raise ValueError(f"Cannot infer instrument from filename; provide an explicit instrument: {source_file}")
+
     text = payload.decode("utf-8-sig")
-    reader = csv.DictReader(io.StringIO(text), delimiter=chr(9))
+    reader = csv.DictReader(io.StringIO(text), delimiter="\t")
     header = list(reader.fieldnames or [])
     missing = REQUIRED.difference(header)
     if missing:
@@ -81,24 +93,45 @@ def read_mt5_csv(payload: bytes, source_file: str) -> FileIngestResult:
     rows: list[Bar] = []
     for line, raw in enumerate(reader, start=2):
         stamp, precision = _timestamp(raw)
-        values = {key: _parse_float(raw[key], key, source_file, line) for key in ("<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>")}
+        values = {
+            key: _parse_float(raw[key], key, source_file, line)
+            for key in ("<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>")
+        }
         tick_volume = values["<TICKVOL>"]
         if tick_volume < 0 or not tick_volume.is_integer():
             raise ValueError(f"{source_file}:{line}: TICKVOL must be a non-negative integer")
         rows.append(Bar(
-            instrument=instrument, timeframe=timeframe, source_file=source_file,
-            source_timestamp=stamp, timestamp_precision=precision,
+            instrument=normalized_instrument,
+            timeframe=normalized_timeframe,
+            source_file=source_file,
+            source_timestamp=stamp,
+            timestamp_precision=precision,
             timestamp_timezone="UNKNOWN",
-            open=values["<OPEN>"], high=values["<HIGH>"], low=values["<LOW>"], close=values["<CLOSE>"],
-            tick_volume=int(tick_volume), real_volume=values["<VOL>"], spread_points=values["<SPREAD>"],
+            open=values["<OPEN>"],
+            high=values["<HIGH>"],
+            low=values["<LOW>"],
+            close=values["<CLOSE>"],
+            tick_volume=int(tick_volume),
+            real_volume=values["<VOL>"],
+            spread_points=values["<SPREAD>"],
         ))
-    return FileIngestResult(source_file, timeframe, hashlib.sha256(payload).hexdigest(), rows, header)
+    return FileIngestResult(
+        source_file, normalized_timeframe, hashlib.sha256(payload).hexdigest(), rows, header
+    )
 
 
-def read_zip(path: str, *, instrument: str | None = None, timeframe_overrides: dict[str, str] | None = None) -> Iterator[FileIngestResult]:
+def read_zip(
+    path: str,
+    *,
+    instrument: str | None = None,
+    timeframe_overrides: dict[str, str] | None = None,
+) -> Iterator[FileIngestResult]:
     with zipfile.ZipFile(path) as archive:
-        members = sorted(n for n in archive.namelist() if n.lower().endswith(".csv"))
+        members = sorted(name for name in archive.namelist() if name.lower().endswith(".csv"))
         if not members:
             raise ValueError("Archive contains no CSV files")
         for member in members:
-            override = (timeframe_overrides or {}).get(member)\n            yield read_mt5_csv(archive.read(member), member, instrument=instrument, timeframe=override)
+            override = (timeframe_overrides or {}).get(member)
+            yield read_mt5_csv(
+                archive.read(member), member, instrument=instrument, timeframe=override
+            )

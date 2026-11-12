@@ -32,7 +32,7 @@ pytest -q
 2datas normalize path/to/export.zip --output-dir data/processed
 2datas alignment path/to/export.zip --output reports/timeframe_alignment.json
 2datas features path/to/export.zip --output-dir data/features/price_action
-2datas mtf data/features/price_action --output-dir data/features/mtf --decision-timeframes M1,M5,M15,M30,H1,H4
+2datas mtf data/features/price_action --output-dir data/features/mtf --decision-timeframes M5,M15,M30,H1,H4
 ```
 
 The parser supports MT5 timeframe tokens such as M1/M5/M15/M30, H1/H4, D1, W1 and MN1, provided the filename identifies the timeframe unambiguously. Symbol aliases such as XAUUSD, GOLD or broker-suffixed names are preserved as source instrument identifiers.

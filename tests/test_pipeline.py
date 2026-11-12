@@ -146,7 +146,7 @@ def test_normalizer_records_configured_broker_time_contract(tmp_path):
         archive.writestr("GOLD_M5_test.csv", (chr(9).join(header) + chr(10) + chr(9).join(row) + chr(10)).encode())
     manifest = normalize_archive(
         str(source), str(tmp_path / "normalized"),
-        broker_name="ExampleBroker", server_timezone="America/New_York",
+        broker_name="ExampleBroker", server_name="Example-MT5", server_timezone="America/New_York",
         bar_timestamp_convention="interval_start",
     )
     partition = tmp_path / "normalized" / "instrument=GOLD" / "timeframe=M5" / "bars.csv.gz"
@@ -154,4 +154,6 @@ def test_normalizer_records_configured_broker_time_contract(tmp_path):
         record = next(csv.DictReader(handle))
     assert record["timestamp_utc"] == "2024-01-15T15:00:00+00:00"
     assert record["timestamp_resolution_status"] == "RESOLVED_INTERVAL_START"
+    assert record["server_name"] == "Example-MT5"
+    assert manifest["broker_profile"]["server_name"] == "Example-MT5"
     assert manifest["broker_profile"]["status"] == "user_configured"

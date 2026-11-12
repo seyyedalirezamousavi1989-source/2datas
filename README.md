@@ -1,6 +1,6 @@
 # 2datas — Broker-independent XAUUSD research dataset
 
-An independent, auditable research dataset project. This repository does not modify or depend on the separate \`datas\` repository or AURORA QUANT.
+An independent, auditable research dataset project. This repository does not modify or depend on the separate `datas` repository or AURORA QUANT.
 
 ## Current implementation
 
@@ -17,36 +17,36 @@ The initial feature definitions are operational hypotheses. Order blocks are not
 
 ## Setup
 
-\`\`\`bash
+```bash
 python -m venv .venv
 # Windows: .venv\\Scripts\\activate
 # Linux/macOS: source .venv/bin/activate
 pip install -e ".[test]"
 pytest -q
-\`\`\`
+```
 
 ## Commands
 
-\`\`\`bash
+```bash
 2datas audit path/to/export.zip --output reports/source_audit.json
 2datas normalize path/to/export.zip --output-dir data/processed
 2datas alignment path/to/export.zip --output reports/timeframe_alignment.json
 2datas features path/to/export.zip --output-dir data/features/price_action
 2datas mtf data/features/price_action --output-dir data/features/mtf --decision-timeframes M1,M5,M15,M30,H1,H4
-\`\`\`
+```
 
 The parser supports MT5 timeframe tokens such as M1/M5/M15/M30, H1/H4, D1, W1 and MN1, provided the filename identifies the timeframe unambiguously. Symbol aliases such as XAUUSD, GOLD or broker-suffixed names are preserved as source instrument identifiers.
 
 ## Broker clock configuration
 
-Broker clock metadata is source-specific. The preferred automatic path is a sidecar next to each export. Create \`XAUUSD.zip.broker.json\` (or \`XAUUSD.broker.json\`) using the schema in [examples/alpari-mt5.broker.example.json](examples/alpari-mt5.broker.example.json), then run:
+Broker clock metadata is source-specific. The preferred automatic path is a sidecar next to each export. Create `XAUUSD.zip.broker.json` (or `XAUUSD.broker.json`) using the schema in [examples/alpari-mt5.broker.example.json](examples/alpari-mt5.broker.example.json), then run:
 
-\`\`\`bash
+```bash
 2datas normalize XAUUSD.zip --output-dir data/processed/alpari
 2datas features XAUUSD.zip --output-dir data/features/price_action
-\`\`\`
+```
 
-The CLI auto-discovers the sidecar, validates its schema, records its SHA-256 in each manifest and applies the configured server timezone plus interval-start/interval-end convention. For the documented Alpari profile, \`Alpari-MT5\` and \`Alpari-MT5-Demo\` are recognized by the built-in profile when supplied as \`--broker-profile alpari_mt5_candidate --server-name ...\`; confirm your exact MT5 server before relying on it. For other brokers, create a sidecar containing the exact server, IANA timezone (or documented fixed offset such as \`UTC+02:00\`) and timestamp convention.
+The CLI auto-discovers the sidecar, validates its schema, records its SHA-256 in each manifest and applies the configured server timezone plus interval-start/interval-end convention. For the documented Alpari profile, `Alpari-MT5` and `Alpari-MT5-Demo` are recognized by the built-in profile when supplied as `--broker-profile alpari_mt5_candidate --server-name ...`; confirm your exact MT5 server before relying on it. For other brokers, create a sidecar containing the exact server, IANA timezone (or documented fixed offset such as `UTC+02:00`) and timestamp convention.
 
 A broker brand alone is not enough to infer a server clock. If no sidecar or explicit configuration is available, timestamps remain unresolved. Conflicting sidecars or simultaneous sidecar/CLI settings fail closed. Multiple servers and historical DST policies may differ even within one broker. Ambiguous/nonexistent DST wall times are quarantined rather than guessed. See [BROKER_TIME_NORMALIZATION.md](docs/BROKER_TIME_NORMALIZATION.md).
 

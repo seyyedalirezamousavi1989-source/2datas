@@ -116,3 +116,78 @@ def to_utc(source_timestamp: str, precision: str, profile: BrokerProfile) -> tup
         return None, "AMBIGUOUS_LOCAL_TIME"
     status = "RESOLVED_INTERVAL_END" if profile.bar_timestamp_convention == "interval_end" else "RESOLVED_INTERVAL_START"
     return candidate.astimezone(timezone.utc).isoformat(), status
+
+
+def resolve_profile_for_archive(
+    archive_path: str,
+    *,
+    config_path: str | None = None,
+    profile_id: str | None = None,
+    broker_name: str | None = None,
+    server_name: str | None = None,
+    server_timezone: str | None = None,
+    bar_timestamp_convention: str | None = None,
+) -> tuple[BrokerProfile, dict]:
+    """Resolve a source-specific profile from an adjacent JSON sidecar or explicit CLI values.
+
+    Sidecar candidates are <archive>.broker.json and <archive-stem>.broker.json.
+    Ambiguous configuration is rejected; clock semantics are never inferred from OHLC.
+    """
+    from pathlib import Path
+    import hashlib
+    import json
+
+    archive = Path(archive_path)
+    candidates = [Path(str(archive) + ".broker.json"), archive.with_suffix(".broker.json")]
+    if config_path:
+        selected = Path(config_path)
+        if not selected.is_file():
+            raise FileNotFoundError(f"Broker config not found: {selected}")
+    else:
+        found = [path for path in candidates if path.is_file()]
+        if len(found) > 1:
+            raise ValueError(f"Multiple broker sidecars found; pass --broker-config explicitly: {found}")
+        selected = found[0] if found else None
+
+    explicit = any(value is not None for value in (
+        profile_id, broker_name, server_name, server_timezone, bar_timestamp_convention
+    ))
+    if selected is not None:
+        if explicit:
+            raise ValueError("Do not mix a broker sidecar with explicit broker CLI fields; edit the sidecar or omit it.")
+        raw = selected.read_bytes()
+        config = json.loads(raw.decode("utf-8"))
+        allowed = {
+            "schema_version", "profile_id", "broker_name", "server_name",
+            "server_timezone", "bar_timestamp_convention",
+        }
+        unknown = set(config) - allowed
+        if unknown:
+            raise ValueError(f"Unknown broker config keys: {sorted(unknown)}")
+        if config.get("schema_version") != "2datas-broker-clock-1":
+            raise ValueError("Broker config schema_version must be '2datas-broker-clock-1'")
+        required = ("server_name", "server_timezone", "bar_timestamp_convention")
+        missing = [key for key in required if not config.get(key)]
+        if missing:
+            raise ValueError(f"Broker config missing required fields: {missing}")
+        profile = resolve_profile(
+            config.get("profile_id"),
+            broker_name=config.get("broker_name"),
+            server_name=config["server_name"],
+            server_timezone=config["server_timezone"],
+            bar_timestamp_convention=config["bar_timestamp_convention"],
+        )
+        return profile, {
+            "mode": "sidecar",
+            "path": selected.name,
+            "sha256": hashlib.sha256(raw).hexdigest(),
+        }
+
+    profile = resolve_profile(
+        profile_id,
+        broker_name=broker_name,
+        server_name=server_name,
+        server_timezone=server_timezone,
+        bar_timestamp_convention=bar_timestamp_convention,
+    )
+    return profile, {"mode": "explicit_cli" if explicit else "unresolved", "path": None, "sha256": None}

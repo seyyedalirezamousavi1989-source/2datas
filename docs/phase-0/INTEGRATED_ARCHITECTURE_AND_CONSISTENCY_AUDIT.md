@@ -353,23 +353,20 @@ Scoped enum/action governance and the T06/T08 boundary are now documented provis
 
 ## 14. Active implementation roadmap
 
-The next work is implementation-led, not another documentation-only freeze loop.
+The work has moved beyond the initial design-only loop. The current working branch contains an executable ingestion/normalization foundation, broker-clock sidecar resolution, causal price-action events and a point-in-time MTF snapshot builder. These are implementation milestones, not accepted research features.
 
-1. **Source semantics dossier:** resolve broker/provider identity, server timezone/DST, MT5 bar timestamp convention, symbol digits/point size, session calendar and source-use rights.
-2. **Coverage and gap classification:** distinguish normal market closures/holidays from genuine missing intervals; explain partial child groups at timeframe boundaries.
-3. **Canonical storage hardening:** validate deterministic partition rebuilds, source row lineage, schema compatibility and checksums; retain raw archive outside Git.
-4. **Feature validity and broker time:** validate Alpari server clock, DST and bar convention; verify feature availability timestamps; add source-aware MTF synchronization.
-5. **Feature research:** evaluate candidate structure, FVG, liquidity, OB, displacement and volatility features for stability, redundancy and incremental value.
-6. **Targets and splits:** define compact market-outcome targets, ambiguity/censoring and episode-aware chronological splits.
-7. **Independent QC and acceptance:** publish limitations and reject targets/features that do not add measurable value.
-5. **Target implementation:** start with fixed-horizon market outcomes, then barrier/MFE-MAE only where source resolution supports them; preserve ambiguity and censoring.
-6. **Episode-aware splits and baselines:** construct chronological folds after target horizons and source-latency dependencies are frozen.
-7. **Independent QC and acceptance:** publish limitations and reject targets that do not add measurable value.
+1. **Source semantics dossier:** confirm the exact Alpari MT5 server shown in the user's terminal; verify server timezone/DST history, MT5 bar-open convention, symbol digits/point size, contract specification, session calendar and source-use rights.
+2. **Broker-independent clock registry:** validate the sidecar auto-discovery path with Alpari and at least two distinct broker/server clock configurations; add effective-dated profile epochs before supporting archives that span server-clock policy changes.
+3. **Coverage and gap classification:** distinguish normal market closures/holidays from genuine missing intervals; explain partial child groups at timeframe boundaries.
+4. **Feature/MTF integrity:** run the unit suite in a real Python environment; verify source hashes, feature lineage, DST boundaries, FVG/OB lifecycle transitions, MTF as-of joins, stale context age and no-future selection. Then execute a small, explicitly approved sample run—not the full archive yet.
+5. **Feature research:** assess operational definitions for structure, FVG, liquidity, OB, displacement and volatility; measure annotation agreement, redundancy, temporal stability and incremental value. Reject weak or duplicative features.
+6. **Targets and splits:** freeze compact market-outcome targets, ambiguity/censoring and episode-aware chronological split dependencies. Keep outcome truth separate from action/policy labels.
+7. **Controlled materialization and independent QC:** only after the source/feature gates pass, materialize approved candidate datasets, run leakage and statistical audits, compare baselines, and publish limitations.
 
 The initial MTF aggregation result is encouraging: every complete child group matched native parent OHLC and tick volume across M5→M15→M30→H1→H4→D1. This is internal consistency evidence only; it does not resolve source timezone, broker identity or timestamp semantics.
 
 ## 15. Audit conclusion
 
-The conceptual architecture and initial executable data foundation are in place. Broker-independent symbol/timeframe ingestion, a conservative broker clock resolver and an initial causal price-action feature engine have been implemented. Source semantics, Alpari server verification, cross-broker validation, feature validity, target validation, rights and full dataset acceptance remain open. The presence of extensive documentation is not evidence of source feasibility, label reliability, empirical usefulness, or implementation correctness.
+The conceptual architecture and initial executable data foundation are in place. Broker-independent symbol/timeframe ingestion, per-export broker clock sidecar resolution, an initial causal price-action feature engine with FVG/OB lifecycle state, and a point-in-time MTF snapshot builder have been implemented on the working branch. Source semantics, Alpari server verification, cross-broker validation, feature validity, target validation, rights and full dataset acceptance remain open. The presence of extensive documentation is not evidence of source feasibility, label reliability, empirical usefulness, or implementation correctness.
 
 The supplied archive has been inspected and a normalized base-bar dataset has been generated locally. Feature-generation code and candidate definitions exist, but the updated feature engine has not yet been run across the full archive or independently validated. No outcome labels, benchmark or model has been produced. The separate `datas` repository and AURORA QUANT remain untouched. Dataset admission remains pending source semantics and rights review.

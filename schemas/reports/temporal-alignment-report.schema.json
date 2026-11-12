@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2datas.example/schemas/reports/temporal-alignment-report.schema.json",
+  "title": "Temporal Alignment Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "engine", "mode", "network_access", "market_data_written", "records_mutated", "snapshots", "diagnostics"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "engine": {"const": "temporal_alignment"},
+    "mode": {"const": "read_only_metadata_alignment"},
+    "network_access": {"const": false},
+    "market_data_written": {"const": false},
+    "records_mutated": {"const": false},
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["decision_timestamp", "selections", "alignment_fingerprint"],
+        "properties": {
+          "decision_timestamp": {"type": "string", "format": "date-time"},
+          "alignment_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "selections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["instrument_id", "provider", "price_basis", "timeframe", "status", "selected_record_id", "interval_start", "interval_end", "available_at", "age_seconds_from_interval_end", "partial_record_id", "input_order_violation", "duplicate_interval_detected"],
+              "properties": {
+                "instrument_id": {"type": "string"},
+                "provider": {"type": "string"},
+                "price_basis": {"type": "string"},
+                "timeframe": {"type": "string"},
+                "status": {"enum": ["AVAILABLE", "MISSING", "STALE", "AMBIGUOUS_DUPLICATE"]},
+                "selected_record_id": {"type": ["string", "null"]},
+                "interval_start": {"type": ["string", "null"], "format": "date-time"},
+                "interval_end": {"type": ["string", "null"], "format": "date-time"},
+                "available_at": {"type": ["string", "null"], "format": "date-time"},
+                "age_seconds_from_interval_end": {"type": ["integer", "null"], "minimum": 0},
+                "partial_record_id": {"type": ["string", "null"]},
+                "input_order_violation": {"type": "boolean"},
+                "duplicate_interval_detected": {"type": "boolean"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "diagnostics": {"type": "object"}
+  }
+}

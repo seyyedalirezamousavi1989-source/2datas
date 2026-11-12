@@ -416,7 +416,7 @@ def test_broker_sidecar_symbol_alias_maps_gold_to_canonical_xauusd(tmp_path):
     }))
     manifest = normalize_archive(str(source), str(tmp_path / "normalized"))
     assert manifest["instruments"] == ["XAUUSD"]
-    assert manifest["instrument_specification_audit"]["status"] == "COMPLETE_FOR_SOURCE_SYMBOLS"
+    assert manifest["instrument_specification_audit"]["status"] == "COMPLETE_FOR_OBSERVED_PERIODS"
     partition = next((tmp_path / "normalized" / "instrument=XAUUSD" / "timeframe=M5").glob("bars-*.csv.gz"))
     assert partition.is_file()
     import csv
@@ -501,3 +501,41 @@ def test_normalizer_manifest_reports_unconfigured_instrument_spec_registry(tmp_p
     manifest = normalize_archive(str(source), str(tmp_path / "normalized"))
     assert manifest["instrument_specification_audit"]["status"] == "NOT_CONFIGURED"
     assert manifest["instrument_specification_audit"]["missing_source_symbols"] == ["GOLD"]
+
+
+def test_instrument_spec_history_rejects_overlapping_effective_periods():
+    import pytest
+    from twodatas.instrument_specs import validate_instrument_specs
+
+    base = {
+        "canonical_instrument": "XAUUSD", "digits": 2, "point_size": "0.01",
+        "tick_size": "0.01", "contract_size": "100", "price_currency": "USD",
+        "profit_currency": "USD", "spread_unit": "points", "volume_semantics": "tick_count",
+        "evidence": "Test fixture only.",
+    }
+    with pytest.raises(ValueError, match="overlapping"):
+        validate_instrument_specs({"GOLD": [
+            {**base, "effective_from": "2020-01-01", "effective_to": "2024-01-01"},
+            {**base, "effective_from": "2023-12-01"},
+        ]})
+
+
+def test_instrument_spec_history_detects_uncovered_observation_dates():
+    from twodatas.instrument_specs import validate_instrument_specs, audit_instrument_specs
+
+    base = {
+        "canonical_instrument": "XAUUSD", "digits": 2, "point_size": "0.01",
+        "tick_size": "0.01", "contract_size": "100", "price_currency": "USD",
+        "profit_currency": "USD", "spread_unit": "points", "volume_semantics": "tick_count",
+        "evidence": "Test fixture only.",
+    }
+    specs = validate_instrument_specs({"GOLD": [
+        {**base, "effective_from": "2020-01-01", "effective_to": "2023-01-01"},
+        {**base, "effective_from": "2024-01-01"},
+    ]})
+    report = audit_instrument_specs(
+        specs, source_symbols={"GOLD"},
+        observed_periods={"GOLD": ("2022-12-01", "2024-02-01")},
+    )
+    assert report["status"] == "INCOMPLETE"
+    assert report["uncovered_observed_periods"][0]["uncovered_from"] == "2023-01-01"

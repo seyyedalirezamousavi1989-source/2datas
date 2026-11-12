@@ -358,7 +358,10 @@ The next work is implementation-led, not another documentation-only freeze loop.
 1. **Source semantics dossier:** resolve broker/provider identity, server timezone/DST, MT5 bar timestamp convention, symbol digits/point size, session calendar and source-use rights.
 2. **Coverage and gap classification:** distinguish normal market closures/holidays from genuine missing intervals; explain partial child groups at timeframe boundaries.
 3. **Canonical storage hardening:** validate deterministic partition rebuilds, source row lineage, schema compatibility and checksums; retain raw archive outside Git.
-4. **Feature validity and broker time:** validate Alpari server clock, DST and bar convention; verify feature availability timestamps; add source-aware MTF synchronization.\n5. **Feature research:** evaluate candidate structure, FVG, liquidity, OB, displacement and volatility features for stability, redundancy and incremental value.\n6. **Targets and splits:** define compact market-outcome targets, ambiguity/censoring and episode-aware chronological splits.\n7. **Independent QC and acceptance:** publish limitations and reject targets/features that do not add measurable value.
+4. **Feature validity and broker time:** validate Alpari server clock, DST and bar convention; verify feature availability timestamps; add source-aware MTF synchronization.
+5. **Feature research:** evaluate candidate structure, FVG, liquidity, OB, displacement and volatility features for stability, redundancy and incremental value.
+6. **Targets and splits:** define compact market-outcome targets, ambiguity/censoring and episode-aware chronological splits.
+7. **Independent QC and acceptance:** publish limitations and reject targets/features that do not add measurable value.
 5. **Target implementation:** start with fixed-horizon market outcomes, then barrier/MFE-MAE only where source resolution supports them; preserve ambiguity and censoring.
 6. **Episode-aware splits and baselines:** construct chronological folds after target horizons and source-latency dependencies are frozen.
 7. **Independent QC and acceptance:** publish limitations and reject targets that do not add measurable value.

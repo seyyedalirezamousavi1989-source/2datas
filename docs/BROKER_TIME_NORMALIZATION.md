@@ -15,7 +15,7 @@ A broker may operate multiple MT5 servers with different clocks or change DST po
 
 ## Alpari
 
-The supplied archive is identified by the user as Alpari, but the CSV files contain no exact MT5 server identity. An EET/EEST-style timezone is a candidate hypothesis only; do not activate it until the exact Alpari server and historical export semantics are verified. The built-in profile is deliberately marked candidate_unverified. The project must not hardcode a broker-wide offset.
+The supplied archive is identified by the user as Alpari, but the CSV files contain no exact MT5 server identity. Alpari help material describes GMT+2 in winter and GMT+3 during DST, with transitions on the last Sundays of March and October. The published MT5 server list includes `Alpari-MT5` and `Alpari-MT5-Demo`. The profile recognizes those exact server names; other server names remain unverified. `Europe/Helsinki` models the documented EET/EEST seasonal clock.\n\nMT5 timeseries documentation defines bar time as the bar opening/period-start time, so the profile uses `interval_start`. This does not remove the need to confirm the exact server shown in the user terminal.
 
 ## Other brokers and timeframes
 
@@ -27,7 +27,7 @@ The supplied archive is identified by the user as Alpari, but the CSV files cont
 - Store broker, exact server, symbol alias, profile ID, timezone, timestamp resolution status and evidence reference in the manifest and normalized rows.
 - The current implementation does not yet support multiple historical profile epochs within one archive; add that before claiming automatic adaptation to a broker that changed server-clock policy.
 
-## Profile admission evidence
+## Alpari/MT5 evidence references\n\n- [Alpari: trading server timezone](https://www.alparitrade.net/en/help/trading-platform/features-and-settings/What-time-zone-is-your-server-set-to/)\n- [Alpari FAQ: MT5 server names and EET session clock](https://alpariworld.com/en/faq/)\n- [MQL5: iTime returns the bar opening time](https://www.mql5.com/en/docs/series/itime)\n\n## Profile admission evidence
 
 A profile becomes verified only after:
 - exact server identity is recorded;

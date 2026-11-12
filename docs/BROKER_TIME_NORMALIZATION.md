@@ -22,7 +22,7 @@ The supplied archive is identified by the user as Alpari, but the CSV files cont
 - Infer timeframe from explicit MT5 filename tokens where possible; otherwise require an explicit override or inspect verified export metadata.
 - Accept any recognized MT5 timeframe, not only the six initial exports.
 - Never assume all brokers use the same symbol name, point size, digits, contract size, sessions, spread units or real-volume semantics.
-- Normalize timestamps to UTC only after resolving server timezone and bar start/end convention.
+- Normalize timestamps to UTC only after resolving server timezone/fixed offset and bar start/end convention.
 - Normalize bar intervals to half-open [start_utc, end_utc), keeping source timestamp and source convention alongside canonical fields.
 - Store broker, exact server, symbol alias, profile ID, timezone, timestamp resolution status and evidence reference in the manifest and normalized rows.
 - The current implementation does not yet support multiple historical profile epochs within one archive; add that before claiming automatic adaptation to a broker that changed server-clock policy.

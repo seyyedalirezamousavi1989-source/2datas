@@ -6,7 +6,8 @@ An independent, auditable research dataset project. This repository does not mod
 
 - MT5-style tab/comma/semicolon CSV ingestion with conservative header aliases and symbol/timeframe inference from filenames.
 - Structural OHLC, timestamp, duplicate, volume and spread checks.
-- Deterministic compressed partitions with source hashes and row-level lineage.\n- Explicit per-source symbol aliases for cross-broker canonicalization (e.g. `GOLD` → `XAUUSD`) while retaining the original broker symbol.
+- Deterministic compressed partitions with source hashes and row-level lineage.
+- Explicit per-source symbol aliases for cross-broker canonicalization (e.g. `GOLD` → `XAUUSD`) while retaining the original broker symbol.
 - Broker profile contract with explicit timezone/DST handling. Unknown or ambiguous times are never silently shifted.
 - Cross-timeframe OHLC/tick-volume consistency audit.
 - Initial causal price-action event engine: ATR, confirmed swings, BOS/CHoCH, FVG lifecycle, equal-high/low liquidity candidates, wick sweeps, order-block mitigation/invalidation, displacement, relative volatility and material open/close discontinuities.
@@ -29,6 +30,7 @@ pytest -q
 
 ```bash
 2datas audit path/to/export.zip --output reports/source_audit.json
+2datas spec-audit path/to/export.zip --output reports/instrument_spec_audit.json
 2datas normalize path/to/export.zip --output-dir data/processed
 2datas alignment path/to/export.zip --output reports/timeframe_alignment.json
 2datas features path/to/export.zip --output-dir data/features/price_action
@@ -46,7 +48,7 @@ Broker clock metadata is source-specific. The preferred automatic path is a side
 2datas features XAUUSD.zip --output-dir data/features/price_action
 ```
 
-The CLI auto-discovers the sidecar, validates its schema, records its SHA-256 in each manifest and applies the configured server timezone plus interval-start/interval-end convention. A generic sidecar needs only `server_timezone` and `bar_timestamp_convention`; `broker_name` and `server_name` are optional descriptive metadata. An optional `symbol_aliases` map explicitly canonicalizes source symbols such as `GOLD` to `XAUUSD`, while the original symbol is retained for audit. No account number, account owner or Demo/Real account type is required. For Alpari, `Europe/Helsinki` is a candidate seasonal clock based on the documented GMT+2/GMT+3 schedule, but it must pass historical export validation before being treated as verified. Other brokers use their documented IANA timezone or fixed UTC offset and timestamp convention.
+The CLI auto-discovers the sidecar, validates its schema, records its SHA-256 in each manifest and applies the configured server timezone plus interval-start/interval-end convention. A generic sidecar needs only `server_timezone` and `bar_timestamp_convention`; `broker_name` and `server_name` are optional descriptive metadata. An optional `symbol_aliases` map explicitly canonicalizes source symbols such as `GOLD` to `XAUUSD`, while the original symbol is retained for audit. An optional `instrument_specs` map stores source-symbol-specific, effective-dated instrument specifications; use `2datas spec-audit` to check coverage. Instrument specifications must be backed by a dated broker specification document or equivalent evidence; never copy values from another broker. Tick value is contextual and is not assumed to be universal. No account number, account owner or Demo/Real account type is required. For Alpari, `Europe/Helsinki` is a candidate seasonal clock based on the documented GMT+2/GMT+3 schedule, but it must pass historical export validation before being treated as verified. Other brokers use their documented IANA timezone or fixed UTC offset and timestamp convention.
 
 A broker brand alone is not enough to infer a server clock. Account type and account identity are irrelevant to dataset ingestion. If no sidecar or explicit configuration is available, timestamps remain unresolved. Conflicting sidecars or simultaneous sidecar/CLI settings fail closed. Multiple servers and historical DST policies may differ even within one broker. Ambiguous/nonexistent DST wall times are quarantined rather than guessed. See [BROKER_TIME_NORMALIZATION.md](docs/BROKER_TIME_NORMALIZATION.md).
 

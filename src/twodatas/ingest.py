@@ -76,7 +76,7 @@ def read_mt5_csv(
     match = TF_PATTERN.search(stem)
     if timeframe is None and match is None:
         raise ValueError(f"Cannot infer timeframe from filename; provide an override: {source_file}")
-    inferred_timeframe = match.group("timeframe") if match else timeframe
+    inferred_timeframe = timeframe or (match.group("timeframe") if match else None)
     normalized_timeframe = "D1" if inferred_timeframe.lower() == "daily" else inferred_timeframe.upper()
     inferred_instrument = match.group("symbol").upper() if match else None
     normalized_instrument = (instrument or inferred_instrument or "").upper()

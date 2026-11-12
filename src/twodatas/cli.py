@@ -8,6 +8,7 @@ from .ingest import read_zip
 from .quality import audit_archive
 from .normalize import normalize_archive
 from .alignment import audit_timeframe_alignment
+from .price_action import compute_price_action_features
 
 
 def main() -> None:
@@ -19,6 +20,9 @@ def main() -> None:
     normalize = sub.add_parser("normalize", help="Create traceable gzip CSV partitions")
     normalize.add_argument("archive", type=Path)
     normalize.add_argument("--output-dir", type=Path, default=Path("data/processed/xauusd"))
+    features = sub.add_parser("features", help="Generate causal price-action feature events")
+    features.add_argument("archive", type=Path)
+    features.add_argument("--output-dir", type=Path, default=Path("data/features/price_action"))
     args = parser.parse_args()
 
     if args.command == "audit":
@@ -29,6 +33,18 @@ def main() -> None:
     elif args.command == "normalize":
         result = normalize_archive(str(args.archive), str(args.output_dir))
         print(json.dumps({"status": "MATERIALIZED", "total_rows": result["total_rows"], "manifest": str(args.output_dir / "manifest.json")}, ensure_ascii=False))
+    elif args.command == "features":
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        summaries = []
+        for source in read_zip(str(args.archive)):
+            rows = compute_price_action_features(source.rows)
+            instrument = source.rows[0].instrument if source.rows else "UNKNOWN"
+            target = args.output_dir / f"{instrument}_{source.timeframe}.jsonl"
+            with target.open("w", encoding="utf-8") as handle:
+                for row in rows:
+                    handle.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + chr(10))
+            summaries.append({"instrument": instrument, "timeframe": source.timeframe, "events": len(rows), "path": str(target)})
+        print(json.dumps({"status": "MATERIALIZED", "partitions": summaries}, ensure_ascii=False))
     elif args.command == "alignment":
         result = audit_timeframe_alignment(list(read_zip(str(args.archive))))
         args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -31,3 +31,27 @@ def test_daily_export_without_time_column():
     result = read_mt5_csv(_payload(header, row), "XAUUSD_Daily_test.csv")
     assert result.timeframe == "D1"
     assert result.rows[0].timestamp_precision == "day"
+
+
+def test_normalizer_writes_partition_and_lineage(tmp_path):
+    import csv
+    import gzip
+    import json
+    import zipfile
+    from twodatas.normalize import normalize_archive
+
+    header = ["<DATE>", "<TIME>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"]
+    row = ["2024.01.01", "10:00:00", "2000", "2002", "1999", "2001", "120", "0", "12"]
+    source = tmp_path / "source.zip"
+    with zipfile.ZipFile(source, "w") as archive:
+        archive.writestr("XAUUSD_H1_test.csv", (chr(9).join(header) + "\n" + chr(9).join(row) + "\n").encode())
+    manifest = normalize_archive(str(source), str(tmp_path / "out"))
+    assert manifest["total_rows"] == 1
+    partition = tmp_path / "out" / "instrument=XAUUSD" / "timeframe=H1" / "bars.csv.gz"
+    with gzip.open(partition, "rt", encoding="utf-8", newline="") as handle:
+        records = list(csv.DictReader(handle))
+    assert records[0]["source_row_number"] == "2"
+    assert records[0]["source_timestamp"] == "2024.01.01 10:00:00"
+    assert records[0]["timestamp_timezone"] == "UNKNOWN"
+    saved = json.loads((tmp_path / "out" / "manifest.json").read_text())
+    assert saved["partitions"][0]["source_sha256"]

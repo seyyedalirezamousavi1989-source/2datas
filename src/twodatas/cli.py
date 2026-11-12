@@ -23,6 +23,7 @@ def main() -> None:
     normalize.add_argument("--output-dir", type=Path, default=Path("data/processed/xauusd"))
     normalize.add_argument("--broker-profile", default=None, help="Versioned broker profile ID, e.g. alpari_mt5_candidate")
     normalize.add_argument("--broker-name", default=None)
+    normalize.add_argument("--server-name", default=None)
     normalize.add_argument("--server-timezone", default=None, help="IANA timezone, e.g. Europe/Helsinki")
     normalize.add_argument("--bar-timestamp-convention", choices=["interval_start", "interval_end"], default=None)
     alignment = sub.add_parser("alignment", help="Audit cross-timeframe aggregation consistency")
@@ -33,6 +34,7 @@ def main() -> None:
     features.add_argument("--output-dir", type=Path, default=Path("data/features/price_action"))
     features.add_argument("--broker-profile", default=None)
     features.add_argument("--broker-name", default=None)
+    features.add_argument("--server-name", default=None)
     features.add_argument("--server-timezone", default=None)
     features.add_argument("--bar-timestamp-convention", choices=["interval_start", "interval_end"], default=None)
     args = parser.parse_args()
@@ -43,11 +45,11 @@ def main() -> None:
         args.output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + chr(10), encoding="utf-8")
         print(json.dumps({"status": result["overall_status"], "total_rows": result["total_rows"], "report": str(args.output)}, ensure_ascii=False))
     elif args.command == "normalize":
-        result = normalize_archive(str(args.archive), str(args.output_dir), broker_profile_id=args.broker_profile, broker_name=args.broker_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
+        result = normalize_archive(str(args.archive), str(args.output_dir), broker_profile_id=args.broker_profile, broker_name=args.broker_name, server_name=args.server_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
         print(json.dumps({"status": "MATERIALIZED", "total_rows": result["total_rows"], "manifest": str(args.output_dir / "manifest.json")}, ensure_ascii=False))
     elif args.command == "features":
         args.output_dir.mkdir(parents=True, exist_ok=True)
-        profile = resolve_profile(args.broker_profile, broker_name=args.broker_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
+        profile = resolve_profile(args.broker_profile, broker_name=args.broker_name, server_name=args.server_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
         summaries = []
         for source in read_zip(str(args.archive)):
             rows = compute_price_action_features(source.rows, broker_profile=profile)

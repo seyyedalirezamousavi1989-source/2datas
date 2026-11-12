@@ -72,7 +72,7 @@ def read_mt5_csv(payload: bytes, source_file: str) -> FileIngestResult:
     """Read MT5 tab-delimited export without guessing timezone/bar timestamp semantics."""
     timeframe = _timeframe_from_name(source_file)
     text = payload.decode("utf-8-sig")
-    reader = csv.DictReader(io.StringIO(text), delimiter="\\t")
+    reader = csv.DictReader(io.StringIO(text), delimiter=chr(9))
     header = list(reader.fieldnames or [])
     missing = REQUIRED.difference(header)
     if missing:

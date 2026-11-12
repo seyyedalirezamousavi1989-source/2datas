@@ -81,6 +81,8 @@ def resolve_profile(
 
 def to_utc(source_timestamp: str, precision: str, profile: BrokerProfile) -> tuple[str | None, str]:
     """Convert only when timezone and bar convention are explicitly configured."""
+    if profile.status not in {"verified", "user_configured"}:
+        return None, "BROKER_PROFILE_NOT_VERIFIED"
     if not profile.server_timezone or not profile.bar_timestamp_convention:
         return None, "UNRESOLVED_SOURCE_TIME"
     fmt = "%Y.%m.%d %H:%M:%S" if precision == "second" else "%Y.%m.%d"

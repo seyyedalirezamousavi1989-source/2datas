@@ -60,7 +60,7 @@ Do not copy that example configuration without evidence. Multiple servers and hi
 - No missing bars are fabricated.
 - Tick volume is not relabeled as exchange traded volume.
 - Broker spread points are not converted to price without symbol point-size metadata.
-- Price-action features are available only at the bar close/confirmation time; future-confirmed pivots are not backdated into earlier snapshots.
+- Price-action features are available only at the bar close/confirmation time; future-confirmed pivots are not backdated into earlier snapshots. The newest potentially incomplete candle is excluded by default.
 - FVG, OB, liquidity pools and sweeps are versioned candidate definitions, not universal truths.
 - No model training, live trading or broker order placement is implemented.
 

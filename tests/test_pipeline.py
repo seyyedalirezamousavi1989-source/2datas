@@ -155,7 +155,7 @@ def test_normalizer_records_configured_broker_time_contract(tmp_path):
         broker_name="ExampleBroker", server_name="Example-MT5", server_timezone="America/New_York",
         bar_timestamp_convention="interval_start",
     )
-    partition = tmp_path / "normalized" / "instrument=GOLD" / "timeframe=M5" / "bars.csv.gz"
+    partition = next((tmp_path / "normalized" / "instrument=GOLD" / "timeframe=M5").glob("bars-*.csv.gz"))
     with gzip.open(partition, "rt", encoding="utf-8", newline="") as handle:
         record = next(csv.DictReader(handle))
     assert record["timestamp_utc"] == "2024-01-15T15:00:00+00:00"
@@ -415,7 +415,7 @@ def test_broker_sidecar_symbol_alias_maps_gold_to_canonical_xauusd(tmp_path):
     }))
     manifest = normalize_archive(str(source), str(tmp_path / "normalized"))
     assert manifest["instruments"] == ["XAUUSD"]
-    partition = tmp_path / "normalized" / "instrument=XAUUSD" / "timeframe=M5" / "bars.csv.gz"
+    partition = next((tmp_path / "normalized" / "instrument=XAUUSD" / "timeframe=M5").glob("bars-*.csv.gz"))
     assert partition.is_file()
     import csv
     import gzip

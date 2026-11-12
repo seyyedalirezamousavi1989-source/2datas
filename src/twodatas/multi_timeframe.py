@@ -98,6 +98,9 @@ def build_mtf_snapshots(
                     selected_at = instants[pos]
                     context[timeframe] = {
                         "source_timestamp": selected.get("source_timestamp"),
+                        "source_file": selected.get("source_file"),
+                        "source_sha256": selected.get("source_sha256"),
+                        "source_row_number": selected.get("source_row_number"),
                         "available_at_utc": selected.get("available_at_utc"),
                         "age_minutes": round((decision_at - selected_at).total_seconds() / 60, 6),
                         "features": {key: selected.get(key) for key in CONTEXT_FIELDS if key in selected},

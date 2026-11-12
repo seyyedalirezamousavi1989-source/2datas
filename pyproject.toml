@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "twodatas"
+version = "0.1.0"
+description = "Causal, auditable XAUUSD research dataset pipeline"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Proprietary research project"}
+authors = [{name = "2datas contributors"}]
+dependencies = []
+
+[project.optional-dependencies]
+parquet = ["pyarrow>=16"]
+test = ["pytest>=8"]
+
+[project.scripts]
+2datas = "twodatas.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

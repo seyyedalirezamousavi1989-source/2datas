@@ -1,0 +1,131 @@
+{
+  "manifest_version": "1.0.0",
+  "artifact_id": "xauusd-multitimeframe-export-2020-11-11-to-2026-11-10",
+  "instrument": {
+    "symbol": "XAUUSD",
+    "instrument_id": "XAUUSD",
+    "asset_class": "precious_metal"
+  },
+  "source": {
+    "archive_name": "XAUUSD.zip",
+    "archive_sha256": "7458e5329bc827ff77aa9ec68d4be504451206226a74fd2cfa21f9e7f5516aa6",
+    "archive_bytes": 11199961,
+    "provider": "unknown_from_file_contents",
+    "broker": "unknown_from_file_contents",
+    "platform_format": "MetaTrader-style tab-delimited OHLC export; exporter not independently confirmed",
+    "source_timezone": "unknown",
+    "timestamp_semantics": "unknown_bar_open_or_close",
+    "price_basis": "unknown",
+    "spread_unit": "unknown",
+    "volume_semantics": "tick_volume_present_real_volume_zero"
+  },
+  "period": {
+    "first_source_date": "2020-11-11",
+    "last_source_date": "2026-11-10",
+    "calendar_span_years": 6
+  },
+  "timeframes": [
+    "M5",
+    "M15",
+    "M30",
+    "H1",
+    "H4",
+    "D1"
+  ],
+  "total_records": 681227,
+  "files": [
+    {
+      "file_name": "XAUUSD_Daily_202011110000_202611100000.csv",
+      "timeframe": "1d",
+      "record_count": 1548,
+      "first_source_timestamp": "2020-11-11T00:00:00",
+      "last_source_timestamp": "2026-11-10T00:00:00",
+      "sha256": "bee6ced85602ab97742c26ca41be063c079f4e3d284c4f0be1f60acedacea76b",
+      "strictly_increasing": true,
+      "duplicate_timestamps": 0,
+      "invalid_ohlc_rows": 0,
+      "median_step": "1 day",
+      "max_observed_step": "4 days"
+    },
+    {
+      "file_name": "XAUUSD_H1_202011110100_202611102300.csv",
+      "timeframe": "1h",
+      "record_count": 35464,
+      "first_source_timestamp": "2020-11-11T01:00:00",
+      "last_source_timestamp": "2026-11-10T23:00:00",
+      "sha256": "310675c9b61b86153768b4615b969bc588997b1c6117b979c61c51e11991cd39",
+      "strictly_increasing": true,
+      "duplicate_timestamps": 0,
+      "invalid_ohlc_rows": 0,
+      "median_step": "1 hour",
+      "max_observed_step": "3 days 5 hours"
+    },
+    {
+      "file_name": "XAUUSD_H4_202011110000_202611102000.csv",
+      "timeframe": "4h",
+      "record_count": 9278,
+      "first_source_timestamp": "2020-11-11T00:00:00",
+      "last_source_timestamp": "2026-11-10T20:00:00",
+      "sha256": "0231127d4928aa40ee304021342468045b2b6235cf218d933c93b06e223418d5",
+      "strictly_increasing": true,
+      "duplicate_timestamps": 0,
+      "invalid_ohlc_rows": 0,
+      "median_step": "4 hours",
+      "max_observed_step": "3 days 4 hours"
+    },
+    {
+      "file_name": "XAUUSD_M15_202011110100_202611102345.csv",
+      "timeframe": "15m",
+      "record_count": 141767,
+      "first_source_timestamp": "2020-11-11T01:00:00",
+      "last_source_timestamp": "2026-11-10T23:45:00",
+      "sha256": "0d8490c9769849fb7632848552663742a6ed9ee18737699783c99ed997844612",
+      "strictly_increasing": true,
+      "duplicate_timestamps": 0,
+      "invalid_ohlc_rows": 0,
+      "median_step": "15 minutes",
+      "max_observed_step": "3 days 4 hours 30 minutes"
+    },
+    {
+      "file_name": "XAUUSD_M30_202011110100_202611102330.csv",
+      "timeframe": "30m",
+      "record_count": 70896,
+      "first_source_timestamp": "2020-11-11T01:00:00",
+      "last_source_timestamp": "2026-11-10T23:30:00",
+      "sha256": "e7177dd9daab8c95a371b64498bee58da3eeb175b60564b8250b761ae5156d9d",
+      "strictly_increasing": true,
+      "duplicate_timestamps": 0,
+      "invalid_ohlc_rows": 0,
+      "median_step": "30 minutes",
+      "max_observed_step": "3 days 4 hours 30 minutes"
+    },
+    {
+      "file_name": "XAUUSD_M5_202011110105_202611102350.csv",
+      "timeframe": "5m",
+      "record_count": 422274,
+      "first_source_timestamp": "2020-11-11T01:05:00",
+      "last_source_timestamp": "2026-11-10T23:50:00",
+      "sha256": "8a4c315e12c487944b13b3c78b456052c3748258011a7aa608fcd361c10905f3",
+      "strictly_increasing": true,
+      "duplicate_timestamps": 0,
+      "invalid_ohlc_rows": 0,
+      "median_step": "5 minutes",
+      "max_observed_step": "3 days 4 hours 25 minutes"
+    }
+  ],
+  "processing_status": "source_inventory_and_read_only_quality_audit_complete",
+  "normalization_status": "blocked_pending_source_timezone_and_bar_timestamp_semantics",
+  "dataset_generation_status": "not_yet_generated_from_market_candles",
+  "training_status": "not_started",
+  "limitations": [
+    "Source timestamps are timezone-naive; UTC conversion is intentionally not guessed.",
+    "Bar timestamp convention (open time vs close time) is not established.",
+    "Broker/provider identity is not embedded in the inspected CSV contents.",
+    "Price basis (bid/ask/mid/last) is not established.",
+    "VOL is zero in every record; do not interpret it as meaningful traded volume.",
+    "TICKVOL is present but provider-specific meaning and comparability are not established.",
+    "SPREAD is present but its unit and capture semantics are unknown.",
+    "Multi-day gaps include likely market closures/weekends/holidays and are not automatically classified as missing bars.",
+    "The original archive is fingerprinted but not stored in this Git repository."
+  ]
+}

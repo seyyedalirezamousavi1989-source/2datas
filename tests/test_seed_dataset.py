@@ -74,9 +74,34 @@ class SeedDatasetTests(unittest.TestCase):
             "identity", "forex_fundamentals", "technical_analysis",
             "multi_timeframe", "strategy_research", "quantitative_analysis",
             "risk_management", "fundamental_analysis", "analytical_reasoning",
-            "trade_review"
+            "trade_review", "forex_data_access"
         ]:
             self.assertIn(required, domains)
+
+    def test_forex_tab_access_contract_and_market_manifest(self):
+        identity_records = [
+            json.loads(line)
+            for line in (ROOT / "dataset" / "seed" / "identity.jsonl").read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        access_records = [
+            json.loads(line)
+            for line in identity_records
+            if line["metadata"]["domain"] == "forex_data_access"
+        ]
+        self.assertGreaterEqual(len(access_records), 5)
+        combined = "\\n".join(
+            message["content"]
+            for record in identity_records
+            for message in record["messages"]
+        )
+        self.assertIn("Forex tab", combined)
+        self.assertIn("not exposed", combined)
+        manifest = json.loads((ROOT / "dataset" / "market_data" / "xauusd_source_manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(681227, manifest["total_records"])
+        self.assertEqual(["M5", "M15", "M30", "H1", "H4", "D1"], manifest["timeframes"])
+        self.assertEqual("unknown", manifest["source"]["source_timezone"])
+        self.assertEqual("unknown_bar_open_or_close", manifest["source"]["timestamp_semantics"])
 
 
 if __name__ == "__main__":

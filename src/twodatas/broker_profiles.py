@@ -157,7 +157,7 @@ def resolve_profile_for_archive(
             raise ValueError("Broker config root must be a JSON object")
         allowed = {
             "schema_version", "profile_id", "broker_name", "server_name",
-            "server_timezone", "bar_timestamp_convention",
+            "server_timezone", "bar_timestamp_convention", "symbol_aliases",
         }
         unknown = set(config) - allowed
         if unknown:
@@ -173,6 +173,13 @@ def resolve_profile_for_archive(
                 raise ValueError(f"Broker config {key} must be a string")
         if config["bar_timestamp_convention"] not in {"interval_start", "interval_end"}:
             raise ValueError("bar_timestamp_convention must be interval_start or interval_end")
+        aliases = config.get("symbol_aliases", {})
+        if not isinstance(aliases, dict) or any(
+            not isinstance(key, str) or not key.strip() or not isinstance(value, str) or not value.strip()
+            for key, value in aliases.items()
+        ):
+            raise ValueError("symbol_aliases must map non-empty source symbols to canonical symbols")
+        aliases = {key.strip().upper(): value.strip().upper() for key, value in aliases.items()}
         profile = resolve_profile(
             config.get("profile_id"),
             broker_name=config.get("broker_name"),
@@ -184,6 +191,7 @@ def resolve_profile_for_archive(
             "mode": "sidecar",
             "path": selected.name,
             "sha256": hashlib.sha256(raw).hexdigest(),
+            "symbol_aliases": aliases,
         }
 
     profile = resolve_profile(
@@ -193,4 +201,4 @@ def resolve_profile_for_archive(
         server_timezone=server_timezone,
         bar_timestamp_convention=bar_timestamp_convention,
     )
-    return profile, {"mode": "explicit_cli" if explicit else "unresolved", "path": None, "sha256": None}
+    return profile, {"mode": "explicit_cli" if explicit else "unresolved", "path": None, "sha256": None, "symbol_aliases": {}}

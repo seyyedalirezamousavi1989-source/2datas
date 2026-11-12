@@ -60,7 +60,7 @@ def main() -> None:
         args.output_dir.mkdir(parents=True, exist_ok=True)
         profile, broker_config = resolve_profile_for_archive(str(args.archive), config_path=args.broker_config, profile_id=args.broker_profile, broker_name=args.broker_name, server_name=args.server_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
         summaries = []
-        for source in read_zip(str(args.archive)):
+        for source in read_zip(str(args.archive), symbol_aliases=broker_config.get("symbol_aliases", {})):
             rows = compute_price_action_features(source.rows, broker_profile=profile, source_sha256=source.source_sha256, include_last_bar=args.include_last_bar)
             instrument = source.rows[0].instrument if source.rows else "UNKNOWN"
             target = args.output_dir / f"{instrument}_{source.timeframe}.jsonl"

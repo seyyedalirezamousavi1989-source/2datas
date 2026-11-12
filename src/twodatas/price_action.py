@@ -8,7 +8,7 @@ from .broker_profiles import BrokerProfile, to_utc
 from .ingest import Bar
 from .quality import parse_source_time, timeframe_minutes
 
-FEATURE_VERSION = "price-action-0.1.0"
+FEATURE_VERSION = "price-action-0.2.0"
 
 
 def _true_range(bar: Bar, previous_close: float | None) -> float:

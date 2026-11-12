@@ -28,6 +28,7 @@ def compute_price_action_features(
     atr_period: int = 14, equal_level_atr_tolerance: float = 0.10,
     fvg_min_atr: float = 0.05, ob_lookback: int = 8,
     broker_profile: BrokerProfile | None = None,
+    source_sha256: str | None = None,
 ) -> list[dict]:
     """Causal, bar-close feature events. No future bar is read at an event's availability time.
 
@@ -79,8 +80,11 @@ def compute_price_action_features(
             "instrument": bar.instrument,
             "timeframe": bar.timeframe,
             "source_file": bar.source_file,
+            "source_sha256": source_sha256,
+            "source_row_number": i + 2,
             "source_timestamp": bar.source_timestamp,
             "event_index": i,
+            "feature_parameters": {"pivot_left": pivot_left, "pivot_right": pivot_right, "atr_period": atr_period, "equal_level_atr_tolerance": equal_level_atr_tolerance, "fvg_min_atr": fvg_min_atr, "ob_lookback": ob_lookback},
             "available_at_utc": available_at_utc,
             "availability_time_status": availability_status,
             "atr": a,

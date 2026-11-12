@@ -51,6 +51,8 @@ def compute_price_action_features(
     confirmed_highs: list[tuple[int, float]] = []
     confirmed_lows: list[tuple[int, float]] = []
     last_structure = "UNDETERMINED"
+    last_broken_high_origin: int | None = None
+    last_broken_low_origin: int | None = None
     previous_close = None
 
     for i, bar in enumerate(rows):
@@ -98,15 +100,17 @@ def compute_price_action_features(
                 event["confirmed_swing_low"] = candidate.low
                 event["swing_low_origin_index"] = p
 
-        if confirmed_highs and bar.close > confirmed_highs[-1][1]:
+        if confirmed_highs and bar.close > confirmed_highs[-1][1] and confirmed_highs[-1][0] != last_broken_high_origin:
             direction = "BULLISH"
             event["bos"] = "BULLISH_BREAK_OF_CONFIRMED_SWING_HIGH"
+            last_broken_high_origin = confirmed_highs[-1][0]
             if last_structure == "BEARISH":
                 event["choch"] = "BULLISH_CHOCH"
             last_structure = direction
-        elif confirmed_lows and bar.close < confirmed_lows[-1][1]:
+        elif confirmed_lows and bar.close < confirmed_lows[-1][1] and confirmed_lows[-1][0] != last_broken_low_origin:
             direction = "BEARISH"
             event["bos"] = "BEARISH_BREAK_OF_CONFIRMED_SWING_LOW"
+            last_broken_low_origin = confirmed_lows[-1][0]
             if last_structure == "BULLISH":
                 event["choch"] = "BEARISH_CHOCH"
             last_structure = direction

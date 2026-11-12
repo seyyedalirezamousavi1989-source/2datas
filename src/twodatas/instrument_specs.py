@@ -163,9 +163,9 @@ def spec_values_for_bar(
     source_timestamp: str,
     spread_raw: str | float | None = None,
 ) -> dict[str, str]:
-    """Return normalized, explicit metadata; never infer missing contract values."""
+    """Return explicit point-in-time metadata and unit-safe spread conversions."""
     item, status, spec_id = resolve_instrument_spec(specs, source_symbol, source_timestamp)
-    empty = {
+    values = {
         "instrument_spec_status": status,
         "instrument_spec_id": spec_id or "",
         "instrument_spec_effective_from": "",
@@ -185,8 +185,8 @@ def spec_values_for_bar(
         "tick_value_currency": "",
     }
     if item is None:
-        return empty
-    empty.update({
+        return values
+    values.update({
         "instrument_spec_effective_from": item.effective_from,
         "instrument_spec_effective_to": item.effective_to or "",
         "instrument_digits": str(item.digits),
@@ -200,7 +200,17 @@ def spec_values_for_bar(
         "tick_value": item.tick_value or "",
         "tick_value_currency": item.tick_value_currency or "",
     })
-    return empty
+    if spread_raw is not None:
+        raw_value = Decimal(str(spread_raw))
+        if not raw_value.is_finite() or raw_value < 0:
+            raise ValueError("spread_raw must be finite and non-negative")
+        if item.spread_unit == "points":
+            values["spread_points"] = format(raw_value, "f")
+            values["spread_price"] = format(raw_value * Decimal(item.point_size), "f")
+        elif item.spread_unit == "price":
+            values["spread_price"] = format(raw_value, "f")
+    return values
+
 
 def audit_instrument_specs(
     specs: dict[str, list[InstrumentSpec]],

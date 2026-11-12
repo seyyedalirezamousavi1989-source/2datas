@@ -157,6 +157,8 @@ def resolve_profile_for_archive(
             raise ValueError("Do not mix a broker sidecar with explicit broker CLI fields; edit the sidecar or omit it.")
         raw = selected.read_bytes()
         config = json.loads(raw.decode("utf-8"))
+        if not isinstance(config, dict):
+            raise ValueError("Broker config root must be a JSON object")
         allowed = {
             "schema_version", "profile_id", "broker_name", "server_name",
             "server_timezone", "bar_timestamp_convention",
@@ -167,9 +169,14 @@ def resolve_profile_for_archive(
         if config.get("schema_version") != "2datas-broker-clock-1":
             raise ValueError("Broker config schema_version must be '2datas-broker-clock-1'")
         required = ("server_name", "server_timezone", "bar_timestamp_convention")
-        missing = [key for key in required if not config.get(key)]
+        missing = [key for key in required if not isinstance(config.get(key), str) or not config[key].strip()]
         if missing:
             raise ValueError(f"Broker config missing required fields: {missing}")
+        for key in ("profile_id", "broker_name"):
+            if config.get(key) is not None and not isinstance(config[key], str):
+                raise ValueError(f"Broker config {key} must be a string")
+        if config["bar_timestamp_convention"] not in {"interval_start", "interval_end"}:
+            raise ValueError("bar_timestamp_convention must be interval_start or interval_end")
         profile = resolve_profile(
             config.get("profile_id"),
             broker_name=config.get("broker_name"),

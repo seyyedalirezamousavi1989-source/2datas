@@ -14,7 +14,7 @@ SCHEMA_VERSION = "market-bars-0.2.0"
 FIELDS = [
     "schema_version", "instrument", "timeframe", "source_file", "source_sha256",
     "source_row_number", "source_timestamp", "timestamp_precision", "timestamp_timezone",
-    "timestamp_utc", "timestamp_resolution_status", "broker_profile_id", "broker_name",
+    "timestamp_utc", "timestamp_resolution_status", "broker_profile_id", "broker_name", "server_name",
     "server_timezone", "bar_timestamp_convention",
     "open", "high", "low", "close", "tick_volume", "real_volume", "spread_points",
 ]
@@ -81,6 +81,7 @@ def normalize_archive(
                         "timestamp_resolution_status": timestamp_status,
                         "broker_profile_id": profile.profile_id,
                         "broker_name": profile.broker_name,
+                        "server_name": profile.server_name or "",
                         "server_timezone": profile.server_timezone or "",
                         "bar_timestamp_convention": profile.bar_timestamp_convention or "",
                         "open": repr(bar.open),

@@ -62,6 +62,8 @@ def compute_price_action_features(
     prior_atr_values: list[float] = []
     active_fvgs: list[dict] = []
     active_order_blocks: list[dict] = []
+    latest_equal_high_pool: dict | None = None
+    latest_equal_low_pool: dict | None = None
 
     for i, bar in enumerate(rows):
         a = atr[i]
@@ -191,10 +193,12 @@ def compute_price_action_features(
                 prior_highs = [v for _, v in confirmed_highs[-101:-1] if abs(v-confirmed_highs[-1][1]) <= tolerance]
                 if prior_highs:
                     event["equal_high_pool"] = {"level": _median(prior_highs + [confirmed_highs[-1][1]]), "touch_count": len(prior_highs)+1}
+                    latest_equal_high_pool = event["equal_high_pool"]
             if event["swing_low_confirmed"] and len(confirmed_lows) >= 2:
                 prior_lows = [v for _, v in confirmed_lows[-101:-1] if abs(v-confirmed_lows[-1][1]) <= tolerance]
                 if prior_lows:
                     event["equal_low_pool"] = {"level": _median(prior_lows + [confirmed_lows[-1][1]]), "touch_count": len(prior_lows)+1}
+                    latest_equal_low_pool = event["equal_low_pool"]
             if confirmed_highs and bar.high > confirmed_highs[-1][1] and bar.close < confirmed_highs[-1][1]:
                 event["liquidity_sweep"] = {"side": "BUY_SIDE_LIQUIDITY", "reference_level": confirmed_highs[-1][1], "reclaimed": True}
             elif confirmed_lows and bar.low < confirmed_lows[-1][1] and bar.close > confirmed_lows[-1][1]:
@@ -254,6 +258,23 @@ def compute_price_action_features(
                 "lower": candidate["lower"], "upper": candidate["upper"], "status": "ACTIVE",
             })
 
+        event.update({
+            "structure_direction": last_structure,
+            "last_confirmed_swing_high": confirmed_highs[-1][1] if confirmed_highs else None,
+            "last_confirmed_swing_high_origin_index": confirmed_highs[-1][0] if confirmed_highs else None,
+            "last_confirmed_swing_low": confirmed_lows[-1][1] if confirmed_lows else None,
+            "last_confirmed_swing_low_origin_index": confirmed_lows[-1][0] if confirmed_lows else None,
+            "latest_equal_high_pool": latest_equal_high_pool,
+            "latest_equal_low_pool": latest_equal_low_pool,
+            "active_fvg_zones": [
+                {key: zone[key] for key in ("zone_id", "type", "lower", "upper", "status", "fill_fraction")}
+                for zone in active_fvgs if zone["status"] in {"ACTIVE", "PARTIALLY_FILLED"}
+            ][-20:],
+            "active_order_block_zones": [
+                {key: zone[key] for key in ("zone_id", "direction", "lower", "upper", "status")}
+                for zone in active_order_blocks if zone["status"] in {"ACTIVE", "MITIGATED"}
+            ][-20:],
+        })
         events.append(event)
         previous_close = bar.close
     return events

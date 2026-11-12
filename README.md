@@ -43,7 +43,7 @@ For Alpari, use the candidate profile only to preserve its unverified status:
 2datas normalize XAUUSD.zip --output-dir data/processed/alpari --broker-profile alpari_mt5_candidate --server-name "YOUR EXACT MT5 SERVER"
 \`\`\`
 
-The candidate profile intentionally does not emit UTC until the exact Alpari MT5 server, historical timezone/DST policy and bar timestamp convention are verified. The exact server name is retained in the manifest; replace the placeholder with the server shown in your MT5 login window.
+The profile recognizes the published `Alpari-MT5` and `Alpari-MT5-Demo` server names and applies the documented GMT+2/GMT+3 seasonal clock plus MT5 period-start timestamps. Any other server name remains unresolved until separately verified. The exact server name is retained in the manifest; replace the placeholder with the server shown in your MT5 login window.
 
 For another broker, provide an IANA timezone and the confirmed timestamp convention:
 

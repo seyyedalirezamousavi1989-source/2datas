@@ -46,3 +46,17 @@ A profile becomes verified only after:
 - the profile is reviewed and versioned.
 
 OHLC aggregation agreement is a useful consistency check, not proof of timezone or timestamp convention.
+
+
+## Automatic source-specific configuration
+
+A broker name is not sufficient to infer the server clock. For repeatable multi-broker ingestion, place a JSON sidecar next to each source archive:
+
+- \`archive.zip.broker.json\`
+- or \`archive.broker.json\`
+
+The schema is \`2datas-broker-clock-1\`; it requires the exact server name, IANA timezone (preferred where DST applies) or a documented fixed UTC offset, and \`interval_start\` or \`interval_end\`. Optional fields are \`broker_name\` and \`profile_id\`. The normalizer and feature command discover the sidecar automatically and record its SHA-256. Use \`--broker-config path/to/file.json\` when the sidecar is stored elsewhere.
+
+Do not mix a discovered/explicit sidecar with broker clock CLI overrides. If two sidecar candidates exist, configuration is rejected until the user selects one. If no valid source-specific configuration exists, UTC stays unresolved. This is deliberate: broker/server/timezone inference from OHLC values alone is not reliable.
+
+The current sidecar contract applies one clock profile to one archive. If a single archive spans a broker server-clock policy change, split it at the verified effective date or extend the profile registry with dated epochs before normalization. Do not apply today's DST rule blindly to older exports.

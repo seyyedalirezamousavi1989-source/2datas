@@ -121,7 +121,10 @@ def validate_instrument_specs(raw: Any) -> dict[str, list[InstrumentSpec]]:
             current_start = date.fromisoformat(current.effective_from)
             if previous_end is None or current_start < previous_end:
                 raise ValueError(f"{symbol}: overlapping effective-dated instrument specifications")
-        result[symbol.strip().upper()] = validated
+        normalized_symbol = symbol.strip().upper()
+        if normalized_symbol in result:
+            raise ValueError(f"Duplicate instrument spec key after normalization: {normalized_symbol}")
+        result[normalized_symbol] = validated
     return result
 
 

@@ -55,11 +55,12 @@ Maximize verified information value per example—not row count, feature count, 
 - [Dataset provenance, versioning and reproducibility](docs/phase-0/DATASET_PROVENANCE_VERSIONING_REPRODUCIBILITY.md) — immutable lineage, run manifests, semantic versioning, split traceability, change impact and release audit.
 - [Integrated architecture and consistency audit](docs/phase-0/INTEGRATED_ARCHITECTURE_AND_CONSISTENCY_AUDIT.md) — canonical layer ownership, A–M/T01–T11 reconciliation, task boundaries, dependencies and unresolved design decisions.
 - [Data quality principles](docs/phase-0/DATA_QUALITY_PRINCIPLES.md) — inclusion, deduplication, leakage, validation.
+- [Provenance validator implementation](docs/phase-0/PROVENANCE_VALIDATOR_IMPLEMENTATION.md) — executable schema and semantic checks, local test instructions, and validation limits.
 - [Decision log](docs/phase-0/DECISION_LOG.md) — recorded decisions and unresolved questions.
 
 ## Provenance schema contracts
 
-JSON Schema Draft 2020-12 contracts for immutable artifacts, transformation runs, dataset builds, chronological splits and sample lineage are maintained in [schemas/provenance](schemas/provenance/README.md). These schemas formalize the Phase 0 provenance policy; they do not constitute a data-generation pipeline or a validation result.
+JSON Schema Draft 2020-12 contracts for immutable artifacts, transformation runs, dataset builds, chronological splits and sample lineage are maintained in [schemas/provenance](schemas/provenance/README.md). These schemas formalize the Phase 0 provenance policy. The metadata-only validator and its unit tests are documented in [Provenance Validator Implementation](docs/phase-0/PROVENANCE_VALIDATOR_IMPLEMENTATION.md); neither constitutes a data-generation pipeline or a market-data validation result.
 
 ## Quality rule
 

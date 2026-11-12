@@ -114,7 +114,8 @@ def normalize_archive(
         })
 
     instruments = sorted({p["instrument"] for p in partitions})
-    specs = validate_instrument_specs(broker_config.get("instrument_specs", {}))\n    specification_audit = audit_instrument_specs(specs, source_symbols=source_symbols)
+    specs = validate_instrument_specs(broker_config.get("instrument_specs", {}))
+    specification_audit = audit_instrument_specs(specs, source_symbols=source_symbols)
     manifest = {
         "dataset": instruments[0] if len(instruments) == 1 else "multi-instrument",
         "instruments": instruments,

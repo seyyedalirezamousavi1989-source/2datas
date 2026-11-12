@@ -5,15 +5,17 @@ import gzip
 import hashlib
 import json
 from pathlib import Path
-from typing import Iterable
 
+from .broker_profiles import resolve_profile, to_utc
 from .ingest import read_zip
-from .quality import audit_file\nfrom .broker_profiles import resolve_profile, to_utc
+from .quality import audit_file
 
 SCHEMA_VERSION = "market-bars-0.2.0"
 FIELDS = [
     "schema_version", "instrument", "timeframe", "source_file", "source_sha256",
-    "source_row_number", "source_timestamp", "timestamp_precision", "timestamp_timezone",\n    "timestamp_utc", "timestamp_resolution_status", "broker_profile_id", "broker_name", "server_timezone", "bar_timestamp_convention",
+    "source_row_number", "source_timestamp", "timestamp_precision", "timestamp_timezone",
+    "timestamp_utc", "timestamp_resolution_status", "broker_profile_id", "broker_name",
+    "server_timezone", "bar_timestamp_convention",
     "open", "high", "low", "close", "tick_volume", "real_volume", "spread_points",
 ]
 
@@ -26,11 +28,25 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def normalize_archive(archive_path: str, output_dir: str, *, broker_profile_id: str | None = None, broker_name: str | None = None, server_timezone: str | None = None, bar_timestamp_convention: str | None = None) -> dict:
-    """Materialize deterministic gzip CSV partitions while preserving source time semantics."""
+def normalize_archive(
+    archive_path: str,
+    output_dir: str,
+    *,
+    broker_profile_id: str | None = None,
+    broker_name: str | None = None,
+    server_timezone: str | None = None,
+    bar_timestamp_convention: str | None = None,
+) -> dict:
+    """Write deterministic partitions; UTC is emitted only with explicit time semantics."""
     root = Path(output_dir)
     root.mkdir(parents=True, exist_ok=True)
     partitions = []
+    profile = resolve_profile(
+        broker_profile_id,
+        broker_name=broker_name,
+        server_timezone=server_timezone,
+        bar_timestamp_convention=bar_timestamp_convention,
+    )
 
     for result in read_zip(archive_path):
         audit = audit_file(result)
@@ -38,15 +54,18 @@ def normalize_archive(archive_path: str, output_dir: str, *, broker_profile_id: 
         target_dir = root / f"instrument={instrument}" / f"timeframe={result.timeframe}"
         target_dir.mkdir(parents=True, exist_ok=True)
         target = target_dir / "bars.csv.gz"
+
         with target.open("wb") as raw:
             with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as compressed:
                 import io
                 text = io.TextIOWrapper(compressed, encoding="utf-8", newline="")
-                writer = csv.DictWriter(text, fieldnames=FIELDS, lineterminator="
-")
+                writer = csv.DictWriter(text, fieldnames=FIELDS, lineterminator="\n")
                 writer.writeheader()
                 for row_number, bar in enumerate(result.rows, start=2):
-                    timestamp_utc, timestamp_status = to_utc(bar.source_timestamp, bar.timestamp_precision, profile)\n                    writer.writerow({
+                    timestamp_utc, timestamp_status = to_utc(
+                        bar.source_timestamp, bar.timestamp_precision, profile
+                    )
+                    writer.writerow({
                         "schema_version": SCHEMA_VERSION,
                         "instrument": bar.instrument,
                         "timeframe": bar.timeframe,
@@ -55,7 +74,13 @@ def normalize_archive(archive_path: str, output_dir: str, *, broker_profile_id: 
                         "source_row_number": row_number,
                         "source_timestamp": bar.source_timestamp,
                         "timestamp_precision": bar.timestamp_precision,
-                        "timestamp_timezone": profile.server_timezone or bar.timestamp_timezone,\n                        "timestamp_utc": timestamp_utc or "",\n                        "timestamp_resolution_status": timestamp_status,\n                        "broker_profile_id": profile.profile_id,\n                        "broker_name": profile.broker_name,\n                        "server_timezone": profile.server_timezone or "",\n                        "bar_timestamp_convention": profile.bar_timestamp_convention or "",
+                        "timestamp_timezone": profile.server_timezone or "UNKNOWN",
+                        "timestamp_utc": timestamp_utc or "",
+                        "timestamp_resolution_status": timestamp_status,
+                        "broker_profile_id": profile.profile_id,
+                        "broker_name": profile.broker_name,
+                        "server_timezone": profile.server_timezone or "",
+                        "bar_timestamp_convention": profile.bar_timestamp_convention or "",
                         "open": repr(bar.open),
                         "high": repr(bar.high),
                         "low": repr(bar.low),
@@ -66,7 +91,9 @@ def normalize_archive(archive_path: str, output_dir: str, *, broker_profile_id: 
                     })
                 text.flush()
                 text.detach()
+
         partitions.append({
+            "instrument": instrument,
             "timeframe": result.timeframe,
             "path": target.relative_to(root).as_posix(),
             "row_count": len(result.rows),
@@ -75,27 +102,40 @@ def normalize_archive(archive_path: str, output_dir: str, *, broker_profile_id: 
             "normalized_sha256": _sha256(target),
             "quality_status": audit["quality_status"],
             "admission_status": audit["admission_status"],
-            "timezone": "UNKNOWN",
-            "bar_timestamp_semantics": "UNKNOWN",
+            "timezone": profile.server_timezone or "UNKNOWN",
+            "bar_timestamp_semantics": profile.bar_timestamp_convention or "UNKNOWN",
         })
 
+    instruments = sorted({p["instrument"] for p in partitions})
     manifest = {
-        "dataset": "multi-instrument",
-        "instruments": sorted({p["path"].split("/")[0].split("=", 1)[-1] for p in partitions}),
+        "dataset": instruments[0] if len(instruments) == 1 else "multi-instrument",
+        "instruments": instruments,
         "schema_version": SCHEMA_VERSION,
-        "normalizer_version": "0.1.0",
+        "normalizer_version": "0.2.0",
         "source_archive_sha256": _sha256(Path(archive_path)),
-        "timestamp_policy": "Preserve raw source timestamp. UTC is populated only when a configured profile provides both timezone and bar timestamp convention; unresolved and DST-ambiguous values remain blank.",\n        "broker_profile": {"profile_id": profile.profile_id, "broker_name": profile.broker_name, "server_timezone": profile.server_timezone, "bar_timestamp_convention": profile.bar_timestamp_convention, "status": profile.status, "evidence": profile.evidence},
+        "broker_profile": {
+            "profile_id": profile.profile_id,
+            "broker_name": profile.broker_name,
+            "server_timezone": profile.server_timezone,
+            "bar_timestamp_convention": profile.bar_timestamp_convention,
+            "status": profile.status,
+            "evidence": profile.evidence,
+        },
+        "timestamp_policy": (
+            "Preserve raw source timestamp. UTC is populated only when both timezone and "
+            "bar timestamp convention are explicitly configured; ambiguous/nonexistent DST "
+            "wall times remain unresolved."
+        ),
         "partitions": partitions,
         "total_rows": sum(p["row_count"] for p in partitions),
         "limitations": [
-            "No timezone conversion or timestamp shifting was applied.",
             "No missing intervals were imputed.",
-            "No features, labels, synthetic samples or trading decisions were generated.",
-            "Numeric source fields are parsed and serialized as canonical decimal text; original archive hash and source row references preserve traceability.",
+            "No features, labels, synthetic samples or trading decisions were generated by normalization.",
+            "Broker profile status is not proof of provider documentation or licensing.",
+            "Source row references and archive/file hashes preserve traceability.",
         ],
     }
-    manifest_path = root / "manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "
-", encoding="utf-8")
+    (root / "manifest.json").write_text(
+        json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
     return manifest

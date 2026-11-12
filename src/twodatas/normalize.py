@@ -74,7 +74,8 @@ def normalize_archive(
         source_key = hashlib.sha256((result.source_file + result.source_sha256).encode("utf-8")).hexdigest()[:12]
         target = target_dir / f"bars-{source_key}.csv.gz"
 
-        spec_status_counts: dict[str, int] = {}\n        with target.open("wb") as raw:
+        spec_status_counts: dict[str, int] = {}
+        with target.open("wb") as raw:
             with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as compressed:
                 import io
                 text = io.TextIOWrapper(compressed, encoding="utf-8", newline="")
@@ -122,7 +123,8 @@ def normalize_archive(
             "source_sha256": result.source_sha256,
             "normalized_sha256": _sha256(target),
             "quality_status": audit["quality_status"],
-            "admission_status": audit["admission_status"],\n            "instrument_spec_status_counts": dict(sorted(spec_status_counts.items())),
+            "admission_status": audit["admission_status"],
+            "instrument_spec_status_counts": dict(sorted(spec_status_counts.items())),
             "timezone": profile.server_timezone or "UNKNOWN",
             "bar_timestamp_semantics": profile.bar_timestamp_convention or "UNKNOWN",
         })

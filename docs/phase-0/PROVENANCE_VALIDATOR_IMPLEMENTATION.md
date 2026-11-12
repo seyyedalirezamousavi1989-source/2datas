@@ -48,3 +48,10 @@ Exit codes: `0` valid, `1` contract/semantic issues, `2` fatal input or schema-l
 - Full repository-wide batch validation, CI integration, signed review approvals, content-store verification, and a richer dependency graph are future work.
 
 A passing result means only that the submitted metadata satisfies the checks implemented here. It is not evidence of predictive quality, trading profitability, or training readiness.
+
+
+## Artifact byte-integrity verification
+
+The companion [Artifact Integrity Engine](ARTIFACT_INTEGRITY_ENGINE.md) verifies SHA-256 and optional byte size for local files referenced by artifact manifests. It is read-only and requires explicit manifest and artifact-root directories. Local storage references use the optional metadata field `metadata.storage_path`, relative to the supplied artifact root. Unsafe paths and symlinks are rejected.
+
+This extends the implementation boundary: the validator handles manifest structure and declared relationships; the integrity engine checks whether selected local bytes match the manifest. Neither tool establishes licensing, semantic correctness, source authenticity, or training readiness.

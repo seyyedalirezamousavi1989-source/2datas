@@ -74,7 +74,7 @@ def normalize_archive(
                         "source_row_number": row_number,
                         "source_timestamp": bar.source_timestamp,
                         "timestamp_precision": bar.timestamp_precision,
-                        "timestamp_timezone": profile.server_timezone or "UNKNOWN",
+                        "timestamp_timezone": profile.server_timezone if timestamp_utc else "UNKNOWN",
                         "timestamp_utc": timestamp_utc or "",
                         "timestamp_resolution_status": timestamp_status,
                         "broker_profile_id": profile.profile_id,

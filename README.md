@@ -63,11 +63,11 @@ A broker brand alone is not enough to infer a server clock. If no sidecar or exp
 
 ## Next milestones
 
-1. Verify Alpari server clock, DST, timestamp convention, symbol specification and session calendar.
-2. Add broker/server profile versioning and source metadata capture for additional providers.
-3. Build causal multi-timeframe snapshots from resolved UTC intervals.
-4. Validate and prune price-action features using redundancy, stability and chronological ablation.
-5. Specify compact market-outcome targets, ambiguity/censoring and episode-aware splits.
-6. Materialize high-quality task datasets and perform independent QC/baseline evaluation.
+1. Confirm the exact Alpari MT5 server and validate its historical clock/DST, symbol specification and session calendar.
+2. Validate automatic broker sidecars against Alpari and at least two other broker/server clock configurations; add effective-dated profiles for historical clock changes.
+3. Run the unit suite and validate MTF boundary, DST, freshness, lineage and no-future guarantees in a real Python environment.
+4. Run an explicitly approved small sample, then assess feature redundancy, annotation agreement, temporal stability and chronological ablation.
+5. Freeze compact market-outcome targets, ambiguity/censoring and episode-aware chronological splits.
+6. Only after approval, materialize candidate datasets and perform independent QC and baseline evaluation.
 
 No feature is admitted to the training dataset merely because it has been implemented.

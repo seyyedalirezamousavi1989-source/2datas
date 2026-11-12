@@ -45,7 +45,8 @@ def normalize_archive(
     root = Path(output_dir)
     root.mkdir(parents=True, exist_ok=True)
     partitions = []
-    source_symbols: set[str] = set()\n    source_periods: dict[str, tuple[str, str]] = {}
+    source_symbols: set[str] = set()
+    source_periods: dict[str, tuple[str, str]] = {}
     profile, broker_config = resolve_profile_for_archive(
         archive_path, config_path=broker_config_path, profile_id=broker_profile_id,
         broker_name=broker_name, server_name=server_name, server_timezone=server_timezone,

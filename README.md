@@ -57,6 +57,10 @@ Maximize verified information value per example—not row count, feature count, 
 - [Data quality principles](docs/phase-0/DATA_QUALITY_PRINCIPLES.md) — inclusion, deduplication, leakage, validation.
 - [Decision log](docs/phase-0/DECISION_LOG.md) — recorded decisions and unresolved questions.
 
+## Provenance schema contracts
+
+JSON Schema Draft 2020-12 contracts for immutable artifacts, transformation runs, dataset builds, chronological splits and sample lineage are maintained in [schemas/provenance](schemas/provenance/README.md). These schemas formalize the Phase 0 provenance policy; they do not constitute a data-generation pipeline or a validation result.
+
 ## Quality rule
 
 A sample is retained only when its source, point-in-time availability, target definition, and intended use are explicit; its information is not an accidental duplicate; and its limitations can be represented honestly. If evidence is ambiguous, preserve the ambiguity or exclude the sample—never manufacture certainty.

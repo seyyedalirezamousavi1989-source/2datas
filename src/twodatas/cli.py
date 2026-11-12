@@ -11,6 +11,7 @@ from .normalize import normalize_archive
 from .alignment import audit_timeframe_alignment
 from .price_action import compute_price_action_features
 from .broker_profiles import resolve_profile_for_archive
+from .multi_timeframe import load_feature_events, build_mtf_snapshots
 
 
 def main() -> None:
@@ -41,6 +42,10 @@ def main() -> None:
     features.add_argument("--server-timezone", default=None)
     features.add_argument("--bar-timestamp-convention", choices=["interval_start", "interval_end"], default=None)
     features.add_argument("--include-last-bar", action="store_true", help="Include newest bar only when independently known to be complete")
+    mtf = sub.add_parser("mtf", help="Build point-in-time multi-timeframe snapshots from causal feature events")
+    mtf.add_argument("features_dir", type=Path)
+    mtf.add_argument("--output-dir", type=Path, default=Path("data/features/mtf"))
+    mtf.add_argument("--decision-timeframes", default="M1,M5,M15,M30,H1,H4")
     args = parser.parse_args()
 
     if args.command == "audit":
@@ -75,6 +80,31 @@ def main() -> None:
         manifest_path = args.output_dir / "manifest.json"
         manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + chr(10), encoding="utf-8")
         print(json.dumps({"status": "MATERIALIZED", "total_events": manifest["total_events"], "manifest": str(manifest_path)}, ensure_ascii=False))
+    elif args.command == "mtf":
+        events, source_manifest = load_feature_events(str(args.features_dir))
+        decision_timeframes = [value.strip().upper() for value in args.decision_timeframes.split(",") if value.strip()]
+        snapshots, stats = build_mtf_snapshots(events, decision_timeframes=decision_timeframes)
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        partitions = []
+        for key, rows in sorted(snapshots.items()):
+            target = args.output_dir / f"{key}.jsonl"
+            with target.open("w", encoding="utf-8") as handle:
+                for row in rows:
+                    handle.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + chr(10))
+            partitions.append({"path": target.name, "rows": len(rows), "sha256": hashlib.sha256(target.read_bytes()).hexdigest()})
+        manifest = {
+            "snapshot_version": "mtf-snapshot-0.1.0",
+            "source_feature_manifest_sha256": hashlib.sha256((args.features_dir / "manifest.json").read_bytes()).hexdigest(),
+            "broker_profile": source_manifest.get("broker_profile"),
+            "broker_config": source_manifest.get("broker_config"),
+            "decision_timeframes": decision_timeframes,
+            "partitions": partitions,
+            **stats,
+            "admission_status": "CANDIDATE_MTF_SNAPSHOTS_NOT_VALIDATED_FOR_TRAINING",
+        }
+        manifest_path = args.output_dir / "manifest.json"
+        manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + chr(10), encoding="utf-8")
+        print(json.dumps({"status": "COMPLETED", **stats, "manifest": str(manifest_path)}, ensure_ascii=False))
     elif args.command == "alignment":
         result = audit_timeframe_alignment(list(read_zip(str(args.archive))))
         args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -40,15 +40,15 @@ The parser supports MT5 timeframe tokens such as M1/M5/M15/M30, H1/H4, D1, W1 an
 For Alpari, use the candidate profile only to preserve its unverified status:
 
 \`\`\`bash
-2datas normalize XAUUSD.zip --output-dir data/processed/alpari --broker-profile alpari_mt5_candidate
+2datas normalize XAUUSD.zip --output-dir data/processed/alpari --broker-profile alpari_mt5_candidate --server-name "YOUR EXACT MT5 SERVER"
 \`\`\`
 
-The candidate profile intentionally does not emit UTC until the exact Alpari MT5 server, historical timezone/DST policy and bar timestamp convention are verified.
+The candidate profile intentionally does not emit UTC until the exact Alpari MT5 server, historical timezone/DST policy and bar timestamp convention are verified. The exact server name is retained in the manifest; replace the placeholder with the server shown in your MT5 login window.
 
 For another broker, provide an IANA timezone and the confirmed timestamp convention:
 
 \`\`\`bash
-2datas normalize export.zip --output-dir data/processed/custom --broker-name "Example Broker" --server-timezone Europe/Helsinki --bar-timestamp-convention interval_start
+2datas normalize export.zip --output-dir data/processed/custom --broker-name "Example Broker" --server-name "Server-01" --server-timezone Europe/Helsinki --bar-timestamp-convention interval_start
 \`\`\`
 
 Do not copy that example configuration without evidence. Multiple servers and historical DST policies may differ even within one broker. Ambiguous/nonexistent DST wall times are quarantined rather than guessed. See [BROKER_TIME_NORMALIZATION.md](docs/BROKER_TIME_NORMALIZATION.md).

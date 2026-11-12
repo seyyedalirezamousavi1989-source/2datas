@@ -10,7 +10,7 @@ from typing import Iterable
 from .ingest import read_zip
 from .quality import audit_file
 
-SCHEMA_VERSION = "xauusd-bars-0.1.0"
+SCHEMA_VERSION = "market-bars-0.2.0"
 FIELDS = [
     "schema_version", "instrument", "timeframe", "source_file", "source_sha256",
     "source_row_number", "source_timestamp", "timestamp_precision", "timestamp_timezone",
@@ -34,7 +34,7 @@ def normalize_archive(archive_path: str, output_dir: str) -> dict:
 
     for result in read_zip(archive_path):
         audit = audit_file(result)
-        target_dir = root / "instrument=XAUUSD" / f"timeframe={result.timeframe}"
+        instrument = result.rows[0].instrument if result.rows else "UNKNOWN"\n        target_dir = root / f"instrument={instrument}" / f"timeframe={result.timeframe}"
         target_dir.mkdir(parents=True, exist_ok=True)
         target = target_dir / "bars.csv.gz"
         with target.open("wb") as raw:

@@ -40,7 +40,7 @@ class IngestionPlannerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"revision"): self.plan(r=request(source_revision=1))
     def test_decision_revision_must_match(self):
         s=source(); d=decision_for(s); d["source_revision"]=1
-        with self.assertRaisesRegex(ValueError,"schema validation"): self.plan(s,d)
+        with self.assertRaisesRegex(ValueError,"decision does not match"): self.plan(s,d)
     def test_non_approved_source_blocked(self):
         with self.assertRaisesRegex(ValueError,"approved"): self.plan(source(status="suspended"))
     def test_expired_source_blocked(self):

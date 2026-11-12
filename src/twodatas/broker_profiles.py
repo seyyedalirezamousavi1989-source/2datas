@@ -33,7 +33,7 @@ BUILTIN_PROFILES = {
 
 
 def _clock_zone(value: str):
-    fixed = re.fullmatch(r"UTC([+-])(\\d{2}):(\\d{2})", value.upper())
+    fixed = re.fullmatch(r"UTC([+-])(\d{2}):(\d{2})", value.upper())
     if fixed:
         hours, minutes = int(fixed.group(2)), int(fixed.group(3))
         if hours > 14 or minutes > 59 or (hours == 14 and minutes != 0):

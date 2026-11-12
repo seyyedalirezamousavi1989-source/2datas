@@ -85,9 +85,9 @@ class SeedDatasetTests(unittest.TestCase):
             if line.strip()
         ]
         access_records = [
-            json.loads(line)
-            for line in identity_records
-            if line["metadata"]["domain"] == "forex_data_access"
+            record
+            for record in identity_records
+            if record["metadata"]["domain"] == "forex_data_access"
         ]
         self.assertGreaterEqual(len(access_records), 5)
         combined = "\\n".join(

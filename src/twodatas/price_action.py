@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from datetime import datetime, timedelta
 from math import isfinite
 from typing import Iterable
 
+from .broker_profiles import BrokerProfile, to_utc
 from .ingest import Bar
-from .quality import parse_source_time
+from .quality import parse_source_time, timeframe_minutes
 
 FEATURE_VERSION = "price-action-0.1.0"
 
@@ -25,6 +27,7 @@ def compute_price_action_features(
     bars: Iterable[Bar], *, pivot_left: int = 3, pivot_right: int = 3,
     atr_period: int = 14, equal_level_atr_tolerance: float = 0.10,
     fvg_min_atr: float = 0.05, ob_lookback: int = 8,
+    broker_profile: BrokerProfile | None = None,
 ) -> list[dict]:
     """Causal, bar-close feature events. No future bar is read at an event's availability time.
 
@@ -56,6 +59,22 @@ def compute_price_action_features(
 
     for i, bar in enumerate(rows):
         a = atr[i]
+        available_at_utc = None
+        availability_status = "UNRESOLVED_BAR_TIMESTAMP_CONVENTION"
+        if broker_profile is not None:
+            source_utc, source_status = to_utc(bar.source_timestamp, bar.timestamp_precision, broker_profile)
+            if source_utc is None:
+                availability_status = source_status
+            elif broker_profile.bar_timestamp_convention == "interval_end":
+                available_at_utc = source_utc
+                availability_status = "RESOLVED_AT_INTERVAL_END"
+            elif bar.timeframe.startswith(("M", "H")):
+                minutes = timeframe_minutes(bar.timeframe)
+                if minutes is not None:
+                    available_at_utc = (datetime.fromisoformat(source_utc) + timedelta(minutes=minutes)).isoformat()
+                    availability_status = "RESOLVED_AT_INTERVAL_CLOSE"
+            else:
+                availability_status = "SESSION_CALENDAR_REQUIRED_FOR_INTERVAL_CLOSE"
         event = {
             "feature_version": FEATURE_VERSION,
             "instrument": bar.instrument,
@@ -63,6 +82,8 @@ def compute_price_action_features(
             "source_file": bar.source_file,
             "source_timestamp": bar.source_timestamp,
             "event_index": i,
+            "available_at_utc": available_at_utc,
+            "availability_time_status": availability_status,
             "available_at_source_timestamp": bar.source_timestamp,
             "atr": a,
             "true_range": tr[i],

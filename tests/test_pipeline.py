@@ -501,6 +501,16 @@ def test_normalizer_manifest_reports_unconfigured_instrument_spec_registry(tmp_p
     manifest = normalize_archive(str(source), str(tmp_path / "normalized"))
     assert manifest["instrument_specification_audit"]["status"] == "NOT_CONFIGURED"
     assert manifest["instrument_specification_audit"]["missing_source_symbols"] == ["GOLD"]
+    import csv
+    import gzip
+    partition = next((tmp_path / "normalized" / "instrument=GOLD" / "timeframe=M5").glob("bars-*.csv.gz"))
+    with gzip.open(partition, "rt", encoding="utf-8", newline="") as handle:
+        record = next(csv.DictReader(handle))
+    assert record["instrument_spec_status"] == "SPEC_NOT_CONFIGURED"
+    assert record["spread_raw"] == "12.0"
+    assert record["spread_points"] == ""
+    assert record["spread_price"] == ""
+    assert manifest["partitions"][0]["instrument_spec_status_counts"] == {"SPEC_NOT_CONFIGURED": 1}
 
 
 def test_instrument_spec_history_rejects_overlapping_effective_periods():

@@ -11,11 +11,11 @@ A broker label is not a timezone. A server timezone is not a bar timestamp conve
 3. Explicit user-supplied IANA timezone plus interval-start/interval-end convention.
 4. Otherwise retain source-local naive time and mark UTC unresolved. Do not infer by guessing.
 
-A broker may operate multiple MT5 servers with different clocks or change DST policy. Profiles therefore identify broker + server + effective date range, not just broker brand. DST ambiguous/nonexistent local times are quarantined until resolved. Historical timezone rules must be applied per date.
+A broker may operate multiple MT5 servers with different clocks or change DST policy. The source contract therefore records broker + exact server + profile version; the long-term registry must support effective date ranges. The current first implementation accepts one explicit profile per normalization run. DST ambiguous/nonexistent local times are quarantined. Historical timezone rules must be applied per date.
 
 ## Alpari
 
-The supplied archive is identified by the user as Alpari. An EET/EEST-style timezone is a candidate hypothesis only; do not activate it until the exact Alpari server and historical export semantics are verified. The built-in profile is deliberately marked candidate_unverified. The project must not hardcode a broker-wide offset.
+The supplied archive is identified by the user as Alpari, but the CSV files contain no exact MT5 server identity. An EET/EEST-style timezone is a candidate hypothesis only; do not activate it until the exact Alpari server and historical export semantics are verified. The built-in profile is deliberately marked candidate_unverified. The project must not hardcode a broker-wide offset.
 
 ## Other brokers and timeframes
 
@@ -24,7 +24,7 @@ The supplied archive is identified by the user as Alpari. An EET/EEST-style time
 - Never assume all brokers use the same symbol name, point size, digits, contract size, sessions, spread units or real-volume semantics.
 - Normalize timestamps to UTC only after resolving server timezone and bar start/end convention.
 - Normalize bar intervals to half-open [start_utc, end_utc), keeping source timestamp and source convention alongside canonical fields.
-- Store broker, server, symbol alias, profile version, timezone database version, timestamp resolution status and evidence reference in every partition manifest.
+- Store broker, exact server, symbol alias, profile ID, timezone, timestamp resolution status and evidence reference in the manifest and normalized rows.\n- The current implementation does not yet support multiple historical profile epochs within one archive; add that before claiming automatic adaptation to a broker that changed server-clock policy.
 
 ## Profile admission evidence
 

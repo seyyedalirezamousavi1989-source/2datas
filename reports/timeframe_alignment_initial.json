@@ -1,0 +1,70 @@
+{
+  "audit_version": "0.1.0",
+  "method": "Aggregate child OHLC and tick volume into parent clock buckets, compare against provider-native parent bars; only complete child groups are used for exact-match rate.",
+  "timezone": "UNKNOWN; source wall-clock only",
+  "bar_timestamp_semantics": "Not proven by this test; clock-bucket hypothesis only",
+  "comparisons": [
+    {
+      "child_timeframe": "M5",
+      "parent_timeframe": "M15",
+      "expected_child_bars_per_parent": 3,
+      "overlapping_parent_buckets": 141767,
+      "complete_child_groups": 138741,
+      "partial_child_groups": 3026,
+      "overfull_child_groups": 0,
+      "exact_ohlc_and_tick_volume_matches": 138741,
+      "complete_group_mismatches": 0,
+      "exact_match_rate_complete_groups": 1
+    },
+    {
+      "child_timeframe": "M15",
+      "parent_timeframe": "M30",
+      "expected_child_bars_per_parent": 2,
+      "overlapping_parent_buckets": 70896,
+      "complete_child_groups": 70871,
+      "partial_child_groups": 25,
+      "overfull_child_groups": 0,
+      "exact_ohlc_and_tick_volume_matches": 70871,
+      "complete_group_mismatches": 0,
+      "exact_match_rate_complete_groups": 1
+    },
+    {
+      "child_timeframe": "M30",
+      "parent_timeframe": "H1",
+      "expected_child_bars_per_parent": 2,
+      "overlapping_parent_buckets": 35464,
+      "complete_child_groups": 35432,
+      "partial_child_groups": 32,
+      "overfull_child_groups": 0,
+      "exact_ohlc_and_tick_volume_matches": 35432,
+      "complete_group_mismatches": 0,
+      "exact_match_rate_complete_groups": 1
+    },
+    {
+      "child_timeframe": "H1",
+      "parent_timeframe": "H4",
+      "expected_child_bars_per_parent": 4,
+      "overlapping_parent_buckets": 9278,
+      "complete_child_groups": 7686,
+      "partial_child_groups": 1592,
+      "overfull_child_groups": 0,
+      "exact_ohlc_and_tick_volume_matches": 7686,
+      "complete_group_mismatches": 0,
+      "exact_match_rate_complete_groups": 1
+    },
+    {
+      "child_timeframe": "H4",
+      "parent_timeframe": "D1",
+      "expected_child_bars_per_parent": 6,
+      "overlapping_parent_buckets": 1548,
+      "complete_child_groups": 1538,
+      "partial_child_groups": 10,
+      "overfull_child_groups": 0,
+      "exact_ohlc_and_tick_volume_matches": 1538,
+      "complete_group_mismatches": 0,
+      "exact_match_rate_complete_groups": 1
+    }
+  ],
+  "interpretation": "Every complete child group exactly matched the corresponding native parent OHLC and tick volume. This supports internal timeframe aggregation consistency under the tested source-clock bucketing. It does not prove timezone, broker identity, timestamp open/close semantics, license, session calendar or tick-level path fidelity. Partial groups are not automatically classified as missing-data defects.",
+  "dataset_admission_status": "NOT_ADMITTED_PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
+}

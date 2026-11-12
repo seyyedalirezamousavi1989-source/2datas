@@ -86,16 +86,6 @@ def resolve_profile(
                     if matched else candidate.evidence + " Supplied server name does not match the currently documented MT5 server list."
                 ),
             )
-        if server_name:
-            return BrokerProfile(
-                profile_id=candidate.profile_id,
-                broker_name=candidate.broker_name,
-                server_name=server_name,
-                server_timezone=candidate.server_timezone,
-                bar_timestamp_convention=candidate.bar_timestamp_convention,
-                status=candidate.status,
-                evidence=candidate.evidence,
-            )
         return candidate
     return BrokerProfile(
         profile_id=profile_id or "unknown",

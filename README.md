@@ -9,6 +9,8 @@ An independent, auditable research dataset project. This repository does not mod
 - Deterministic compressed partitions with source hashes and row-level lineage.
 - Explicit per-source symbol aliases for cross-broker canonicalization (e.g. `GOLD` → `XAUUSD`) while retaining the original broker symbol.
 - Broker profile contract with explicit timezone/DST handling. Unknown or ambiguous times are never silently shifted.
+- Effective-dated, source-symbol-specific instrument specifications resolved independently for each normalized bar; contract changes are applied at their source-local effective date.
+- Unit-safe spread normalization: raw spread is preserved; spread points and price are emitted only when the broker's declared unit and point size support the conversion. Per-partition spec-match counts are included in the manifest.
 - Cross-timeframe OHLC/tick-volume consistency audit.
 - Initial causal price-action event engine: ATR, confirmed swings, BOS/CHoCH, FVG lifecycle, equal-high/low liquidity candidates, wick sweeps, order-block mitigation/invalidation, displacement, relative volatility and material open/close discontinuities.
 - Point-in-time multi-timeframe snapshots that join only completed events available at or before each decision timestamp.
@@ -66,8 +68,8 @@ A broker brand alone is not enough to infer a server clock. Account type and acc
 ## Next milestones
 
 1. Confirm the exact Alpari MT5 server and validate its historical clock/DST, symbol specification and session calendar.
-2. Validate automatic broker sidecars against Alpari and at least two other broker/server clock configurations; add effective-dated profiles for historical clock changes.
-3. Run the unit suite and validate MTF boundary, DST, freshness, lineage and no-future guarantees in a real Python environment.
+2. Validate automatic broker sidecars and effective-dated instrument specifications against Alpari and at least two other broker/server configurations; verify historical symbol-contract changes and source-local date boundaries.
+3. Run the unit suite and validate point-in-time spec selection, spread units, MTF boundaries, DST, freshness, lineage and no-future guarantees in a real Python environment.
 4. Run an explicitly approved small sample, then assess feature redundancy, annotation agreement, temporal stability and chronological ablation.
 5. Freeze compact market-outcome targets, ambiguity/censoring and episode-aware chronological splits.
 6. Only after approval, materialize candidate datasets and perform independent QC and baseline evaluation.

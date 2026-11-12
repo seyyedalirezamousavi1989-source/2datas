@@ -317,6 +317,15 @@ This log records decisions, not assumptions. New decisions must include rational
 - Consequence: added broker profile/time resolver, generic MT5 symbol/timeframe inference, broker-aware normalization metadata, feature generation CLI, tests and documentation. No training, live trading, external repository modification or paid source acquisition is authorized.
 - Acceptance boundary: implementation existence is not feature validity. Run CI, verify Alpari source semantics, then test cross-broker/timeframe behavior and feature stability before training admission.
 
+## D-044 — Alpari MT5 time profile is server-name gated
+
+- Status: Accepted; exact account server still requires user confirmation.
+- Date: 2026-11-12
+- Decision: Use the documented Alpari seasonal server clock (GMT+2 winter / GMT+3 summer, last Sundays of March and October) as the candidate Europe/Helsinki profile. MT5 bar timestamps are period-start labels. Do not activate UTC conversion until the exact server is known.
+- Server admission: the resolver recognizes the published names \`Alpari-MT5\` and \`Alpari-MT5-Demo\`; other server names remain unverified pending evidence.
+- Consequence: Updated the Alpari broker profile, source-feasibility docs, initial audit/manifest annotations and tests for winter/summer conversion. The original normalized archive remains unchanged and was not retroactively relabeled.
+- Evidence: Alpari help/FAQ and MQL5 timeseries reference are linked in \`docs/BROKER_TIME_NORMALIZATION.md\`.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

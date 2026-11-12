@@ -56,7 +56,7 @@ def extract_market_features(bars: Iterable[dict[str, Any]], *, decision_timestam
             pivots.append({"kind":"SWING_LOW","index":i,"price":candidate["_l"],"pivot_record_id":candidate["record_id"],"confirmed_record_id":admitted[i+pivot_right]["record_id"],"available_at":admitted[i+pivot_right]["_available"]})
     pivots.sort(key=lambda p:(p["index"],p["kind"]))
     for p in pivots:
-        events.append({"event_type":p["kind"],"event_record_id":p["pivot_record_id"],"confirmed_by_record_id":p["confirmed_record_id"],"event_time":admitted[p["index"]]["interval_end"].isoformat().replace("+00:00","Z"),"available_at":p["available_at"].isoformat().replace("+00:00","Z"),"price":str(p["price"]),"causal":True})
+        events.append({"event_type":p["kind"],"event_record_id":p["pivot_record_id"],"confirmed_by_record_id":p["confirmed_record_id"],"event_time":admitted[p["index"]]["_end"].isoformat().replace("+00:00","Z"),"available_at":p["available_at"].isoformat().replace("+00:00","Z"),"price":str(p["price"]),"causal":True})
 
     last_high=last_low=None; trend="UNDEFINED"; broken_high=set(); broken_low=set()
     for i,bar in enumerate(admitted):

@@ -14,7 +14,7 @@ def test_mt5_tab_export_is_read_and_timezone_not_guessed():
     assert result.timeframe == "H1"
     assert result.rows[0].source_timestamp == "2024.01.01 10:00:00"
     assert result.rows[0].timestamp_timezone == "UNKNOWN"
-    assert audit_file(result)["quality_status"] == "PASS"
+    assert audit_file(result)["quality_status"] == "STRUCTURAL_PASS"
 
 
 def test_bad_ohlc_is_flagged_by_audit():
@@ -22,7 +22,7 @@ def test_bad_ohlc_is_flagged_by_audit():
     row = ["2024.01.01", "10:00:00", "2000", "1998", "1999", "2001", "120", "0", "12"]
     result = read_mt5_csv(_payload(header, row), "XAUUSD_H1_test.csv")
     assert audit_file(result)["invalid_ohlc_count"] == 1
-    assert audit_file(result)["quality_status"] == "REVIEW_REQUIRED"
+    assert audit_file(result)["quality_status"] == "STRUCTURAL_FAIL"
 
 
 def test_daily_export_without_time_column():

@@ -85,7 +85,12 @@ def normalize_archive(
                     timestamp_utc, timestamp_status = to_utc(
                         bar.source_timestamp, bar.timestamp_precision, profile
                     )
-                    spec_fields = spec_values_for_bar(\n                        specs, bar.source_instrument, bar.source_timestamp, bar.spread_points\n                    )\n                    spec_status_counts[spec_fields["instrument_spec_status"]] = spec_status_counts.get(spec_fields["instrument_spec_status"], 0) + 1\n                    writer.writerow({
+                    spec_fields = spec_values_for_bar(
+                        specs, bar.source_instrument, bar.source_timestamp, bar.spread_points
+                    )
+                    spec_status = spec_fields["instrument_spec_status"]
+                    spec_status_counts[spec_status] = spec_status_counts.get(spec_status, 0) + 1
+                    writer.writerow({
                         "schema_version": SCHEMA_VERSION,
                         "instrument": bar.instrument,
                         "source_instrument": bar.source_instrument,

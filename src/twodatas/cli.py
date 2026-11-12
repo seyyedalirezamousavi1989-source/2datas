@@ -10,7 +10,7 @@ from .quality import audit_archive
 from .normalize import normalize_archive
 from .alignment import audit_timeframe_alignment
 from .price_action import compute_price_action_features
-from .broker_profiles import resolve_profile
+from .broker_profiles import resolve_profile_for_archive
 
 
 def main() -> None:
@@ -22,6 +22,7 @@ def main() -> None:
     normalize = sub.add_parser("normalize", help="Create traceable gzip CSV partitions")
     normalize.add_argument("archive", type=Path)
     normalize.add_argument("--output-dir", type=Path, default=Path("data/processed/xauusd"))
+    normalize.add_argument("--broker-config", default=None, help="JSON sidecar path; auto-detects <archive>.broker.json")
     normalize.add_argument("--broker-profile", default=None, help="Versioned broker profile ID, e.g. alpari_mt5_candidate")
     normalize.add_argument("--broker-name", default=None)
     normalize.add_argument("--server-name", default=None)
@@ -33,6 +34,7 @@ def main() -> None:
     features = sub.add_parser("features", help="Generate causal price-action feature events")
     features.add_argument("archive", type=Path)
     features.add_argument("--output-dir", type=Path, default=Path("data/features/price_action"))
+    features.add_argument("--broker-config", default=None, help="JSON sidecar path; auto-detects <archive>.broker.json")
     features.add_argument("--broker-profile", default=None)
     features.add_argument("--broker-name", default=None)
     features.add_argument("--server-name", default=None)
@@ -47,11 +49,11 @@ def main() -> None:
         args.output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + chr(10), encoding="utf-8")
         print(json.dumps({"status": result["overall_status"], "total_rows": result["total_rows"], "report": str(args.output)}, ensure_ascii=False))
     elif args.command == "normalize":
-        result = normalize_archive(str(args.archive), str(args.output_dir), broker_profile_id=args.broker_profile, broker_name=args.broker_name, server_name=args.server_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
+        result = normalize_archive(str(args.archive), str(args.output_dir), broker_config_path=args.broker_config, broker_profile_id=args.broker_profile, broker_name=args.broker_name, server_name=args.server_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
         print(json.dumps({"status": "MATERIALIZED", "total_rows": result["total_rows"], "manifest": str(args.output_dir / "manifest.json")}, ensure_ascii=False))
     elif args.command == "features":
         args.output_dir.mkdir(parents=True, exist_ok=True)
-        profile = resolve_profile(args.broker_profile, broker_name=args.broker_name, server_name=args.server_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
+        profile, broker_config = resolve_profile_for_archive(str(args.archive), config_path=args.broker_config, profile_id=args.broker_profile, broker_name=args.broker_name, server_name=args.server_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
         summaries = []
         for source in read_zip(str(args.archive)):
             rows = compute_price_action_features(source.rows, broker_profile=profile, source_sha256=source.source_sha256, include_last_bar=args.include_last_bar)
@@ -63,6 +65,7 @@ def main() -> None:
             summaries.append({"instrument": instrument, "timeframe": source.timeframe, "events": len(rows), "source_file": source.source_file, "source_sha256": source.source_sha256, "output_path": str(target), "output_sha256": hashlib.sha256(target.read_bytes()).hexdigest()})
         manifest = {
             "feature_version": "price-action-0.1.0",
+            "broker_config": broker_config,
             "broker_profile": {"profile_id": profile.profile_id, "broker_name": profile.broker_name, "server_name": profile.server_name, "server_timezone": profile.server_timezone, "bar_timestamp_convention": profile.bar_timestamp_convention, "status": profile.status, "evidence": profile.evidence},
             "parameters": {"pivot_left": 3, "pivot_right": 3, "atr_period": 14, "equal_level_atr_tolerance": 0.10, "fvg_min_atr": 0.05, "ob_lookback": 8, "include_last_bar": args.include_last_bar},
             "partitions": summaries,

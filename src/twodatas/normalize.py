@@ -49,7 +49,7 @@ def normalize_archive(
         bar_timestamp_convention=bar_timestamp_convention,
     )
 
-    for result in read_zip(archive_path):
+    for result in read_zip(archive_path, symbol_aliases=broker_config.get("symbol_aliases", {})):
         audit = audit_file(result)
         instrument = result.rows[0].instrument if result.rows else "UNKNOWN"
         target_dir = root / f"instrument={instrument}" / f"timeframe={result.timeframe}"

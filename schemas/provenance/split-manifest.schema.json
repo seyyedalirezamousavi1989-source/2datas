@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2datas.example/schemas/provenance/split-manifest.schema.json",
+  "title": "2datas Chronological Split Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "split_manifest_id",
+    "dataset_id",
+    "protocol_version",
+    "created_at",
+    "timezone",
+    "groups",
+    "boundaries",
+    "frozen"
+  ],
+  "properties": {
+    "split_manifest_id": {
+      "type": "string"
+    },
+    "dataset_id": {
+      "type": "string"
+    },
+    "protocol_version": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timezone": {
+      "type": "string",
+      "const": "UTC"
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "train_end",
+        "validation_end",
+        "test_end"
+      ],
+      "properties": {
+        "train_end": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "validation_end": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "test_end": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "group_id",
+          "split",
+          "start_time",
+          "end_time"
+        ],
+        "properties": {
+          "group_id": {
+            "type": "string"
+          },
+          "split": {
+            "enum": [
+              "train",
+              "validation",
+              "test",
+              "research_only",
+              "excluded"
+            ]
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "purge_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "cluster_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "purge_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target_horizon_seconds": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "purge_seconds": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "embargo_seconds": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "rationale": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "frozen": {
+      "type": "boolean"
+    },
+    "access_policy": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

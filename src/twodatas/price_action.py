@@ -60,6 +60,8 @@ def compute_price_action_features(
     last_broken_low_origin: int | None = None
     previous_close = None
     prior_atr_values: list[float] = []
+    active_fvgs: list[dict] = []
+    active_order_blocks: list[dict] = []
 
     for i, bar in enumerate(rows):
         a = atr[i]
@@ -78,6 +80,37 @@ def compute_price_action_features(
                 availability_status = "RESOLVED_AT_INTERVAL_CLOSE"
             else:
                 availability_status = "SESSION_CALENDAR_REQUIRED_FOR_INTERVAL_CLOSE"
+        fvg_zone_updates = []
+        for zone in active_fvgs:
+            if zone["status"] in {"FULLY_FILLED", "INVALIDATED"}:
+                continue
+            width = zone["upper"] - zone["lower"]
+            if width <= 0:
+                continue
+            if zone["type"] == "BULLISH_FVG":
+                fraction = min(1.0, max(0.0, (zone["upper"] - max(bar.low, zone["lower"])) / width)) if bar.low <= zone["upper"] else 0.0
+                invalidated = bar.close < zone["lower"]
+            else:
+                fraction = min(1.0, max(0.0, (min(bar.high, zone["upper"]) - zone["lower"]) / width)) if bar.high >= zone["lower"] else 0.0
+                invalidated = bar.close > zone["upper"]
+            if fraction > zone["fill_fraction"] or invalidated:
+                zone["fill_fraction"] = max(zone["fill_fraction"], fraction)
+                zone["status"] = "INVALIDATED" if invalidated else "FULLY_FILLED" if zone["fill_fraction"] >= 1.0 else "PARTIALLY_FILLED"
+                fvg_zone_updates.append({"zone_id": zone["zone_id"], "status": zone["status"], "fill_fraction": round(zone["fill_fraction"], 6), "invalidated": invalidated})
+
+        order_block_updates = []
+        for zone in active_order_blocks:
+            if zone["status"] == "INVALIDATED":
+                continue
+            touched = bar.low <= zone["upper"] and bar.high >= zone["lower"]
+            invalidated = bar.close < zone["lower"] if zone["direction"] == "BULLISH" else bar.close > zone["upper"]
+            if touched or invalidated:
+                if invalidated:
+                    zone["status"] = "INVALIDATED"
+                elif zone["status"] == "ACTIVE":
+                    zone["status"] = "MITIGATED"
+                order_block_updates.append({"zone_id": zone["zone_id"], "status": zone["status"], "touched": touched, "invalidated": invalidated})
+
         event = {
             "feature_version": FEATURE_VERSION,
             "instrument": bar.instrument,
@@ -109,6 +142,8 @@ def compute_price_action_features(
             "equal_low_pool": None,
             "order_block_candidate": None,
             "price_gap": None,
+            "fvg_zone_updates": fvg_zone_updates,
+            "order_block_updates": order_block_updates,
         }
 
         # Pivot at p becomes knowable only on bar i=p+pivot_right.
@@ -200,6 +235,24 @@ def compute_price_action_features(
         else:
             event["range_to_atr"] = None
             event["body_to_atr"] = None
+
+        if event["fvg"] is not None:
+            zone_id = f"fvg:{bar.instrument}:{bar.timeframe}:{i}"
+            event["fvg"].update({"zone_id": zone_id, "status": "ACTIVE", "fill_fraction": 0.0})
+            active_fvgs.append({
+                "zone_id": zone_id, "type": event["fvg"]["type"],
+                "lower": event["fvg"]["lower"], "upper": event["fvg"]["upper"],
+                "status": "ACTIVE", "fill_fraction": 0.0,
+            })
+        if event["order_block_candidate"] is not None:
+            candidate = event["order_block_candidate"]
+            zone_id = f"ob:{bar.instrument}:{bar.timeframe}:{i}"
+            candidate.update({"zone_id": zone_id, "status": "ACTIVE"})
+            active_order_blocks.append({
+                "zone_id": zone_id,
+                "direction": "BULLISH" if candidate["type"].startswith("BULLISH") else "BEARISH",
+                "lower": candidate["lower"], "upper": candidate["upper"], "status": "ACTIVE",
+            })
 
         events.append(event)
         previous_close = bar.close

@@ -4,7 +4,7 @@ import csv
 import gzip
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path\nfrom datetime import datetime
 
 from .broker_profiles import resolve_profile_for_archive, to_utc
 from .ingest import read_zip
@@ -44,7 +44,7 @@ def normalize_archive(
     root = Path(output_dir)
     root.mkdir(parents=True, exist_ok=True)
     partitions = []
-    source_symbols: set[str] = set()
+    source_symbols: set[str] = set()\n    source_periods: dict[str, tuple[str, str]] = {}
     profile, broker_config = resolve_profile_for_archive(
         archive_path, config_path=broker_config_path, profile_id=broker_profile_id,
         broker_name=broker_name, server_name=server_name, server_timezone=server_timezone,
@@ -52,7 +52,7 @@ def normalize_archive(
     )
 
     for result in read_zip(archive_path, symbol_aliases=broker_config.get("symbol_aliases", {})):
-        source_symbols.update(row.source_instrument for row in result.rows)
+        for row in result.rows:\n            symbol = row.source_instrument\n            source_symbols.add(symbol)\n            source_date = datetime.strptime(row.source_timestamp.split()[0], "%Y.%m.%d").date().isoformat()\n            if symbol not in source_periods:\n                source_periods[symbol] = (source_date, source_date)\n            else:\n                first, last = source_periods[symbol]\n                source_periods[symbol] = (min(first, source_date), max(last, source_date))
         audit = audit_file(result)
         instrument = result.rows[0].instrument if result.rows else "UNKNOWN"
         target_dir = root / f"instrument={instrument}" / f"timeframe={result.timeframe}"
@@ -115,7 +115,7 @@ def normalize_archive(
 
     instruments = sorted({p["instrument"] for p in partitions})
     specs = validate_instrument_specs(broker_config.get("instrument_specs", {}))
-    specification_audit = audit_instrument_specs(specs, source_symbols=source_symbols)
+    specification_audit = audit_instrument_specs(specs, source_symbols=source_symbols, observed_periods=source_periods)
     manifest = {
         "dataset": instruments[0] if len(instruments) == 1 else "multi-instrument",
         "instruments": instruments,

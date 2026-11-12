@@ -68,7 +68,7 @@ def compute_price_action_features(
             "atr": a,
             "true_range": tr[i],
             "body": abs(bar.close - bar.open),
-            "body_to_range": abs(bar.close - bar.open) / (bar.high - bar.low) if bar.high > bar.low else 0.0,
+            "body_to_range": abs(bar.close - bar.open) / (bar.high - bar.low) if bar.high > bar.low else 0.0,\n            "displacement": None,\n            "volatility_ratio": None,\n            "volatility_state": "WARMUP",
             "close_location": (bar.close - bar.low) / (bar.high - bar.low) if bar.high > bar.low else 0.5,
             "return_1": (bar.close / previous_close - 1.0) if previous_close else None,
             "swing_high_confirmed": False,

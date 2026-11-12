@@ -31,7 +31,7 @@ HEADER_ALIASES = {
 
 def _detect_delimiter(text: str) -> str:
     first = next((line for line in text.splitlines() if line.strip()), "")
-    counts = {delimiter: first.count(delimiter) for delimiter in ("\\t", ",", ";")}
+    counts = {delimiter: first.count(delimiter) for delimiter in (chr(9), ",", ";")}
     delimiter = max(counts, key=counts.get)
     if counts[delimiter] == 0:
         raise ValueError("Could not detect CSV delimiter (expected tab, comma or semicolon)")

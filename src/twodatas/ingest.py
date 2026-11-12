@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import PurePosixPath
 from typing import Iterator
 
-TF_PATTERN = re.compile(r"XAUUSD_(Daily|M5|M15|M30|H1|H4)_", re.IGNORECASE)
+TF_PATTERN = re.compile(r"(?:^|_)(Daily|MN\\d+|W\\d+|D1|H\\d+|M\\d+)(?=_|$)", re.IGNORECASE)
 REQUIRED = {"<DATE>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"}
 
 
@@ -86,7 +86,7 @@ def read_mt5_csv(payload: bytes, source_file: str) -> FileIngestResult:
         if tick_volume < 0 or not tick_volume.is_integer():
             raise ValueError(f"{source_file}:{line}: TICKVOL must be a non-negative integer")
         rows.append(Bar(
-            instrument="XAUUSD", timeframe=timeframe, source_file=source_file,
+            instrument=instrument, timeframe=timeframe, source_file=source_file,
             source_timestamp=stamp, timestamp_precision=precision,
             timestamp_timezone="UNKNOWN",
             open=values["<OPEN>"], high=values["<HIGH>"], low=values["<LOW>"], close=values["<CLOSE>"],
@@ -95,10 +95,10 @@ def read_mt5_csv(payload: bytes, source_file: str) -> FileIngestResult:
     return FileIngestResult(source_file, timeframe, hashlib.sha256(payload).hexdigest(), rows, header)
 
 
-def read_zip(path: str) -> Iterator[FileIngestResult]:
+def read_zip(path: str, *, instrument: str | None = None, timeframe_overrides: dict[str, str] | None = None) -> Iterator[FileIngestResult]:
     with zipfile.ZipFile(path) as archive:
         members = sorted(n for n in archive.namelist() if n.lower().endswith(".csv"))
         if not members:
             raise ValueError("Archive contains no CSV files")
         for member in members:
-            yield read_mt5_csv(archive.read(member), member)
+            override = (timeframe_overrides or {}).get(member)\n            yield read_mt5_csv(archive.read(member), member, instrument=instrument, timeframe=override)

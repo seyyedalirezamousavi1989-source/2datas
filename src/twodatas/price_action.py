@@ -39,7 +39,7 @@ def compute_price_action_features(
     rows = list(bars)
     if rows and not include_last_bar:
         rows = rows[:-1]  # The newest exported candle may still be forming.
-    if pivot_left < 1 or pivot_right < 1 or atr_period < 1:
+    if pivot_left < 1 or pivot_right < 1 or atr_period < 1 or ob_lookback < 1:
         raise ValueError("pivot_left, pivot_right and atr_period must be positive")
     if equal_level_atr_tolerance < 0 or fvg_min_atr < 0:
         raise ValueError("ATR tolerances cannot be negative")

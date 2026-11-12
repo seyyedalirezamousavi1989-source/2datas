@@ -1,0 +1,7 @@
+{
+  "schema_version": "2datas-broker-clock-1",
+  "broker_name": "Alpari",
+  "server_name": "Alpari-MT5",
+  "server_timezone": "Europe/Helsinki",
+  "bar_timestamp_convention": "interval_start"
+}

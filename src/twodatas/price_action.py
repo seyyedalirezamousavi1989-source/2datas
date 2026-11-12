@@ -106,12 +106,17 @@ def compute_price_action_features(
                 continue
             touched = bar.low <= zone["upper"] and bar.high >= zone["lower"]
             invalidated = bar.close < zone["lower"] if zone["direction"] == "BULLISH" else bar.close > zone["upper"]
-            if touched or invalidated:
-                if invalidated:
-                    zone["status"] = "INVALIDATED"
-                elif zone["status"] == "ACTIVE":
-                    zone["status"] = "MITIGATED"
-                order_block_updates.append({"zone_id": zone["zone_id"], "status": zone["status"], "touched": touched, "invalidated": invalidated})
+            if invalidated and zone["status"] != "INVALIDATED":
+                zone["status"] = "INVALIDATED"
+                order_block_updates.append({"zone_id": zone["zone_id"], "status": zone["status"], "touched": touched, "invalidated": True})
+            elif touched and zone["status"] == "ACTIVE":
+                zone["status"] = "MITIGATED"
+                order_block_updates.append({"zone_id": zone["zone_id"], "status": zone["status"], "touched": True, "invalidated": False})
+
+        # Retain only zones whose lifecycle is still active; terminal updates are
+        # emitted once, preventing an ever-growing historical scan on long series.
+        active_fvgs[:] = [zone for zone in active_fvgs if zone["status"] not in {"FULLY_FILLED", "INVALIDATED"}]
+        active_order_blocks[:] = [zone for zone in active_order_blocks if zone["status"] != "INVALIDATED"]
 
         event = {
             "feature_version": FEATURE_VERSION,

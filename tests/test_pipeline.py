@@ -311,3 +311,37 @@ def test_mtf_snapshots_exclude_unresolved_decision_events():
     snapshots, stats = build_mtf_snapshots(events, decision_timeframes=["M5"])
     assert len(snapshots["GOLD_M5"]) == 1
     assert stats["unresolved_decision_events"] == 1
+
+
+def test_mtf_loader_verifies_feature_partition_checksum_and_lineage(tmp_path):
+    import hashlib
+    import json
+    from twodatas.multi_timeframe import load_feature_events
+
+    source_hash = "a" * 64
+    event = {
+        "feature_version": "price-action-0.1.0",
+        "instrument": "XAUUSD",
+        "timeframe": "M5",
+        "event_index": 0,
+        "source_sha256": source_hash,
+        "available_at_utc": "2024-01-01T10:05:00+00:00",
+    }
+    partition = tmp_path / "XAUUSD_M5.jsonl"
+    partition.write_text(json.dumps(event) + chr(10), encoding="utf-8")
+    manifest = {
+        "feature_version": "price-action-0.1.0",
+        "partitions": [{
+            "instrument": "XAUUSD", "timeframe": "M5",
+            "source_sha256": source_hash, "events": 1,
+            "output_path": str(partition),
+            "output_sha256": hashlib.sha256(partition.read_bytes()).hexdigest(),
+        }],
+    }
+    (tmp_path / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    loaded, _ = load_feature_events(str(tmp_path))
+    assert len(loaded["XAUUSD"]["M5"]) == 1
+    partition.write_text(partition.read_text() + chr(10), encoding="utf-8")
+    import pytest
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        load_feature_events(str(tmp_path))

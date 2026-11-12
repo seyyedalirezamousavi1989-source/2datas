@@ -17,8 +17,8 @@ class BrokerProfile:
     evidence: str
 
 
-# Candidate only. The exact Alpari server, historical policy and export convention
-# must be verified before UTC conversion is enabled.
+# Built-in Alpari profile. Only exact recognized MT5 server names activate this
+# documented seasonal clock; all other server identities remain quarantined.
 BUILTIN_PROFILES = {
     "alpari_mt5_candidate": BrokerProfile(
         profile_id="alpari_mt5_candidate",

@@ -38,6 +38,7 @@ def main() -> None:
     features.add_argument("--server-name", default=None)
     features.add_argument("--server-timezone", default=None)
     features.add_argument("--bar-timestamp-convention", choices=["interval_start", "interval_end"], default=None)
+    features.add_argument("--include-last-bar", action="store_true", help="Include newest bar only when independently known to be complete")
     args = parser.parse_args()
 
     if args.command == "audit":
@@ -53,7 +54,7 @@ def main() -> None:
         profile = resolve_profile(args.broker_profile, broker_name=args.broker_name, server_name=args.server_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
         summaries = []
         for source in read_zip(str(args.archive)):
-            rows = compute_price_action_features(source.rows, broker_profile=profile, source_sha256=source.source_sha256)
+            rows = compute_price_action_features(source.rows, broker_profile=profile, source_sha256=source.source_sha256, include_last_bar=args.include_last_bar)
             instrument = source.rows[0].instrument if source.rows else "UNKNOWN"
             target = args.output_dir / f"{instrument}_{source.timeframe}.jsonl"
             with target.open("w", encoding="utf-8") as handle:
@@ -63,7 +64,7 @@ def main() -> None:
         manifest = {
             "feature_version": "price-action-0.1.0",
             "broker_profile": {"profile_id": profile.profile_id, "broker_name": profile.broker_name, "server_name": profile.server_name, "server_timezone": profile.server_timezone, "bar_timestamp_convention": profile.bar_timestamp_convention, "status": profile.status, "evidence": profile.evidence},
-            "parameters": {"pivot_left": 3, "pivot_right": 3, "atr_period": 14, "equal_level_atr_tolerance": 0.10, "fvg_min_atr": 0.05, "ob_lookback": 8},
+            "parameters": {"pivot_left": 3, "pivot_right": 3, "atr_period": 14, "equal_level_atr_tolerance": 0.10, "fvg_min_atr": 0.05, "ob_lookback": 8, "include_last_bar": args.include_last_bar},
             "partitions": summaries,
             "total_events": sum(item["events"] for item in summaries),
             "admission_status": "CANDIDATE_FEATURES_NOT_VALIDATED_FOR_TRAINING",

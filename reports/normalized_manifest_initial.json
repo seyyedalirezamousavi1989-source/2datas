@@ -3,7 +3,7 @@
   "schema_version": "xauusd-bars-0.1.0",
   "normalizer_version": "0.1.0",
   "source_archive_sha256": "7458e5329bc827ff77aa9ec68d4be504451206226a74fd2cfa21f9e7f5516aa6",
-  "timestamp_policy": "Preserve source timestamp verbatim; do not infer timezone or open/close convention.",
+  "timestamp_policy": "Initial artifact preserves source timestamp verbatim. No UTC conversion was applied. A later broker-aware normalization run may emit UTC only after exact Alpari server identity is verified.",
   "partitions": [
     {
       "timeframe": "D1",
@@ -13,8 +13,8 @@
       "source_sha256": "bee6ced85602ab97742c26ca41be063c079f4e3d284c4f0be1f60acedacea76b",
       "normalized_sha256": "71cfde8060e26df10f324e2f81edec86cbd9a04e2fe6d18a938cce2b9bb18b22",
       "quality_status": "STRUCTURAL_PASS",
-      "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN",
+      "timezone": "UNKNOWN_PENDING_EXACT_SERVER_CONFIRMATION",
+      "bar_timestamp_semantics": "interval_start",
       "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     },
     {
@@ -25,8 +25,8 @@
       "source_sha256": "310675c9b61b86153768b4615b969bc588997b1c6117b979c61c51e11991cd39",
       "normalized_sha256": "559f6c6847dc2846ac9ad1b0a232043a31a963be11b2863dd5a3b99f3eed83e6",
       "quality_status": "STRUCTURAL_PASS",
-      "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN",
+      "timezone": "UNKNOWN_PENDING_EXACT_SERVER_CONFIRMATION",
+      "bar_timestamp_semantics": "interval_start",
       "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     },
     {
@@ -37,8 +37,8 @@
       "source_sha256": "0231127d4928aa40ee304021342468045b2b6235cf218d933c93b06e223418d5",
       "normalized_sha256": "27b47dfd6d7b7743676b33d490380b277b3626d43ac3b755711614ed28087c6f",
       "quality_status": "STRUCTURAL_PASS",
-      "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN",
+      "timezone": "UNKNOWN_PENDING_EXACT_SERVER_CONFIRMATION",
+      "bar_timestamp_semantics": "interval_start",
       "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     },
     {
@@ -49,8 +49,8 @@
       "source_sha256": "0d8490c9769849fb7632848552663742a6ed9ee18737699783c99ed997844612",
       "normalized_sha256": "2ffc474e7ba445aa294079ed4235365bee0b5180b89b9ebbcf705b3817d6bf2c",
       "quality_status": "STRUCTURAL_PASS",
-      "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN",
+      "timezone": "UNKNOWN_PENDING_EXACT_SERVER_CONFIRMATION",
+      "bar_timestamp_semantics": "interval_start",
       "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     },
     {
@@ -61,8 +61,8 @@
       "source_sha256": "e7177dd9daab8c95a371b64498bee58da3eeb175b60564b8250b761ae5156d9d",
       "normalized_sha256": "d2b276cff055e5a6e547003df7bc8d20706edf1c3831bd17de5d0800c8d3f85d",
       "quality_status": "STRUCTURAL_PASS",
-      "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN",
+      "timezone": "UNKNOWN_PENDING_EXACT_SERVER_CONFIRMATION",
+      "bar_timestamp_semantics": "interval_start",
       "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     },
     {
@@ -73,8 +73,8 @@
       "source_sha256": "8a4c315e12c487944b13b3c78b456052c3748258011a7aa608fcd361c10905f3",
       "normalized_sha256": "2b4581992b97987d68826a4625e408450afc822150eff81a4620afb68b5a9990",
       "quality_status": "STRUCTURAL_PASS",
-      "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN",
+      "timezone": "UNKNOWN_PENDING_EXACT_SERVER_CONFIRMATION",
+      "bar_timestamp_semantics": "interval_start",
       "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     }
   ],
@@ -83,7 +83,18 @@
     "No timezone conversion or timestamp shifting was applied.",
     "No missing intervals were imputed.",
     "No features, labels, synthetic samples or trading decisions were generated.",
-    "Numeric source fields are parsed and serialized as round-trip decimal text; original archive hash and source row references preserve traceability."
+    "Numeric source fields are parsed and serialized as round-trip decimal text; original archive hash and source row references preserve traceability.",
+    "Broker identity was reported as Alpari by the user; exact MT5 server name remains unconfirmed.",
+    "This initial normalized artifact predates broker-aware timestamp metadata; regenerate after confirming the exact MT5 server."
   ],
-  "dataset_admission_status": "NOT_ADMITTED_PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
+  "dataset_admission_status": "NOT_ADMITTED_PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW",
+  "broker_profile": {
+    "profile_id": "alpari_mt5_candidate",
+    "broker_name": "Alpari (user-reported)",
+    "server_name": null,
+    "server_timezone": "Europe/Helsinki",
+    "bar_timestamp_convention": "interval_start",
+    "status": "candidate_unverified_pending_exact_server_name",
+    "evidence": "Alpari documentation describes GMT+2/GMT+3 seasonal server time; MT5 bar timestamps are period-start labels. Exact account server remains unconfirmed."
+  }
 }

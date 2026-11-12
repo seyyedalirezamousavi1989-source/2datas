@@ -6,7 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from .broker_profiles import resolve_profile, to_utc
+from .broker_profiles import resolve_profile_for_archive, to_utc
 from .ingest import read_zip
 from .quality import audit_file
 
@@ -32,7 +32,7 @@ def normalize_archive(
     archive_path: str,
     output_dir: str,
     *,
-    broker_profile_id: str | None = None,
+    broker_config_path: str | None = None,\n    broker_profile_id: str | None = None,
     broker_name: str | None = None,
     server_name: str | None = None,
     server_timezone: str | None = None,
@@ -116,7 +116,7 @@ def normalize_archive(
         "schema_version": SCHEMA_VERSION,
         "normalizer_version": "0.2.0",
         "source_archive_sha256": _sha256(Path(archive_path)),
-        "broker_profile": {
+        "broker_config": broker_config,\n        "broker_profile": {
             "profile_id": profile.profile_id,
             "broker_name": profile.broker_name,
             "server_name": profile.server_name,

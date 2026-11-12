@@ -3,7 +3,7 @@
   "report_type": "initial_source_integrity_audit",
   "audit_version": "0.1.0",
   "source_archive": "XAUUSD.zip",
-  "archive_size_bytes": 11000000,
+  "archive_size_bytes": 11199961,
   "total_rows": 681227,
   "overall_status": "PASS_WITH_LIMITATIONS",
   "files": [

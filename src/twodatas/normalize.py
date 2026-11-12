@@ -18,9 +18,12 @@ FIELDS = [
     "source_row_number", "source_timestamp", "timestamp_precision", "timestamp_timezone",
     "timestamp_utc", "timestamp_resolution_status", "broker_profile_id", "broker_name", "server_name",
     "server_timezone", "bar_timestamp_convention",
-    "instrument_spec_status", "instrument_spec_id", "instrument_spec_effective_from",\n    "instrument_spec_effective_to", "instrument_digits", "point_size", "tick_size",\n    "contract_size", "price_currency", "profit_currency", "spread_unit", "spread_raw",\n    "spread_points", "spread_price", "volume_semantics", "tick_value", "tick_value_currency",\n    "open", "high", "low", "close", "tick_volume", "real_volume",
+    "instrument_spec_status", "instrument_spec_id", "instrument_spec_effective_from",
+    "instrument_spec_effective_to", "instrument_digits", "point_size", "tick_size",
+    "contract_size", "price_currency", "profit_currency", "spread_unit", "spread_raw",
+    "spread_points", "spread_price", "volume_semantics", "tick_value", "tick_value_currency",
+    "open", "high", "low", "close", "tick_volume", "real_volume",
 ]
-
 
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()

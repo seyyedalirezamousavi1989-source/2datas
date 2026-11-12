@@ -9,7 +9,8 @@ An independent, auditable research dataset project. This repository does not mod
 - Deterministic compressed partitions with source hashes and row-level lineage.
 - Broker profile contract with explicit timezone/DST handling. Unknown or ambiguous times are never silently shifted.
 - Cross-timeframe OHLC/tick-volume consistency audit.
-- Initial causal price-action event engine: ATR, confirmed swings, BOS/CHoCH, FVG, equal-high/low liquidity candidates, wick sweeps, order-block candidates, displacement, relative volatility and material open/close discontinuities.
+- Initial causal price-action event engine: ATR, confirmed swings, BOS/CHoCH, FVG lifecycle, equal-high/low liquidity candidates, wick sweeps, order-block mitigation/invalidation, displacement, relative volatility and material open/close discontinuities.
+- Point-in-time multi-timeframe snapshots that join only completed events available at or before each decision timestamp.
 - Pytest and GitHub Actions workflow.
 
 The initial feature definitions are operational hypotheses. Order blocks are not proof of institutional orders; OHLC sweeps are not evidence of actual resting orders; session-gap classification needs verified broker calendar/time semantics.
@@ -31,6 +32,7 @@ pytest -q
 2datas normalize path/to/export.zip --output-dir data/processed
 2datas alignment path/to/export.zip --output reports/timeframe_alignment.json
 2datas features path/to/export.zip --output-dir data/features/price_action
+2datas mtf data/features/price_action --output-dir data/features/mtf --decision-timeframes M1,M5,M15,M30,H1,H4
 \`\`\`
 
 The parser supports MT5 timeframe tokens such as M1/M5/M15/M30, H1/H4, D1, W1 and MN1, provided the filename identifies the timeframe unambiguously. Symbol aliases such as XAUUSD, GOLD or broker-suffixed names are preserved as source instrument identifiers.

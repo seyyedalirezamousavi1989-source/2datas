@@ -69,7 +69,7 @@ def main() -> None:
                     handle.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + chr(10))
             summaries.append({"instrument": instrument, "timeframe": source.timeframe, "events": len(rows), "source_file": source.source_file, "source_sha256": source.source_sha256, "output_path": str(target), "output_sha256": hashlib.sha256(target.read_bytes()).hexdigest()})
         manifest = {
-            "feature_version": "price-action-0.1.0",
+            "feature_version": "price-action-0.2.0",
             "broker_config": broker_config,
             "broker_profile": {"profile_id": profile.profile_id, "broker_name": profile.broker_name, "server_name": profile.server_name, "server_timezone": profile.server_timezone, "bar_timestamp_convention": profile.bar_timestamp_convention, "status": profile.status, "evidence": profile.evidence},
             "parameters": {"pivot_left": 3, "pivot_right": 3, "atr_period": 14, "equal_level_atr_tolerance": 0.10, "fvg_min_atr": 0.05, "ob_lookback": 8, "include_last_bar": args.include_last_bar},

@@ -351,22 +351,22 @@ Phase 0 cannot be declared design-frozen until the following are resolved and re
 
 Scoped enum/action governance and the T06/T08 boundary are now documented provisionally; this does not freeze wire values, broker mappings or field-level bindings.
 
-## 14. Recommended next work item
+## 14. Active implementation roadmap
 
-The core semantic, action/status, risk handoff, temporal, target portfolio and split-dependency contracts are now documented provisionally. The next work item is a **Final Phase 0 Cross-Document Coherence and Freeze-Readiness Audit**.
+The next work is implementation-led, not another documentation-only freeze loop.
 
-That audit should verify that:
-- every canonical field and task points to one semantic owner;
-- task catalog, A–M mapping and T01–T11 I/O contracts agree;
-- all status/action terms use the canonical scoped domains;
-- target projections, episode grouping and split rules do not double-count shared paths;
-- no document silently assumes source availability, broker behavior, model authority or dependencies on another repository;
-- unresolved decisions are explicitly listed with the evidence/approval gate that can resolve them.
+1. **Source semantics dossier:** resolve broker/provider identity, server timezone/DST, MT5 bar timestamp convention, symbol digits/point size, session calendar and source-use rights.
+2. **Coverage and gap classification:** distinguish normal market closures/holidays from genuine missing intervals; explain partial child groups at timeframe boundaries.
+3. **Canonical storage hardening:** validate deterministic partition rebuilds, source row lineage, schema compatibility and checksums; retain raw archive outside Git.
+4. **Causal feature foundation:** implement only high-value, reproducible features with explicit availability times and dependency lineage.
+5. **Target implementation:** start with fixed-horizon market outcomes, then barrier/MFE-MAE only where source resolution supports them; preserve ambiguity and censoring.
+6. **Episode-aware splits and baselines:** construct chronological folds after target horizons and source-latency dependencies are frozen.
+7. **Independent QC and acceptance:** publish limitations and reject targets that do not add measurable value.
 
-The outcome should be a truthful readiness report: ready for user design review, not automatically ready for data generation or training.
+The initial MTF aggregation result is encouraging: every complete child group matched native parent OHLC and tick volume across M5→M15→M30→H1→H4→D1. This is internal consistency evidence only; it does not resolve source timezone, broker identity or timestamp semantics.
 
 ## 15. Audit conclusion
 
-The conceptual architecture is coherent and consistently prioritizes causal evidence, target separation, deterministic risk authority, provenance and information efficiency. However, the documents are not yet ready to be frozen: the blockers in Section 13 must be reconciled first. The presence of extensive documentation is not evidence of source feasibility, label reliability, empirical usefulness, or implementation correctness.
+The conceptual architecture is coherent and the first executable data foundation is now in place. The source bars pass structural checks and complete multi-timeframe aggregation groups match exactly, but source semantics, rights, feature/target validation and full dataset acceptance remain open. The presence of extensive documentation is not evidence of source feasibility, label reliability, empirical usefulness, or implementation correctness.
 
 The supplied archive has been inspected and a normalized base-bar dataset has been generated locally. No feature/target labels, benchmark or model has yet been produced. The separate `datas` repository and AURORA QUANT remain untouched. Dataset admission remains pending source semantics and rights review.

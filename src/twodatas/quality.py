@@ -5,7 +5,16 @@ from typing import Iterable
 
 from .ingest import Bar, FileIngestResult
 
-EXPECTED_MINUTES = {"M5": 5, "M15": 15, "M30": 30, "H1": 60, "H4": 240, "D1": 1440}
+EXPECTED_MINUTES = {"M1": 1, "M2": 2, "M3": 3, "M4": 4, "M5": 5, "M6": 6, "M10": 10, "M12": 12, "M15": 15, "M20": 20, "M30": 30, "H1": 60, "H2": 120, "H3": 180, "H4": 240, "H6": 360, "H8": 480, "H12": 720, "D1": 1440, "W1": 10080}
+
+
+def timeframe_minutes(timeframe: str) -> int | None:
+    value = timeframe.upper()
+    if value in EXPECTED_MINUTES:
+        return EXPECTED_MINUTES[value]
+    if value.startswith("MN"):
+        return None  # calendar-month bars have variable duration
+    return None
 
 
 def parse_source_time(bar: Bar) -> datetime:

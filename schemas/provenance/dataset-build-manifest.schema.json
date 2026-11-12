@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://2datas.example/schemas/provenance/dataset-build-manifest.schema.json",
+  "$id": "urn:2datas:schema:provenance:dataset-build-manifest:1",
   "title": "2datas Dataset Build Manifest",
   "type": "object",
   "additionalProperties": false,

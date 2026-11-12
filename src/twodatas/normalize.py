@@ -10,7 +10,7 @@ from .broker_profiles import resolve_profile_for_archive, to_utc
 from .ingest import read_zip
 from .quality import audit_file
 
-SCHEMA_VERSION = "market-bars-0.2.0"
+SCHEMA_VERSION = "market-bars-0.3.0"
 FIELDS = [
     "schema_version", "instrument", "source_instrument", "timeframe", "source_file", "source_sha256",
     "source_row_number", "source_timestamp", "timestamp_precision", "timestamp_timezone",
@@ -114,7 +114,7 @@ def normalize_archive(
         "dataset": instruments[0] if len(instruments) == 1 else "multi-instrument",
         "instruments": instruments,
         "schema_version": SCHEMA_VERSION,
-        "normalizer_version": "0.2.0",
+        "normalizer_version": "0.3.0",
         "source_archive_sha256": _sha256(Path(archive_path)),
         "broker_config": broker_config,
         "broker_profile": {

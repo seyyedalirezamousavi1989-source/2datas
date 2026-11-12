@@ -7,17 +7,17 @@ A broker label is not a timezone. A server timezone is not a bar timestamp conve
 ## Resolution order
 
 1. Explicit export metadata with provider documentation/version.
-2. A versioned broker/server profile verified for the exact account server and historical period.
+2. A versioned broker/server clock profile verified for the source and historical period. No account number, account owner or Demo/Real account type is required.
 3. Explicit user-supplied IANA timezone plus interval-start/interval-end convention.
 4. Otherwise retain source-local naive time and mark UTC unresolved. Do not infer by guessing.
 
-A broker may operate multiple MT5 servers with different clocks or change DST policy. The source contract therefore records broker + exact server + profile version; the long-term registry must support effective date ranges. The current first implementation accepts one explicit profile per normalization run. DST ambiguous/nonexistent local times are quarantined. Historical timezone rules must be applied per date.
+A broker may operate multiple MT5 servers with different clocks or change DST policy. The source contract may record broker/server labels when available, but they are descriptive metadata—not authentication or account identity. The long-term registry must support effective date ranges. The current first implementation accepts one explicit profile per normalization run. DST ambiguous/nonexistent local times are quarantined. Historical timezone rules must be applied per date.
 
 ## Alpari
 
-The supplied archive is identified by the user as Alpari, but the CSV files contain no exact MT5 server identity. Alpari help material describes GMT+2 in winter and GMT+3 during DST, with transitions on the last Sundays of March and October. The published MT5 server list includes `Alpari-MT5` and `Alpari-MT5-Demo`. The profile recognizes those exact server names; other server names remain unverified. `Europe/Helsinki` models the documented EET/EEST seasonal clock.
+The source broker is Alpari, but no account identity or account type is needed. Alpari help material describes GMT+2 in winter and GMT+3 during DST. `Europe/Helsinki` represents that seasonal clock. This remains a candidate until validated against the actual export timestamps and historical server policy; the engine must not mark a profile verified merely because a broker/server string matches.
 
-MT5 timeseries documentation defines bar time as the bar opening/period-start time, so the profile uses `interval_start`. This does not remove the need to confirm the exact server shown in the user terminal.
+MT5 timeseries documentation defines bar time as the bar opening/period-start time, so the profile uses `interval_start`. This does not require a personal account name or account type. If the source export does not provide enough evidence to distinguish clock variants, UTC remains unresolved until the clock contract is validated.
 
 ## Other brokers and timeframes
 
@@ -55,7 +55,7 @@ A broker name is not sufficient to infer the server clock. For repeatable multi-
 - `archive.zip.broker.json`
 - or `archive.broker.json`
 
-The schema is `2datas-broker-clock-1`; it requires the exact server name, IANA timezone (preferred where DST applies) or a documented fixed UTC offset, and `interval_start` or `interval_end`. Optional fields are `broker_name` and `profile_id`. The normalizer and feature command discover the sidecar automatically and record its SHA-256. Use `--broker-config path/to/file.json` when the sidecar is stored elsewhere.
+The schema is `2datas-broker-clock-1`; it requires only an IANA timezone (preferred where DST applies) or a documented fixed UTC offset, and `interval_start` or `interval_end`. Optional descriptive fields are `broker_name`, `server_name` and `profile_id`. Account number, account owner and Demo/Real type are never requested or used. The normalizer and feature command discover the sidecar automatically and record its SHA-256. Use `--broker-config path/to/file.json` when the sidecar is stored elsewhere.
 
 Do not mix a discovered/explicit sidecar with broker clock CLI overrides. If two sidecar candidates exist, configuration is rejected until the user selects one. If no valid source-specific configuration exists, UTC stays unresolved. This is deliberate: broker/server/timezone inference from OHLC values alone is not reliable.
 

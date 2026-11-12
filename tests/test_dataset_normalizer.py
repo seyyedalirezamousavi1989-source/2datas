@@ -20,7 +20,7 @@ ROW = {
 
 class NormalizerTests(unittest.TestCase):
     def test_decimal_safe_and_utc(self):
-        out = normalize_record(ROW, {**MAPPING, "volume": "volume", "volume_unit": "volume_unit"}, source_format="fixture")
+        out = normalize_record(ROW, {**MAPPING, "volume": "volume", "volume_unit": "volume_unit"}, source_format="csv")
         self.assertEqual(out["event_time"], "2025-12-31T22:00:00.000000Z")
         self.assertEqual(out["open"], "1.1")
         self.assertEqual(out["volume"], "12.5")

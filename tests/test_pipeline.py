@@ -539,3 +539,28 @@ def test_instrument_spec_history_detects_uncovered_observation_dates():
     )
     assert report["status"] == "INCOMPLETE"
     assert report["uncovered_observed_periods"][0]["uncovered_from"] == "2023-01-01"
+
+
+def test_broker_sidecar_rejects_conflicting_symbol_alias_and_contract_identity(tmp_path):
+    import json
+    import pytest
+    from twodatas.broker_profiles import resolve_profile_for_archive
+
+    archive = tmp_path / "source.zip"
+    archive.write_bytes(b"placeholder")
+    sidecar = tmp_path / "source.zip.broker.json"
+    sidecar.write_text(json.dumps({
+        "schema_version": "2datas-broker-clock-1",
+        "server_timezone": "UTC+00:00",
+        "bar_timestamp_convention": "interval_start",
+        "symbol_aliases": {"GOLD": "XAUUSD"},
+        "instrument_specs": {"GOLD": {
+            "canonical_instrument": "GOLD",
+            "digits": 2, "point_size": "0.01", "tick_size": "0.01",
+            "contract_size": "100", "price_currency": "USD", "profit_currency": "USD",
+            "spread_unit": "points", "volume_semantics": "tick_count",
+            "effective_from": "2020-01-01", "evidence": "Test fixture only.",
+        }},
+    }))
+    with pytest.raises(ValueError, match="must match its explicit symbol alias"):
+        resolve_profile_for_archive(str(archive))

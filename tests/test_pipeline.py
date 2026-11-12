@@ -252,3 +252,27 @@ def test_fvg_zone_tracks_partial_fill_and_invalidation_without_lookahead():
     assert events[4]["fvg_zone_updates"][0]["fill_fraction"] > 0
     assert events[5]["fvg_zone_updates"][0]["status"] == "INVALIDATED"
     assert events[5]["fvg_zone_updates"][0]["invalidated"] is True
+
+
+def test_order_block_candidate_tracks_mitigation_and_invalidation():
+    from twodatas.ingest import read_mt5_csv
+    from twodatas.price_action import compute_price_action_features
+
+    header = ["<DATE>", "<TIME>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"]
+    rows = [
+        ["2024.01.01", "10:00:00", "10.0", "10.8", "9.8", "10.4", "10", "0", "1"],
+        ["2024.01.01", "10:01:00", "10.4", "11.2", "10.2", "11.0", "11", "0", "1"],
+        ["2024.01.01", "10:02:00", "11.0", "13.5", "10.9", "13.0", "12", "0", "1"],
+        ["2024.01.01", "10:03:00", "13.0", "13.1", "11.9", "12.2", "13", "0", "1"],
+        ["2024.01.01", "10:04:00", "13.0", "14.2", "12.8", "14.0", "14", "0", "1"],
+        ["2024.01.01", "10:05:00", "12.5", "12.8", "12.0", "12.6", "15", "0", "1"],
+        ["2024.01.01", "10:06:00", "11.8", "12.0", "11.5", "11.7", "16", "0", "1"],
+        ["2024.01.01", "10:07:00", "11.7", "11.9", "11.4", "11.6", "17", "0", "1"],
+    ]
+    payload = (chr(10).join([chr(9).join(header)] + [chr(9).join(row) for row in rows]) + chr(10)).encode()
+    source = read_mt5_csv(payload, "XAUUSD_M1_ob.csv")
+    events = compute_price_action_features(source.rows, pivot_left=1, pivot_right=1, atr_period=2)
+    candidate = events[4]["order_block_candidate"]
+    assert candidate["type"] == "BULLISH_ORDER_BLOCK_CANDIDATE"
+    assert events[5]["order_block_updates"][0]["status"] == "MITIGATED"
+    assert events[6]["order_block_updates"][0]["status"] == "INVALIDATED"

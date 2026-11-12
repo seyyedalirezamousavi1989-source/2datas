@@ -25,9 +25,9 @@ BUILTIN_PROFILES = {
         broker_name="Alpari",
         server_name=None,
         server_timezone="Europe/Helsinki",
-        bar_timestamp_convention=None,
+        bar_timestamp_convention="interval_start",
         status="candidate_unverified",
-        evidence="EET/EEST-like clock is a hypothesis only; verify exact server and historical DST behavior.",
+        evidence="Alpari documentation describes GMT+2 in winter and GMT+3 during DST (last Sunday of March/October); exact account server still must match a published MT5 server.",
     )
 }
 
@@ -71,6 +71,21 @@ def resolve_profile(
         )
     if profile_id and profile_id in BUILTIN_PROFILES:
         candidate = BUILTIN_PROFILES[profile_id]
+        if server_name:
+            verified_servers = {"alpari-mt5", "alpari-mt5-demo"}
+            matched = server_name.strip().casefold() in verified_servers
+            return BrokerProfile(
+                profile_id=candidate.profile_id,
+                broker_name=candidate.broker_name,
+                server_name=server_name,
+                server_timezone=candidate.server_timezone,
+                bar_timestamp_convention=candidate.bar_timestamp_convention,
+                status="verified" if matched else candidate.status,
+                evidence=(
+                    "Server name matches Alpari's published MT5 server list; timezone uses the documented GMT+2/GMT+3 seasonal rule and MT5 bars use period-open timestamps."
+                    if matched else candidate.evidence + " Supplied server name does not match the currently documented MT5 server list."
+                ),
+            )
         if server_name:
             return BrokerProfile(
                 profile_id=candidate.profile_id,

@@ -21,6 +21,14 @@ Each record requires:
 
 Optional `tick_value` must be accompanied by `tick_value_currency`. Tick value is not a universal instrument constant: it can depend on account deposit currency, broker calculation mode, conversion rates and contract details. The registry therefore does not require or infer it. A static tick value must never be used for account risk calculations without validating its calculation context.
 
+## Point-in-time application to normalized bars
+
+During normalization, each bar is matched using its exact source symbol and the calendar date written in the broker's source timestamp. Effective dates are interpreted as broker-server-local calendar dates; they are not converted to UTC before contract lookup. This prevents a UTC date boundary from accidentally selecting the wrong contract revision. Each normalized row receives `instrument_spec_status`, a deterministic `instrument_spec_id`, the effective-date bounds and the matched contract attributes. Missing or out-of-range metadata remains blank with an explicit status; it is never forward-filled or guessed.
+
+The raw export spread is retained as `spread_raw`. `spread_points` is populated only when the matching specification declares `spread_unit=points`; `spread_price` is calculated as raw spread × point size. When the unit is `price`, `spread_price` is the raw value and `spread_points` remains blank. When the unit is `unknown` or no specification matches, both derived fields remain blank. This avoids silently treating a broker's raw spread as points.
+
+`tick_value` is retained as source reference metadata only. It is not sufficient for position sizing or account-risk calculations unless its currency, account conversion context, calculation mode and validity are independently established.
+
 ## Historical validity rules
 
 - Histories for the same source symbol must not overlap.
@@ -38,7 +46,7 @@ Run:
 2datas spec-audit path/to/export.zip --output reports/instrument_spec_audit.json
 ```
 
-The normalizer also embeds the same coverage audit in `manifest.json`. A complete registry means the observed source symbols and dates are covered by supplied records; it does not independently certify that the cited broker documents are authentic or that the export license permits research use.
+The normalizer also embeds the same coverage audit in `manifest.json`. Normalized bar schema `market-bars-0.4.0` carries the point-in-time specification match and unit-safe spread fields. A complete registry means the observed source symbols and dates are covered by supplied records; it does not independently certify that the cited broker documents are authentic or that the export license permits research use.
 
 ## Explicitly excluded
 

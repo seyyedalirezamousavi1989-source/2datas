@@ -122,6 +122,7 @@ def test_price_action_fvg_and_confirmed_swing_are_causal():
     payload = (chr(10).join([chr(9).join(header)] + [chr(9).join(row) for row in rows]) + chr(10)).encode()
     source = read_mt5_csv(payload, "XAUUSD_M1_test.csv")
     events = compute_price_action_features(source.rows, pivot_left=1, pivot_right=1, atr_period=2)
+    assert len(events) == len(source.rows) - 1  # newest potentially incomplete bar is excluded
     assert events[2]["swing_high_confirmed"] is False
     assert events[3]["swing_high_confirmed"] is True
     assert events[2]["fvg"]["type"] == "BULLISH_FVG"

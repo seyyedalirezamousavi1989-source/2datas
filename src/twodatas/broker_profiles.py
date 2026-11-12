@@ -193,6 +193,7 @@ def resolve_profile_for_archive(
             "path": selected.name,
             "sha256": hashlib.sha256(raw).hexdigest(),
             "symbol_aliases": aliases,
+            "instrument_specs": {key: value.as_dict() for key, value in instrument_specs.items()},
         }
 
     profile = resolve_profile(

@@ -12,7 +12,7 @@ from .quality import audit_file
 
 SCHEMA_VERSION = "market-bars-0.2.0"
 FIELDS = [
-    "schema_version", "instrument", "timeframe", "source_file", "source_sha256",
+    "schema_version", "instrument", "source_instrument", "timeframe", "source_file", "source_sha256",
     "source_row_number", "source_timestamp", "timestamp_precision", "timestamp_timezone",
     "timestamp_utc", "timestamp_resolution_status", "broker_profile_id", "broker_name", "server_name",
     "server_timezone", "bar_timestamp_convention",
@@ -69,6 +69,7 @@ def normalize_archive(
                     writer.writerow({
                         "schema_version": SCHEMA_VERSION,
                         "instrument": bar.instrument,
+                        "source_instrument": bar.source_instrument,
                         "timeframe": bar.timeframe,
                         "source_file": bar.source_file,
                         "source_sha256": result.source_sha256,

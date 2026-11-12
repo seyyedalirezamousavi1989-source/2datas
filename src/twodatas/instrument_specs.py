@@ -161,6 +161,7 @@ def spec_values_for_bar(
     specs: dict[str, list[InstrumentSpec]],
     source_symbol: str,
     source_timestamp: str,
+    spread_raw: str | float | None = None,
 ) -> dict[str, str]:
     """Return normalized, explicit metadata; never infer missing contract values."""
     item, status, spec_id = resolve_instrument_spec(specs, source_symbol, source_timestamp)
@@ -176,6 +177,8 @@ def spec_values_for_bar(
         "price_currency": "",
         "profit_currency": "",
         "spread_unit": "",
+        "spread_raw": "" if spread_raw is None else str(spread_raw),
+        "spread_points": "",
         "spread_price": "",
         "volume_semantics": "",
         "tick_value": "",
@@ -183,7 +186,6 @@ def spec_values_for_bar(
     }
     if item is None:
         return empty
-    spread_raw = None
     empty.update({
         "instrument_spec_effective_from": item.effective_from,
         "instrument_spec_effective_to": item.effective_to or "",

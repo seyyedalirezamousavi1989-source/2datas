@@ -9,6 +9,7 @@ from .quality import audit_archive
 from .normalize import normalize_archive
 from .alignment import audit_timeframe_alignment
 from .price_action import compute_price_action_features
+from .broker_profiles import resolve_profile
 
 
 def main() -> None:
@@ -30,6 +31,10 @@ def main() -> None:
     features = sub.add_parser("features", help="Generate causal price-action feature events")
     features.add_argument("archive", type=Path)
     features.add_argument("--output-dir", type=Path, default=Path("data/features/price_action"))
+    features.add_argument("--broker-profile", default=None)
+    features.add_argument("--broker-name", default=None)
+    features.add_argument("--server-timezone", default=None)
+    features.add_argument("--bar-timestamp-convention", choices=["interval_start", "interval_end"], default=None)
     args = parser.parse_args()
 
     if args.command == "audit":
@@ -42,9 +47,10 @@ def main() -> None:
         print(json.dumps({"status": "MATERIALIZED", "total_rows": result["total_rows"], "manifest": str(args.output_dir / "manifest.json")}, ensure_ascii=False))
     elif args.command == "features":
         args.output_dir.mkdir(parents=True, exist_ok=True)
+        profile = resolve_profile(args.broker_profile, broker_name=args.broker_name, server_timezone=args.server_timezone, bar_timestamp_convention=args.bar_timestamp_convention)
         summaries = []
         for source in read_zip(str(args.archive)):
-            rows = compute_price_action_features(source.rows)
+            rows = compute_price_action_features(source.rows, broker_profile=profile)
             instrument = source.rows[0].instrument if source.rows else "UNKNOWN"
             target = args.output_dir / f"{instrument}_{source.timeframe}.jsonl"
             with target.open("w", encoding="utf-8") as handle:

@@ -5,6 +5,7 @@ on:
     paths:
       - "schemas/provenance/**"
       - "schemas/data/**"
+      - "schemas/reports/**"
       - "tools/**"
       - "tests/**"
       - "requirements-dev.txt"
@@ -13,6 +14,7 @@ on:
     paths:
       - "schemas/provenance/**"
       - "schemas/data/**"
+      - "schemas/reports/**"
       - "tools/**"
       - "tests/**"
       - "requirements-dev.txt"

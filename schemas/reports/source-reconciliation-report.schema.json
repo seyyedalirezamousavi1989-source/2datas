@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2datas.example/schemas/reports/source-reconciliation-report.schema.json",
+  "title": "Source Reconciliation Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_schema_version",
+    "engine_version",
+    "comparison_policy",
+    "summary",
+    "provider_statistics",
+    "observations"
+  ],
+  "properties": {
+    "report_schema_version": {
+      "const": "1.0.0"
+    },
+    "engine_version": {
+      "const": "1.0.0"
+    },
+    "comparison_policy": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "provider_statistics": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

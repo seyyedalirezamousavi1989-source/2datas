@@ -186,3 +186,44 @@ def test_published_alpari_mt5_server_profile_applies_seasonal_clock():
     assert summer == "2024-07-15T07:00:00+00:00"
     assert winter_status == "RESOLVED_INTERVAL_START"
     assert summer_status == "RESOLVED_INTERVAL_START"
+
+
+def test_broker_sidecar_is_auto_discovered_and_hashed(tmp_path):
+    import json
+    from twodatas.broker_profiles import resolve_profile_for_archive, to_utc
+
+    archive = tmp_path / "broker_export.zip"
+    archive.write_bytes(b"placeholder")
+    sidecar = tmp_path / "broker_export.zip.broker.json"
+    sidecar.write_text(json.dumps({
+        "schema_version": "2datas-broker-clock-1",
+        "broker_name": "Example Broker",
+        "server_name": "Example-Live-02",
+        "server_timezone": "America/New_York",
+        "bar_timestamp_convention": "interval_start",
+    }))
+    profile, source = resolve_profile_for_archive(str(archive))
+    assert profile.status == "user_configured"
+    assert profile.server_name == "Example-Live-02"
+    assert source["mode"] == "sidecar"
+    assert source["sha256"]
+    utc_value, status = to_utc("2024.01.15 10:00:00", "second", profile)
+    assert utc_value == "2024-01-15T15:00:00+00:00"
+    assert status == "RESOLVED_INTERVAL_START"
+
+
+def test_broker_sidecar_conflicts_are_rejected(tmp_path):
+    import json
+    import pytest
+    from twodatas.broker_profiles import resolve_profile_for_archive
+
+    archive = tmp_path / "source.zip"
+    archive.write_bytes(b"placeholder")
+    (tmp_path / "source.zip.broker.json").write_text(json.dumps({
+        "schema_version": "2datas-broker-clock-1",
+        "server_name": "Server-A",
+        "server_timezone": "UTC+02:00",
+        "bar_timestamp_convention": "interval_start",
+    }))
+    with pytest.raises(ValueError, match="Do not mix"):
+        resolve_profile_for_archive(str(archive), server_name="Server-B")

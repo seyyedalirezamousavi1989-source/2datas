@@ -32,7 +32,8 @@ def normalize_archive(
     archive_path: str,
     output_dir: str,
     *,
-    broker_config_path: str | None = None,\n    broker_profile_id: str | None = None,
+    broker_config_path: str | None = None,
+    broker_profile_id: str | None = None,
     broker_name: str | None = None,
     server_name: str | None = None,
     server_timezone: str | None = None,
@@ -42,11 +43,9 @@ def normalize_archive(
     root = Path(output_dir)
     root.mkdir(parents=True, exist_ok=True)
     partitions = []
-    profile = resolve_profile(
-        broker_profile_id,
-        broker_name=broker_name,
-        server_name=server_name,
-        server_timezone=server_timezone,
+    profile, broker_config = resolve_profile_for_archive(
+        archive_path, config_path=broker_config_path, profile_id=broker_profile_id,
+        broker_name=broker_name, server_name=server_name, server_timezone=server_timezone,
         bar_timestamp_convention=bar_timestamp_convention,
     )
 
@@ -116,7 +115,8 @@ def normalize_archive(
         "schema_version": SCHEMA_VERSION,
         "normalizer_version": "0.2.0",
         "source_archive_sha256": _sha256(Path(archive_path)),
-        "broker_config": broker_config,\n        "broker_profile": {
+        "broker_config": broker_config,\n        "broker_config": broker_config,
+        "broker_profile": {
             "profile_id": profile.profile_id,
             "broker_name": profile.broker_name,
             "server_name": profile.server_name,

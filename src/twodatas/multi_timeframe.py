@@ -32,7 +32,7 @@ def load_feature_events(features_dir: str) -> tuple[dict[str, dict[str, list[dic
     if not manifest_path.is_file():
         raise FileNotFoundError(f"Feature manifest missing: {manifest_path}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if manifest.get("feature_version") != "price-action-0.2.0":
+    if manifest.get("feature_version") != "price-action-0.3.0":
         raise ValueError("Unsupported or missing feature manifest version")
     partitions = manifest.get("partitions")
     if not isinstance(partitions, list) or not partitions:

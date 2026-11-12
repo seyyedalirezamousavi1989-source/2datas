@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2datas.example/schemas/provenance/artifact-manifest.schema.json",
+  "title": "2datas Immutable Artifact Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_id",
+    "artifact_type",
+    "schema_version",
+    "created_at",
+    "content",
+    "reproducibility_level",
+    "status"
+  ],
+  "properties": {
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_type": {
+      "enum": [
+        "source_artifact",
+        "source_record_group",
+        "normalized_bars",
+        "derived_features",
+        "chart_snapshot",
+        "label_artifact",
+        "dataset_build",
+        "split_manifest",
+        "evaluation_report",
+        "model_artifact",
+        "other"
+      ]
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "producer_run_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sha256"
+      ],
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "byte_size": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "record_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "media_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "serialization_format": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "compression": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "parents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_id",
+          "relationship"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string"
+          },
+          "relationship": {
+            "enum": [
+              "derived_from",
+              "normalized_from",
+              "labeled_from",
+              "included_in",
+              "supersedes",
+              "other"
+            ]
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "source": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "provider_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "license_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "permitted_use": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_locator": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "reproducibility_level": {
+      "enum": [
+        "R0_TRACEABLE",
+        "R1_REPEATABLE",
+        "R2_BITWISE",
+        "R3_STATISTICAL"
+      ]
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "candidate",
+        "accepted",
+        "quarantined",
+        "rejected",
+        "superseded"
+      ]
+    },
+    "supersedes_artifact_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

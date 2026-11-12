@@ -12,9 +12,10 @@
       "source_file": "XAUUSD_Daily_202011110000_202611100000.csv",
       "source_sha256": "bee6ced85602ab97742c26ca41be063c079f4e3d284c4f0be1f60acedacea76b",
       "normalized_sha256": "71cfde8060e26df10f324e2f81edec86cbd9a04e2fe6d18a938cce2b9bb18b22",
-      "quality_status": "PASS",
+      "quality_status": "STRUCTURAL_PASS",
       "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN"
+      "bar_timestamp_semantics": "UNKNOWN",
+      "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     },
     {
       "timeframe": "H1",
@@ -23,9 +24,10 @@
       "source_file": "XAUUSD_H1_202011110100_202611102300.csv",
       "source_sha256": "310675c9b61b86153768b4615b969bc588997b1c6117b979c61c51e11991cd39",
       "normalized_sha256": "559f6c6847dc2846ac9ad1b0a232043a31a963be11b2863dd5a3b99f3eed83e6",
-      "quality_status": "PASS",
+      "quality_status": "STRUCTURAL_PASS",
       "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN"
+      "bar_timestamp_semantics": "UNKNOWN",
+      "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     },
     {
       "timeframe": "H4",
@@ -34,9 +36,10 @@
       "source_file": "XAUUSD_H4_202011110000_202611102000.csv",
       "source_sha256": "0231127d4928aa40ee304021342468045b2b6235cf218d933c93b06e223418d5",
       "normalized_sha256": "27b47dfd6d7b7743676b33d490380b277b3626d43ac3b755711614ed28087c6f",
-      "quality_status": "PASS",
+      "quality_status": "STRUCTURAL_PASS",
       "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN"
+      "bar_timestamp_semantics": "UNKNOWN",
+      "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     },
     {
       "timeframe": "M15",
@@ -45,9 +48,10 @@
       "source_file": "XAUUSD_M15_202011110100_202611102345.csv",
       "source_sha256": "0d8490c9769849fb7632848552663742a6ed9ee18737699783c99ed997844612",
       "normalized_sha256": "2ffc474e7ba445aa294079ed4235365bee0b5180b89b9ebbcf705b3817d6bf2c",
-      "quality_status": "PASS",
+      "quality_status": "STRUCTURAL_PASS",
       "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN"
+      "bar_timestamp_semantics": "UNKNOWN",
+      "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     },
     {
       "timeframe": "M30",
@@ -56,9 +60,10 @@
       "source_file": "XAUUSD_M30_202011110100_202611102330.csv",
       "source_sha256": "e7177dd9daab8c95a371b64498bee58da3eeb175b60564b8250b761ae5156d9d",
       "normalized_sha256": "d2b276cff055e5a6e547003df7bc8d20706edf1c3831bd17de5d0800c8d3f85d",
-      "quality_status": "PASS",
+      "quality_status": "STRUCTURAL_PASS",
       "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN"
+      "bar_timestamp_semantics": "UNKNOWN",
+      "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     },
     {
       "timeframe": "M5",
@@ -67,9 +72,10 @@
       "source_file": "XAUUSD_M5_202011110105_202611102350.csv",
       "source_sha256": "8a4c315e12c487944b13b3c78b456052c3748258011a7aa608fcd361c10905f3",
       "normalized_sha256": "2b4581992b97987d68826a4625e408450afc822150eff81a4620afb68b5a9990",
-      "quality_status": "PASS",
+      "quality_status": "STRUCTURAL_PASS",
       "timezone": "UNKNOWN",
-      "bar_timestamp_semantics": "UNKNOWN"
+      "bar_timestamp_semantics": "UNKNOWN",
+      "admission_status": "PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
     }
   ],
   "total_rows": 681227,
@@ -78,5 +84,6 @@
     "No missing intervals were imputed.",
     "No features, labels, synthetic samples or trading decisions were generated.",
     "Numeric source fields are parsed and serialized as round-trip decimal text; original archive hash and source row references preserve traceability."
-  ]
+  ],
+  "dataset_admission_status": "NOT_ADMITTED_PENDING_SOURCE_SEMANTICS_AND_RIGHTS_REVIEW"
 }

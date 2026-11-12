@@ -4,7 +4,7 @@
 
 This document consolidates the current Phase 0 design into one navigable architecture and records cross-document overlap, unresolved semantics and phase dependencies.
 
-**Design/documentation only.** This is a desk review of the specifications in this repository, not a data audit or implementation audit. No source archive (including XAUUSD.zip) has been opened or validated. No market data, labels, samples, pipeline, benchmark or model has been produced. The separate Stage 5 project and AURORA QUANT remain untouched.
+**Mixed status: design audit plus first implementation/source audit.** The user-provided XAUUSD.zip has been inspected, structurally audited and normalized into six local timeframe partitions (681,227 rows total). The repository now contains the ingestion/normalization code, tests, initial source audit and normalized manifest. No market features, outcome labels, benchmark or model has yet been produced. The separate `datas` repository and AURORA QUANT remain untouched; 2datas has no Stage 5 compatibility dependency.
 
 This document is a coordination layer; it does not silently override detailed contracts. If two specifications disagree, the conflict must be resolved in the decision log and the affected document versions updated before schema freeze.
 
@@ -115,7 +115,7 @@ The following is the current desk-review result. “Aligned” means the documen
 | Topic | Primary authority | Related documents | Current finding | Required action before freeze |
 |---|---|---|---|---|
 | Scope and phase gates | PROJECT_CHARTER | README, DECISION_LOG | Aligned | Keep approval gates explicit |
-| Layered architecture | ARCHITECTURE | DATA_MODEL, SOURCE_FEASIBILITY, PROVENANCE | Aligned at conceptual level | Map physical boundaries only after Stage 5/source review |
+| Layered architecture | ARCHITECTURE | DATA_MODEL, SOURCE_FEASIBILITY, PROVENANCE | Aligned at conceptual level | Map physical boundaries after this project's own source-feasibility review |
 | A–M vs T01–T11 | TASK_TO_SCHEMA_MAPPING | TASK_CATALOG, TASK_IO_CONTRACTS | Compatible, intentional grouping | Preserve A–M traceability in any future task removal |
 | Canonical entities | DATA_MODEL_AND_SCHEMA_CONTRACTS | TASK_TO_SCHEMA_MAPPING, ARCHITECTURE | Compatible logical model | Resolve exact field types/requiredness after source feasibility |
 | Forecast vs policy | FORECAST_TARGET_ENGINEERING | LABEL_SPECIFICATION, TASK_IO_CONTRACTS, SCENARIO_SPECIFICATION | Aligned | Keep event spaces and policy labels separately versioned |
@@ -178,7 +178,7 @@ These items remain intentionally unresolved:
 14. Episode clustering and purge/embargo rules based on actual target horizons and source latency.
 15. Effective sample adequacy and confidence interval methods for each task.
 16. Storage technology, physical formats, retention and access controls.
-17. Which Stage 5 schemas and outputs must be reused, adapted or excluded after its independent acceptance.
+17. Which independently licensed source feeds and broker-specific records are admissible under 2datas contracts.
 
 ## 9. Recommended minimum core vs conditional extensions
 
@@ -222,7 +222,7 @@ Phase 0 should not be declared complete merely because documents exist. Before r
 - Target horizons, purge and embargo can be expressed without contradictory rules.
 - Provenance/versioning covers all transformations and evaluations.
 - All unresolved decisions are listed with owner and decision gate.
-- The Stage 5 compatibility gate remains pending until independent completion and acceptance.
+- This project is self-contained and has no cross-repository Stage 5 compatibility gate.
 - The user reviews and explicitly approves the frozen design before any next phase.
 
 ## 11. Next design work
@@ -280,7 +280,7 @@ The temporal contract defines a MarketSnapshot as an immutable point-in-time sel
 - It separates risk_calculation_status from constraint_outcome and defines freshness, expiry, mandatory recalculation and fail-closed behavior.
 - T04/T05/T06 consumption boundaries are specified.
 
-**Remaining gate:** verify the actual deterministic engine interface, formulas, broker-specific instrument specifications, conversion/cost sources and authorization controls only after Stage 5 acceptance and separate user approval. No implementation is authorized by this design contract.
+**Remaining gate:** verify the actual deterministic engine interface, formulas, broker-specific instrument specifications, conversion/cost sources and authorization controls after source feasibility and the relevant 2datas review gate. No implementation is authorized by this design contract.
 
 ### 12.7 Resolved provisionally: T01/T09 semantic boundary
 
@@ -333,7 +333,7 @@ The current documents correctly reject random splitting and fixed universal samp
 - Derived projections inherit parent dependency groups; overlapping future paths are grouped before chronological split assignment.
 - Purge/embargo is derived from actual target horizons, confirmation delays and source revision/availability bounds; no arbitrary fixed bar count is approved.
 
-**Remaining gate:** exact horizons, source-latency/revision bounds, grouping thresholds, chronological dates, purge/embargo durations and effective independent sample counts remain unfrozen until Stage 5 acceptance and source feasibility.
+**Remaining gate:** exact horizons, source-latency/revision bounds, grouping thresholds, chronological dates, purge/embargo durations and effective independent sample counts remain unfrozen until source feasibility and target-specific review.
 
 ## 13. Consolidated freeze blockers
 
@@ -345,7 +345,7 @@ Phase 0 cannot be declared design-frozen until the following are resolved and re
 5. T01/T09 merge decision based on distinct target and downstream consumer.
 6. Complete task-to-field registry and task projection consistency.
 7. Target-dependent episode clustering, purge and embargo rules after horizons are selected.
-8. Stage 5 compatibility after independent acceptance and audit of actual deliverables.
+8. Source provenance, rights, timezone and broker/bar semantics for the supplied XAUUSD archive.
 9. Source feasibility, point-in-time availability and rights after explicit authorization.
 10. User review and explicit design-freeze approval.
 
@@ -360,7 +360,7 @@ That audit should verify that:
 - task catalog, A–M mapping and T01–T11 I/O contracts agree;
 - all status/action terms use the canonical scoped domains;
 - target projections, episode grouping and split rules do not double-count shared paths;
-- no document silently assumes source availability, broker behavior, model authority or completed Stage 5 compatibility;
+- no document silently assumes source availability, broker behavior, model authority or dependencies on another repository;
 - unresolved decisions are explicitly listed with the evidence/approval gate that can resolve them.
 
 The outcome should be a truthful readiness report: ready for user design review, not automatically ready for data generation or training.
@@ -369,4 +369,4 @@ The outcome should be a truthful readiness report: ready for user design review,
 
 The conceptual architecture is coherent and consistently prioritizes causal evidence, target separation, deterministic risk authority, provenance and information efficiency. However, the documents are not yet ready to be frozen: the blockers in Section 13 must be reconciled first. The presence of extensive documentation is not evidence of source feasibility, label reliability, empirical usefulness, or implementation correctness.
 
-No source archive has been inspected; no market data, sample, label, benchmark, pipeline or model has been produced. The separate Stage 5 project and AURORA QUANT remain untouched. This audit does not authorize progression to another phase.
+The supplied archive has been inspected and a normalized base-bar dataset has been generated locally. No feature/target labels, benchmark or model has yet been produced. The separate `datas` repository and AURORA QUANT remain untouched. Dataset admission remains pending source semantics and rights review.

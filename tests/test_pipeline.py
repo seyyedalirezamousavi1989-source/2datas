@@ -361,3 +361,35 @@ def test_mtf_loader_verifies_feature_partition_checksum_and_lineage(tmp_path):
     import pytest
     with pytest.raises(ValueError, match="checksum mismatch"):
         load_feature_events(str(tmp_path))
+
+
+def test_broker_neutral_csv_delimiters_and_header_aliases():
+    from twodatas.ingest import read_mt5_csv
+
+    comma = (
+        "date,time,open,high,low,close,tick_volume,real_volume,spread_points\n"
+        "2024-01-01,10:05,2000,2002,1999,2001,120,0,12\n"
+    ).encode()
+    result = read_mt5_csv(comma, "GOLD_M5_export.csv")
+    assert result.rows[0].source_timestamp == "2024.01.01 10:05:00"
+    assert result.rows[0].tick_volume == 120
+    assert result.rows[0].spread_points == 12
+
+    semicolon = (
+        "DATE;TIME;OPEN;HIGH;LOW;CLOSE;TICKVOL;VOL;SPREAD\n"
+        "2024.01.01;10:05:00;2000;2002;1999;2001;120;0;12\n"
+    ).encode()
+    second = read_mt5_csv(semicolon, "XAUUSD_M5_export.csv")
+    assert second.rows[0].close == 2001
+
+
+def test_market_csv_does_not_guess_tick_volume_from_generic_volume():
+    import pytest
+    from twodatas.ingest import read_mt5_csv
+
+    payload = (
+        "date,time,open,high,low,close,volume,spread\n"
+        "2024-01-01,10:05,2000,2002,1999,2001,120,12\n"
+    ).encode()
+    with pytest.raises(ValueError, match="TICKVOL"):
+        read_mt5_csv(payload, "XAUUSD_M5_export.csv")

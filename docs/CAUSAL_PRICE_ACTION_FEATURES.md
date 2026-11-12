@@ -13,10 +13,10 @@ This is a compact initial feature implementation, not a claim that SMC terminolo
 - Confirmed swing highs/lows: a pivot is emitted only after the configured right-side bars have closed; event availability is the confirmation bar, not the pivot origin. Exact UTC availability is emitted only when the broker profile resolves the source timestamp and interval convention; interval-start intraday bars become available at the calculated close, while daily/weekly/monthly starts require a session calendar.
 - BOS: close through the latest confirmed swing high/low.
 - CHoCH: opposite-direction BOS after a previously observed BOS direction.
-- Three-candle FVG: bullish when current low exceeds high two bars earlier; bearish when current high is below low two bars earlier. Minimum gap is ATR-scaled.
+- Three-candle FVG: bullish when current low exceeds high two bars earlier; bearish when current high is below low two bars earlier. Minimum gap is ATR-scaled. Subsequent bars update zone fill fraction and distinguish partial fill, full fill and close-through invalidation.
 - Equal-high/equal-low liquidity-pool candidates: confirmed swing levels within ATR-scaled tolerance.
 - Liquidity sweep: wick beyond a confirmed swing followed by close back through the level on the same candle. This is a price-action proxy, not evidence of actual resting orders.
-- Order-block candidate: last opposite-colour candle within a fixed lookback before a close-through BOS. It is a heuristic zone, not proof of institutional activity.
+- Order-block candidate: last opposite-colour candle within a fixed lookback before a close-through BOS. Subsequent bars track first mitigation/touch and close-through invalidation. It is a heuristic zone, not proof of institutional activity.
 - Material price discontinuity candidate: open/prior-close difference at least 0.10 current ATR. Session/weekend gap classification awaits broker calendar/timezone resolution.
 
 ## Explicit exclusions from first implementation
@@ -25,7 +25,7 @@ No future swing is exposed before confirmation; no "institutional order" is infe
 
 ## CLI
 
-Run `2datas features path/to/export.zip --output-dir data/features/price_action` to create one JSONL feature-event file per source symbol/timeframe. Supply the same `--broker-profile` or explicit `--server-name`, `--server-timezone` and `--bar-timestamp-convention` options used for normalization to resolve feature availability. This is a candidate research artifact, not a training dataset.
+Run `2datas features path/to/export.zip --output-dir data/features/price_action` to create one JSONL feature-event file per source symbol/timeframe. A matching broker sidecar is discovered automatically; otherwise pass explicit broker clock options. The sidecar SHA-256 and broker profile are included in the manifest. This is a candidate research artifact, not a training dataset.
 
 ## Admission policy
 

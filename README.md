@@ -56,6 +56,7 @@ Maximize verified information value per example—not row count, feature count, 
 - [Integrated architecture and consistency audit](docs/phase-0/INTEGRATED_ARCHITECTURE_AND_CONSISTENCY_AUDIT.md) — canonical layer ownership, A–M/T01–T11 reconciliation, task boundaries, dependencies and unresolved design decisions.
 - [Data quality principles](docs/phase-0/DATA_QUALITY_PRINCIPLES.md) — inclusion, deduplication, leakage, validation.
 - [Provenance validator implementation](docs/phase-0/PROVENANCE_VALIDATOR_IMPLEMENTATION.md) — executable schema and semantic checks, local test instructions, and validation limits.
+- [Artifact integrity engine](docs/phase-0/ARTIFACT_INTEGRITY_ENGINE.md) — read-only SHA-256 and byte-size verification for explicitly selected local artifacts.
 - [Decision log](docs/phase-0/DECISION_LOG.md) — recorded decisions and unresolved questions.
 
 ## Provenance schema contracts

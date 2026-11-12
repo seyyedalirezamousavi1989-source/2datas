@@ -227,3 +227,28 @@ def test_broker_sidecar_conflicts_are_rejected(tmp_path):
     }))
     with pytest.raises(ValueError, match="Do not mix"):
         resolve_profile_for_archive(str(archive), server_name="Server-B")
+
+
+def test_fvg_zone_tracks_partial_fill_and_invalidation_without_lookahead():
+    from twodatas.ingest import read_mt5_csv
+    from twodatas.price_action import compute_price_action_features
+
+    header = ["<DATE>", "<TIME>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"]
+    rows = [
+        ["2024.01.01", "10:00:00", "10.0", "10.5", "9.8", "10.2", "10", "0", "1"],
+        ["2024.01.01", "10:01:00", "10.2", "10.8", "10.1", "10.6", "11", "0", "1"],
+        ["2024.01.01", "10:02:00", "11.8", "12.5", "11.5", "12.2", "12", "0", "1"],
+        ["2024.01.01", "10:03:00", "12.2", "12.4", "11.8", "12.0", "13", "0", "1"],
+        ["2024.01.01", "10:04:00", "11.4", "11.8", "11.0", "11.2", "14", "0", "1"],
+        ["2024.01.01", "10:05:00", "10.8", "11.0", "10.2", "10.3", "15", "0", "1"],
+        ["2024.01.01", "10:06:00", "10.3", "10.6", "10.1", "10.4", "16", "0", "1"],
+    ]
+    payload = (chr(10).join([chr(9).join(header)] + [chr(9).join(row) for row in rows]) + chr(10)).encode()
+    source = read_mt5_csv(payload, "XAUUSD_M1_lifecycle.csv")
+    events = compute_price_action_features(source.rows, atr_period=2)
+    created = events[2]["fvg"]
+    assert created["status"] == "ACTIVE"
+    assert events[4]["fvg_zone_updates"][0]["status"] == "PARTIALLY_FILLED"
+    assert events[4]["fvg_zone_updates"][0]["fill_fraction"] > 0
+    assert events[5]["fvg_zone_updates"][0]["status"] == "INVALIDATED"
+    assert events[5]["fvg_zone_updates"][0]["invalidated"] is True

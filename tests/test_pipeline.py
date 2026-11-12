@@ -175,17 +175,33 @@ def test_fixed_offset_server_clock_is_supported_when_explicit():
     assert status == "RESOLVED_INTERVAL_START"
 
 
-def test_published_alpari_mt5_server_profile_applies_seasonal_clock():
+def test_alpari_profile_is_not_verified_from_account_or_server_name_alone():
     from twodatas.broker_profiles import resolve_profile, to_utc
 
-    profile = resolve_profile("alpari_mt5_candidate", server_name="Alpari-MT5")
-    assert profile.status == "verified"
-    winter, winter_status = to_utc("2024.01.15 10:00:00", "second", profile)
-    summer, summer_status = to_utc("2024.07.15 10:00:00", "second", profile)
-    assert winter == "2024-01-15T08:00:00+00:00"
-    assert summer == "2024-07-15T07:00:00+00:00"
-    assert winter_status == "RESOLVED_INTERVAL_START"
-    assert summer_status == "RESOLVED_INTERVAL_START"
+    profile = resolve_profile("alpari_mt5_candidate", server_name="Any-Alpari-Server")
+    assert profile.status == "candidate_unverified"
+    winter, status = to_utc("2024.01.15 10:00:00", "second", profile)
+    assert winter is None
+    assert status == "BROKER_PROFILE_NOT_VERIFIED"
+
+
+def test_broker_sidecar_does_not_require_account_or_server_identity(tmp_path):
+    import json
+    from twodatas.broker_profiles import resolve_profile_for_archive, to_utc
+
+    archive = tmp_path / "generic_export.zip"
+    archive.write_bytes(b"placeholder")
+    (tmp_path / "generic_export.zip.broker.json").write_text(json.dumps({
+        "schema_version": "2datas-broker-clock-1",
+        "server_timezone": "Europe/Helsinki",
+        "bar_timestamp_convention": "interval_start",
+    }))
+    profile, _ = resolve_profile_for_archive(str(archive))
+    assert profile.status == "user_configured"
+    assert profile.server_name is None
+    value, status = to_utc("2024.01.15 10:00:00", "second", profile)
+    assert value == "2024-01-15T08:00:00+00:00"
+    assert status == "RESOLVED_INTERVAL_START"
 
 
 def test_broker_sidecar_is_auto_discovered_and_hashed(tmp_path):

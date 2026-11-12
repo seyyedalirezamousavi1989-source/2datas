@@ -157,3 +157,15 @@ def test_normalizer_records_configured_broker_time_contract(tmp_path):
     assert record["server_name"] == "Example-MT5"
     assert manifest["broker_profile"]["server_name"] == "Example-MT5"
     assert manifest["broker_profile"]["status"] == "user_configured"
+
+
+def test_fixed_offset_server_clock_is_supported_when_explicit():
+    from twodatas.broker_profiles import resolve_profile, to_utc
+
+    profile = resolve_profile(
+        broker_name="FixedOffsetBroker", server_name="MT5-Server",
+        server_timezone="UTC+02:00", bar_timestamp_convention="interval_start",
+    )
+    utc_value, status = to_utc("2024.01.15 10:00:00", "second", profile)
+    assert utc_value == "2024-01-15T08:00:00+00:00"
+    assert status == "RESOLVED_INTERVAL_START"

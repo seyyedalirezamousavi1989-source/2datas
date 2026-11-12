@@ -4,7 +4,7 @@
 
 This document consolidates the current Phase 0 design into one navigable architecture and records cross-document overlap, unresolved semantics and phase dependencies.
 
-**Mixed status: design audit plus first implementation/source audit.** The user-provided XAUUSD.zip has been inspected, structurally audited and normalized into six local timeframe partitions (681,227 rows total). The repository now contains the ingestion/normalization code, tests, initial source audit and normalized manifest. No market features, outcome labels, benchmark or model has yet been produced. The separate `datas` repository and AURORA QUANT remain untouched; 2datas has no Stage 5 compatibility dependency.
+**Mixed status: design audit plus first implementation/source audit.** The user-provided XAUUSD.zip has been inspected, structurally audited and normalized into six local timeframe partitions (681,227 rows total). The repository now contains the ingestion/normalization code, tests, initial source audit and normalized manifest. No market features, outcome labels, benchmark or model has yet been produced. The separate `datas` repository and AURORA QUANT remain untouched; 2datas is self-contained and has no cross-repository dependency.
 
 This document is a coordination layer; it does not silently override detailed contracts. If two specifications disagree, the conflict must be resolved in the decision log and the affected document versions updated before schema freeze.
 
@@ -184,7 +184,7 @@ These items remain intentionally unresolved:
 
 ### Minimum core candidate
 
-Subject to source feasibility and Stage 5 compatibility:
+Subject to this project's source feasibility review:
 - consistent source-identified OHLC observations;
 - exact UTC/event/availability semantics;
 - canonical decision-time snapshots;

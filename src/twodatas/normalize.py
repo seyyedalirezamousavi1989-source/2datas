@@ -8,7 +8,8 @@ from pathlib import Path
 
 from .broker_profiles import resolve_profile_for_archive, to_utc
 from .ingest import read_zip
-from .quality import audit_file\nfrom .instrument_specs import validate_instrument_specs, audit_instrument_specs
+from .quality import audit_file
+from .instrument_specs import validate_instrument_specs, audit_instrument_specs
 
 SCHEMA_VERSION = "market-bars-0.3.0"
 FIELDS = [

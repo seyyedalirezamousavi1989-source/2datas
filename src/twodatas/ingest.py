@@ -122,6 +122,7 @@ def read_mt5_csv(
     *,
     instrument: str | None = None,
     timeframe: str | None = None,
+    symbol_aliases: dict[str, str] | None = None,
 ) -> FileIngestResult:
     """Read MT5-style market-bar CSV exports with tab/comma/semicolon delimiters.
 
@@ -135,7 +136,8 @@ def read_mt5_csv(
     inferred_timeframe = timeframe or (match.group("timeframe") if match else None)
     normalized_timeframe = "D1" if inferred_timeframe.lower() == "daily" else inferred_timeframe.upper()
     inferred_instrument = match.group("symbol").upper() if match else None
-    normalized_instrument = (instrument or inferred_instrument or "").upper()
+    aliases = {key.upper(): value.upper() for key, value in (symbol_aliases or {}).items()}
+    normalized_instrument = (instrument or aliases.get(inferred_instrument or "", inferred_instrument or "")).upper()
     if not normalized_instrument:
         raise ValueError(f"Cannot infer instrument from filename; provide an explicit instrument: {source_file}")
 
@@ -180,6 +182,7 @@ def read_zip(
     *,
     instrument: str | None = None,
     timeframe_overrides: dict[str, str] | None = None,
+    symbol_aliases: dict[str, str] | None = None,
 ) -> Iterator[FileIngestResult]:
     with zipfile.ZipFile(path) as archive:
         members = sorted(name for name in archive.namelist() if name.lower().endswith(".csv"))
@@ -188,5 +191,6 @@ def read_zip(
         for member in members:
             override = (timeframe_overrides or {}).get(member)
             yield read_mt5_csv(
-                archive.read(member), member, instrument=instrument, timeframe=override
+                archive.read(member), member, instrument=instrument, timeframe=override,
+                symbol_aliases=symbol_aliases,
             )

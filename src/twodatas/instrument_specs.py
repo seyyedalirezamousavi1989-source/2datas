@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from datetime import date, timedelta
 from decimal import Decimal, InvalidOperation
+import hashlib
+import json
 from typing import Any
 
 
@@ -127,6 +129,76 @@ def validate_instrument_specs(raw: Any) -> dict[str, list[InstrumentSpec]]:
         result[normalized_symbol] = validated
     return result
 
+
+
+def resolve_instrument_spec(
+    specs: dict[str, list[InstrumentSpec]],
+    source_symbol: str,
+    source_timestamp: str,
+) -> tuple[InstrumentSpec | None, str, str | None]:
+    """Resolve the exact source-symbol contract effective on the source-local bar date."""
+    symbol = source_symbol.strip().upper()
+    if not symbol:
+        return None, "INVALID_SOURCE_SYMBOL", None
+    try:
+        observation_date = date.fromisoformat(source_timestamp.split()[0].replace(".", "-"))
+    except (ValueError, IndexError):
+        return None, "INVALID_SOURCE_TIMESTAMP", None
+    history = specs.get(symbol)
+    if not history:
+        return None, "SPEC_NOT_CONFIGURED", None
+    for item in history:
+        start = date.fromisoformat(item.effective_from)
+        end = date.fromisoformat(item.effective_to) if item.effective_to else None
+        if start <= observation_date and (end is None or observation_date < end):
+            payload = json.dumps(item.as_dict(), sort_keys=True, separators=(",", ":"))
+            spec_id = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+            return item, "SPEC_MATCHED", spec_id
+    return None, "NO_EFFECTIVE_SPEC_FOR_DATE", None
+
+
+def spec_values_for_bar(
+    specs: dict[str, list[InstrumentSpec]],
+    source_symbol: str,
+    source_timestamp: str,
+) -> dict[str, str]:
+    """Return normalized, explicit metadata; never infer missing contract values."""
+    item, status, spec_id = resolve_instrument_spec(specs, source_symbol, source_timestamp)
+    empty = {
+        "instrument_spec_status": status,
+        "instrument_spec_id": spec_id or "",
+        "instrument_spec_effective_from": "",
+        "instrument_spec_effective_to": "",
+        "instrument_digits": "",
+        "point_size": "",
+        "tick_size": "",
+        "contract_size": "",
+        "price_currency": "",
+        "profit_currency": "",
+        "spread_unit": "",
+        "spread_price": "",
+        "volume_semantics": "",
+        "tick_value": "",
+        "tick_value_currency": "",
+    }
+    if item is None:
+        return empty
+    spread_raw = None
+    empty.update({
+        "instrument_spec_effective_from": item.effective_from,
+        "instrument_spec_effective_to": item.effective_to or "",
+        "instrument_digits": str(item.digits),
+        "point_size": item.point_size,
+        "tick_size": item.tick_size,
+        "contract_size": item.contract_size,
+        "price_currency": item.price_currency,
+        "profit_currency": item.profit_currency,
+        "spread_unit": item.spread_unit,
+        "volume_semantics": item.volume_semantics,
+        "tick_value": item.tick_value or "",
+        "tick_value_currency": item.tick_value_currency or "",
+    })
+    return empty
 
 def audit_instrument_specs(
     specs: dict[str, list[InstrumentSpec]],

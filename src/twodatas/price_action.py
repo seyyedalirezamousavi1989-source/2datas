@@ -68,11 +68,10 @@ def compute_price_action_features(
             elif broker_profile.bar_timestamp_convention == "interval_end":
                 available_at_utc = source_utc
                 availability_status = "RESOLVED_AT_INTERVAL_END"
-            elif bar.timeframe.startswith(("M", "H")):
+            elif bar.timeframe.startswith(("M", "H")) and timeframe_minutes(bar.timeframe) is not None:
                 minutes = timeframe_minutes(bar.timeframe)
-                if minutes is not None:
-                    available_at_utc = (datetime.fromisoformat(source_utc) + timedelta(minutes=minutes)).isoformat()
-                    availability_status = "RESOLVED_AT_INTERVAL_CLOSE"
+                available_at_utc = (datetime.fromisoformat(source_utc) + timedelta(minutes=minutes)).isoformat()
+                availability_status = "RESOLVED_AT_INTERVAL_CLOSE"
             else:
                 availability_status = "SESSION_CALENDAR_REQUIRED_FOR_INTERVAL_CLOSE"
         event = {

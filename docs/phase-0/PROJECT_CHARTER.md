@@ -31,18 +31,25 @@ Research and specification for:
 11. Chart-image reasoning only when images can be synchronized exactly to available source data.
 12. Evidence-based explanations and uncertainty.
 
-## 3. Explicit exclusions
+## 3. Current authorization and exclusions
 
-Until separate written approval:
-- Do not inspect, extract, parse, or process the uploaded XAUUSD.zip.
-- Do not acquire or download market/news data.
-- Do not generate examples, labels, synthetic samples, or datasets.
-- Do not implement a data pipeline or alter project code.
-- Do not train, fine-tune, benchmark expensively, or select a final model.
-- Do not modify AURORA QUANT, Stage 5, or any other repository/project.
-- Do not merge, push to main, rewrite history, or delete existing repository assets.
+The user has authorized active development of this independent 2datas dataset project, including inspection and processing of the user-provided XAUUSD.zip, implementation within this repository, structural source auditing, and creation of traceable normalized market-data artifacts.
 
-The existing XAUUSD.zip in this repository is an uninspected source artifact. Its contents, validity, provenance, and suitability are unknown. Preserve it unchanged.
+Authorized within 2datas:
+- Inspect, extract and process the supplied XAUUSD.zip.
+- Implement ingestion, normalization, quality-control and provenance tooling.
+- Create normalized base-market records and their manifests.
+- Research source semantics and feasibility, then develop causal features, targets and dataset components when their definitions are sufficiently supported.
+- Add tests and CI for this repository.
+
+Still excluded unless separately approved:
+- Modify the separate `datas` repository, the unrelated Stage 5 project, AURORA QUANT, or any other external project.
+- Purchase paid data, accept paid subscriptions, or use private credentials/accounts.
+- Train/fine-tune models or run expensive benchmarks.
+- Deploy a model, connect to live trading, or place/modify broker orders.
+- Merge into `main`, rewrite Git history, or delete existing repository assets without review.
+
+This project is self-contained. It has no prerequisite compatibility gate against another repository or another project's Stage 5 deliverables.
 
 ## 4. Design principles
 
@@ -76,20 +83,19 @@ Every eventual dataset version must be rebuildable from identified source versio
 
 Each phase produces reviewable artifacts and an explicit go/no-go decision.
 
-| Gate | Required evidence | Not authorized by passing |
+| Gate | Required evidence | Next boundary |
 |---|---|---|
-| 0 Design | Approved scope, schemas, causal contract, QC and evaluation protocol | Data access or generation |
-| 1 Compatibility | Independent inspection of accepted Stage 5 deliverables and documented non-overlap | Stage 5 modification |
-| 2 Sources | Source inventory, point-in-time coverage, licensing, limitations | Download/processing |
-| 3 Specification | Frozen schema/feature/label definitions and split protocol | Pipeline execution |
-| 4 Pipeline design | Reviewed implementation plan and test strategy | Dataset generation |
-| 5 Generation | Explicit approval, controlled run manifest | Training |
-| 6 Integrity | Independent QC, leakage and provenance reports | Benchmark claims |
-| 7 Baselines | Frozen protocol, baselines, uncertainty intervals | Training |
-| 8 Acceptance | Independent review and signed acceptance | Training |
-| 9 Readiness | Data/model interface, splits, constraints, reproducibility | Training |
-| 10 Training | Separate explicit approval and run plan | Deployment |
-| 11 Evaluation | Held-out results, calibration, robustness, limitations | Live trading |
+| 0 Scope and design baseline | Approved objective, task priorities, causal and quality contracts | Source admission |
+| 1 Source feasibility | Provenance, rights, timezone/bar semantics, coverage and limitations | Canonical storage |
+| 2 Canonical data foundation | Reproducible normalized records, immutable hashes, schema and QC tests | Feature engineering |
+| 3 Feature and target specification | Causal feature registry, non-redundant target definitions and ambiguity rules | Controlled generation |
+| 4 Dataset construction | Versioned features/targets, episode grouping and chronological split manifests | Independent QC |
+| 5 Integrity and leakage audit | Reproducibility, point-in-time checks, source/label QC and split isolation | Baselines |
+| 6 Baseline evaluation | Frozen baselines, calibration, uncertainty and cost-aware results | Acceptance review |
+| 7 Dataset acceptance | Independent review, limitations and reproducible release | Training readiness |
+| 8 Training readiness | Data/model interface, splits, constraints and reproducibility | Separate training approval |
+| 9 Training | Separate explicit approval and run plan | Model evaluation |
+| 10 Evaluation | Held-out results, calibration, robustness and limitations | No automatic deployment |
 
 No gate advances automatically.
 

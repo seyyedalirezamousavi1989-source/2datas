@@ -98,7 +98,7 @@ def test_alpari_candidate_does_not_silently_resolve_timezone():
 def test_user_configured_timezone_resolves_and_dst_ambiguity_is_quarantined():
     from twodatas.broker_profiles import resolve_profile, to_utc
 
-    profile = resolve_profile(broker_name="ExampleBroker", server_timezone="America/New_York",
+    profile = resolve_profile(broker_name="ExampleBroker", server_name="Example-MT5", server_timezone="America/New_York",
                               bar_timestamp_convention="interval_start")
     utc_value, status = to_utc("2024.01.15 10:00:00", "second", profile)
     assert utc_value == "2024-01-15T15:00:00+00:00"

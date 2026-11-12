@@ -4,7 +4,7 @@ An independent, auditable research dataset project. This repository does not mod
 
 ## Current implementation
 
-- MT5 tab-delimited ZIP ingestion with symbol/timeframe inference from filenames.
+- MT5-style tab/comma/semicolon CSV ingestion with conservative header aliases and symbol/timeframe inference from filenames.
 - Structural OHLC, timestamp, duplicate, volume and spread checks.
 - Deterministic compressed partitions with source hashes and row-level lineage.
 - Broker profile contract with explicit timezone/DST handling. Unknown or ambiguous times are never silently shifted.

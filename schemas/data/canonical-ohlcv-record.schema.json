@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2datas.example/schemas/data/canonical-ohlcv-record.schema.json",
+  "title": "Canonical OHLCV Record",
+  "description": "Versioned canonical serialization contract. Decimal quantities are strings to avoid binary floating-point loss.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "instrument_id",
+    "venue",
+    "provider",
+    "symbol",
+    "timeframe",
+    "event_time",
+    "available_at",
+    "recorded_at",
+    "open",
+    "high",
+    "low",
+    "close",
+    "price_basis",
+    "source_artifact_id",
+    "source_record_id",
+    "source"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "instrument_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "venue": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "symbol": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timeframe": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*(m|h|d|w)$"
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "available_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "open": {
+      "$ref": "#/$defs/decimal"
+    },
+    "high": {
+      "$ref": "#/$defs/decimal"
+    },
+    "low": {
+      "$ref": "#/$defs/decimal"
+    },
+    "close": {
+      "$ref": "#/$defs/decimal"
+    },
+    "volume": {
+      "$ref": "#/$defs/decimal"
+    },
+    "volume_unit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "price_basis": {
+      "enum": [
+        "bid",
+        "ask",
+        "mid",
+        "last",
+        "mark",
+        "index",
+        "unknown"
+      ]
+    },
+    "source_artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "record_id",
+        "raw_payload_sha256",
+        "raw_payload",
+        "source_format"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "raw_payload_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "raw_payload": {
+          "type": "object"
+        },
+        "source_format": {
+          "enum": [
+            "csv",
+            "jsonl",
+            "ndjson",
+            "fixture"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "decimal": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\\\.[0-9]+)?$"
+    }
+  }
+}

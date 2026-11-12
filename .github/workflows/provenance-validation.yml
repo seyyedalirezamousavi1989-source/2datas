@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "schemas/provenance/**"
+      - "schemas/data/**"
       - "tools/**"
       - "tests/**"
       - "requirements-dev.txt"
@@ -11,6 +12,7 @@ on:
   pull_request:
     paths:
       - "schemas/provenance/**"
+      - "schemas/data/**"
       - "tools/**"
       - "tests/**"
       - "requirements-dev.txt"

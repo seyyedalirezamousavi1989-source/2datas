@@ -120,12 +120,14 @@ def compute_price_action_features(
                 event["fvg"] = {"type": "BEARISH_FVG", "lower": bar.high, "upper": older.low, "size": older.low-bar.high}
 
             tolerance = a * equal_level_atr_tolerance
-            prior_highs = [v for _, v in confirmed_highs[:-1] if abs(v-bar.high) <= tolerance]
-            prior_lows = [v for _, v in confirmed_lows[:-1] if abs(v-bar.low) <= tolerance]
-            if prior_highs:
-                event["equal_high_pool"] = {"level": _median(prior_highs + [bar.high]), "touch_count": len(prior_highs)+1}
-            if prior_lows:
-                event["equal_low_pool"] = {"level": _median(prior_lows + [bar.low]), "touch_count": len(prior_lows)+1}
+            if event["swing_high_confirmed"] and len(confirmed_highs) >= 2:
+                prior_highs = [v for _, v in confirmed_highs[:-1] if abs(v-confirmed_highs[-1][1]) <= tolerance]
+                if prior_highs:
+                    event["equal_high_pool"] = {"level": _median(prior_highs + [confirmed_highs[-1][1]]), "touch_count": len(prior_highs)+1}
+            if event["swing_low_confirmed"] and len(confirmed_lows) >= 2:
+                prior_lows = [v for _, v in confirmed_lows[:-1] if abs(v-confirmed_lows[-1][1]) <= tolerance]
+                if prior_lows:
+                    event["equal_low_pool"] = {"level": _median(prior_lows + [confirmed_lows[-1][1]]), "touch_count": len(prior_lows)+1}
             if confirmed_highs and bar.high > confirmed_highs[-1][1] and bar.close < confirmed_highs[-1][1]:
                 event["liquidity_sweep"] = {"side": "BUY_SIDE_LIQUIDITY", "reference_level": confirmed_highs[-1][1], "reclaimed": True}
             elif confirmed_lows and bar.low < confirmed_lows[-1][1] and bar.close > confirmed_lows[-1][1]:
@@ -146,12 +148,13 @@ def compute_price_action_features(
                         }
                         break
 
-        if previous_close is not None and bar.open != previous_close:
+        if previous_close is not None and a and abs(bar.open - previous_close) >= a * 0.10:
             event["price_gap"] = {
                 "direction": "UP" if bar.open > previous_close else "DOWN",
                 "size": abs(bar.open - previous_close),
                 "previous_close": previous_close,
                 "current_open": bar.open,
+                "threshold": "0.10 * current ATR; candidate discontinuity only, session/weekend cause not inferred",
             }
         if a and isfinite(a) and a > 0:
             event["range_to_atr"] = (bar.high-bar.low)/a

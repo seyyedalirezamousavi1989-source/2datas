@@ -647,7 +647,7 @@ def test_normalizer_attaches_effective_contract_and_converts_spread_per_bar(tmp_
         records = list(csv.DictReader(handle))
     assert [row["contract_size"] for row in records] == ["100", "10"]
     assert [row["instrument_spec_status"] for row in records] == ["SPEC_MATCHED", "SPEC_MATCHED"]
-    assert [row["spread_points"] for row in records] == ["12", "12"]
+    assert [row["spread_points"] for row in records] == ["12.0", "12.0"]
     assert [row["spread_price"] for row in records] == ["0.12", "0.12"]
     assert records[0]["instrument_spec_id"] != records[1]["instrument_spec_id"]
     assert manifest["schema_version"] == "market-bars-0.4.0"

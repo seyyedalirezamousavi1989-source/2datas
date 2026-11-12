@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://2datas.example/schemas/provenance/transformation-run.schema.json",
+  "$id": "urn:2datas:schema:provenance:transformation-run:1",
   "title": "2datas Transformation Run Manifest",
   "type": "object",
   "additionalProperties": false,
@@ -58,14 +58,14 @@
     "inputs": {
       "type": "array",
       "items": {
-        "$ref": "artifact-manifest.schema.json#/$defs/artifactReference"
+        "$ref": "urn:2datas:schema:provenance:artifact-manifest:1#/$defs/artifactReference"
       },
       "minItems": 1
     },
     "outputs": {
       "type": "array",
       "items": {
-        "$ref": "artifact-manifest.schema.json#/$defs/artifactReference"
+        "$ref": "urn:2datas:schema:provenance:artifact-manifest:1#/$defs/artifactReference"
       }
     },
     "code": {

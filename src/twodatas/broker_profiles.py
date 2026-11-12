@@ -157,7 +157,7 @@ def resolve_profile_for_archive(
             raise ValueError("Broker config root must be a JSON object")
         allowed = {
             "schema_version", "profile_id", "broker_name", "server_name",
-            "server_timezone", "bar_timestamp_convention", "symbol_aliases",
+            "server_timezone", "bar_timestamp_convention", "symbol_aliases", "instrument_specs",
         }
         unknown = set(config) - allowed
         if unknown:
@@ -173,7 +173,7 @@ def resolve_profile_for_archive(
                 raise ValueError(f"Broker config {key} must be a string")
         if config["bar_timestamp_convention"] not in {"interval_start", "interval_end"}:
             raise ValueError("bar_timestamp_convention must be interval_start or interval_end")
-        aliases = config.get("symbol_aliases", {})
+        from .instrument_specs import validate_instrument_specs\n        instrument_specs = validate_instrument_specs(config.get("instrument_specs", {}))\n        aliases = config.get("symbol_aliases", {})
         if not isinstance(aliases, dict) or any(
             not isinstance(key, str) or not key.strip() or not isinstance(value, str) or not value.strip()
             for key, value in aliases.items()
@@ -201,4 +201,4 @@ def resolve_profile_for_archive(
         server_timezone=server_timezone,
         bar_timestamp_convention=bar_timestamp_convention,
     )
-    return profile, {"mode": "explicit_cli" if explicit else "unresolved", "path": None, "sha256": None, "symbol_aliases": {}}
+    return profile, {"mode": "explicit_cli" if explicit else "unresolved", "path": None, "sha256": None, "symbol_aliases": {}, "instrument_specs": {}}

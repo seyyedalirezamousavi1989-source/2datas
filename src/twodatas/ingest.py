@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import PurePosixPath
 from typing import Iterator
 
-TF_PATTERN = re.compile(r"(?:^|_)(Daily|MN\\d+|W\\d+|D1|H\\d+|M\\d+)(?=_|$)", re.IGNORECASE)
+TF_PATTERN = re.compile(r"(?:^|_)(Daily|MN\d+|W\d+|D1|H\d+|M\d+)(?=_|$)", re.IGNORECASE)
 REQUIRED = {"<DATE>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"}
 
 

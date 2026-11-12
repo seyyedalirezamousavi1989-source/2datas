@@ -307,6 +307,16 @@ This log records decisions, not assumptions. New decisions must include rational
 - Consequence: added the initial ingestion/normalization package, source audit, normalized manifest, tests and CI workflow on `build/data-foundation`. The supplied archive contains 681,227 bars across six timeframes. Its structural checks passed, but dataset admission remains pending source timezone, bar timestamp convention, broker/specification, session calendar and data rights.
 - This decision supersedes earlier statements that archive inspection, pipeline implementation or dataset generation were not authorized. It does not authorize work in any other repository.
 
+## D-043 — Broker-independent source clock and causal price-action implementation
+
+- Status: Accepted for implementation; source-specific profiles and feature admission remain evidence-gated.
+- Date: 2026-11-12
+- Decision: 2datas must support multiple brokers, MT5 servers, symbol aliases and timeframes without assuming a universal broker timezone or bar timestamp convention. Filename-based timeframe/symbol inference is allowed only when unambiguous. UTC conversion requires both an explicit/verified IANA timezone and interval-start/interval-end convention; DST-ambiguous/nonexistent times remain unresolved.
+- Alpari: retain an EET/EEST-like profile only as an unverified candidate until the exact server, historical DST behavior and bar convention are confirmed. Broker brand alone is insufficient.
+- Feature scope: implement a compact, causal candidate engine for ATR, confirmed swings, BOS/CHoCH, FVG, equal swing liquidity, wick sweeps, heuristic order-block zones, displacement, relative volatility and material price discontinuities. Feature definitions must preserve confirmation/availability time and must not claim access to hidden orders or institutional intent.
+- Consequence: added broker profile/time resolver, generic MT5 symbol/timeframe inference, broker-aware normalization metadata, feature generation CLI, tests and documentation. No training, live trading, external repository modification or paid source acquisition is authorized.
+- Acceptance boundary: implementation existence is not feature validity. Run CI, verify Alpari source semantics, then test cross-broker/timeframe behavior and feature stability before training admission.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

@@ -72,6 +72,7 @@ def normalize_archive(archive_path: str, output_dir: str) -> dict:
             "source_sha256": result.source_sha256,
             "normalized_sha256": _sha256(target),
             "quality_status": audit["quality_status"],
+            "admission_status": audit["admission_status"],
             "timezone": "UNKNOWN",
             "bar_timestamp_semantics": "UNKNOWN",
         })

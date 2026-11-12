@@ -29,6 +29,7 @@ def compute_price_action_features(
     fvg_min_atr: float = 0.05, ob_lookback: int = 8,
     broker_profile: BrokerProfile | None = None,
     source_sha256: str | None = None,
+    include_last_bar: bool = False,
 ) -> list[dict]:
     """Causal, bar-close feature events. No future bar is read at an event's availability time.
 
@@ -36,6 +37,8 @@ def compute_price_action_features(
     FVG/OB are operational hypotheses, not claims about hidden institutional orders.
     """
     rows = list(bars)
+    if rows and not include_last_bar:
+        rows = rows[:-1]  # The newest exported candle may still be forming.
     if pivot_left < 1 or pivot_right < 1 or atr_period < 1:
         raise ValueError("pivot_left, pivot_right and atr_period must be positive")
     if equal_level_atr_tolerance < 0 or fvg_min_atr < 0:
@@ -84,7 +87,7 @@ def compute_price_action_features(
             "source_row_number": i + 2,
             "source_timestamp": bar.source_timestamp,
             "event_index": i,
-            "feature_parameters": {"pivot_left": pivot_left, "pivot_right": pivot_right, "atr_period": atr_period, "equal_level_atr_tolerance": equal_level_atr_tolerance, "fvg_min_atr": fvg_min_atr, "ob_lookback": ob_lookback},
+            "feature_parameters": {"pivot_left": pivot_left, "pivot_right": pivot_right, "atr_period": atr_period, "equal_level_atr_tolerance": equal_level_atr_tolerance, "fvg_min_atr": fvg_min_atr, "ob_lookback": ob_lookback, "include_last_bar": include_last_bar},
             "available_at_utc": available_at_utc,
             "availability_time_status": availability_status,
             "atr": a,

@@ -1,0 +1,273 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2datas.example/schemas/provenance/dataset-build-manifest.schema.json",
+  "title": "2datas Dataset Build Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dataset_id",
+    "version",
+    "purpose",
+    "status",
+    "instrument",
+    "created_at",
+    "components",
+    "validation",
+    "release_policy"
+  ],
+  "properties": {
+    "dataset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "design_only",
+        "candidate",
+        "validated",
+        "released",
+        "superseded",
+        "rejected"
+      ]
+    },
+    "instrument": {
+      "type": "string",
+      "const": "XAUUSD"
+    },
+    "market": {
+      "type": "string",
+      "const": "OTC_SPOT_METAL_OR_BROKER_CFD"
+    },
+    "timeframes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "M1",
+          "M5",
+          "M15",
+          "M30",
+          "H1",
+          "H4",
+          "D1",
+          "W1",
+          "MN1"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "coverage": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "start_event_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "end_event_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "timezone": {
+          "type": "string",
+          "const": "UTC"
+        }
+      }
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_artifact_ids",
+        "normalized_artifact_ids",
+        "feature_artifact_ids",
+        "label_artifact_ids"
+      ],
+      "properties": {
+        "source_artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "normalized_artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "feature_artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "label_artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "versions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "type": "string"
+        },
+        "source_mapping": {
+          "type": "string"
+        },
+        "features": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "string"
+        },
+        "sampling_policy": {
+          "type": "string"
+        },
+        "split_protocol": {
+          "type": "string"
+        },
+        "pipeline": {
+          "type": "string"
+        },
+        "evaluation": {
+          "type": "string"
+        }
+      }
+    },
+    "split_manifest_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_run",
+            "passed",
+            "passed_with_warnings",
+            "failed",
+            "blocked"
+          ]
+        },
+        "leakage_check": {
+          "enum": [
+            "not_run",
+            "passed",
+            "failed",
+            "blocked"
+          ]
+        },
+        "integrity_check": {
+          "enum": [
+            "not_run",
+            "passed",
+            "failed",
+            "blocked"
+          ]
+        },
+        "lineage_check": {
+          "enum": [
+            "not_run",
+            "passed",
+            "failed",
+            "blocked"
+          ]
+        },
+        "report_artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_status"
+      ],
+      "properties": {
+        "review_status": {
+          "enum": [
+            "not_reviewed",
+            "approved",
+            "restricted",
+            "rejected"
+          ]
+        },
+        "license_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "known_limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "release_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "immutable_after_release",
+        "approval_required"
+      ],
+      "properties": {
+        "immutable_after_release": {
+          "type": "boolean",
+          "const": true
+        },
+        "approval_required": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  }
+}

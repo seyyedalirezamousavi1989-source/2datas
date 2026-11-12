@@ -54,7 +54,8 @@ def normalize_archive(
         instrument = result.rows[0].instrument if result.rows else "UNKNOWN"
         target_dir = root / f"instrument={instrument}" / f"timeframe={result.timeframe}"
         target_dir.mkdir(parents=True, exist_ok=True)
-        source_key = hashlib.sha256(result.source_file.encode("utf-8")).hexdigest()[:12]\n        target = target_dir / f"bars-{source_key}.csv.gz"
+        source_key = hashlib.sha256(result.source_file.encode("utf-8")).hexdigest()[:12]
+        target = target_dir / f"bars-{source_key}.csv.gz"
 
         with target.open("wb") as raw:
             with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as compressed:

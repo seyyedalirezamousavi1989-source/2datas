@@ -59,7 +59,7 @@ def main() -> None:
             with target.open("w", encoding="utf-8") as handle:
                 for row in rows:
                     handle.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + chr(10))
-             summaries.append({"instrument": instrument, "timeframe": source.timeframe, "events": len(rows), "source_file": source.source_file, "source_sha256": source.source_sha256, "output_path": str(target), "output_sha256": hashlib.sha256(target.read_bytes()).hexdigest()})
+            summaries.append({"instrument": instrument, "timeframe": source.timeframe, "events": len(rows), "source_file": source.source_file, "source_sha256": source.source_sha256, "output_path": str(target), "output_sha256": hashlib.sha256(target.read_bytes()).hexdigest()})
         manifest = {
             "feature_version": "price-action-0.1.0",
             "broker_profile": {"profile_id": profile.profile_id, "broker_name": profile.broker_name, "server_name": profile.server_name, "server_timezone": profile.server_timezone, "bar_timestamp_convention": profile.bar_timestamp_convention, "status": profile.status, "evidence": profile.evidence},

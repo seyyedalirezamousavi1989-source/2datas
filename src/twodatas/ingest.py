@@ -58,6 +58,7 @@ def _canonicalize_header(header: list[str], source: str) -> tuple[list[str], dic
 @dataclass(frozen=True)
 class Bar:
     instrument: str
+    source_instrument: str
     timeframe: str
     source_file: str
     source_timestamp: str
@@ -136,8 +137,9 @@ def read_mt5_csv(
     inferred_timeframe = timeframe or (match.group("timeframe") if match else None)
     normalized_timeframe = "D1" if inferred_timeframe.lower() == "daily" else inferred_timeframe.upper()
     inferred_instrument = match.group("symbol").upper() if match else None
+    source_instrument = inferred_instrument or (instrument or "").upper()
     aliases = {key.upper(): value.upper() for key, value in (symbol_aliases or {}).items()}
-    normalized_instrument = (instrument or aliases.get(inferred_instrument or "", inferred_instrument or "")).upper()
+    normalized_instrument = (instrument or aliases.get(source_instrument, source_instrument)).upper()
     if not normalized_instrument:
         raise ValueError(f"Cannot infer instrument from filename; provide an explicit instrument: {source_file}")
 
@@ -160,6 +162,7 @@ def read_mt5_csv(
             raise ValueError(f"{source_file}:{line}: TICKVOL must be a non-negative integer")
         rows.append(Bar(
             instrument=normalized_instrument,
+            source_instrument=source_instrument,
             timeframe=normalized_timeframe,
             source_file=source_file,
             source_timestamp=stamp,

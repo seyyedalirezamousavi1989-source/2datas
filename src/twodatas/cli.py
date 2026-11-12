@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from datetime import datetime
 
 from .ingest import read_zip
 from .quality import audit_archive
@@ -55,9 +56,20 @@ def main() -> None:
 
     if args.command == "spec-audit":
         _, broker_config = resolve_profile_for_archive(str(args.archive), config_path=args.broker_config)
-        source_symbols = {row.source_instrument for result in read_zip(str(args.archive), symbol_aliases=broker_config.get("symbol_aliases", {})) for row in result.rows}
+        source_symbols = set()
+        source_periods = {}
+        for result in read_zip(str(args.archive), symbol_aliases=broker_config.get("symbol_aliases", {})):
+            for row in result.rows:
+                symbol = row.source_instrument
+                source_symbols.add(symbol)
+                source_date = datetime.strptime(row.source_timestamp.split()[0], "%Y.%m.%d").date().isoformat()
+                if symbol not in source_periods:
+                    source_periods[symbol] = (source_date, source_date)
+                else:
+                    first, last = source_periods[symbol]
+                    source_periods[symbol] = (min(first, source_date), max(last, source_date))
         specs = validate_instrument_specs(broker_config.get("instrument_specs", {}))
-        report = audit_instrument_specs(specs, source_symbols=source_symbols)
+        report = audit_instrument_specs(specs, source_symbols=source_symbols, observed_periods=source_periods)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False) + chr(10), encoding="utf-8")
         print(json.dumps({"status": report["status"], "report": str(args.output)}, ensure_ascii=False))

@@ -297,6 +297,16 @@ This log records decisions, not assumptions. New decisions must include rational
 - Decision: Group examples by shared snapshots, episodes, overlapping target windows, derived projections, shared future paths, duplicate clusters and lifecycle lineage before chronological split assignment. Derived targets inherit their parent's dependency group. Purge/embargo must be derived from target horizons, confirmation delays and source revision/availability bounds, never arbitrary fixed bars.
 - Consequence: Added TARGET_DEPENDENCY_EPISODE_AND_SPLIT_CONTRACT.md and indexed it in README. No split manifest or data operation is authorized; exact dates and durations await Stage 5 acceptance and source feasibility.
 
+## D-042 — 2datas is an independent active dataset build
+
+- Status: Accepted; supersedes earlier design-only/non-authorization notes where they conflict with this scope.
+- Date: 2026-11-12
+- Decision: 2datas is a standalone XAUUSD dataset project. It has no dependency on the separate `datas` repository, any Stage 5 deliverable, or AURORA QUANT. The user authorized inspection and processing of the supplied XAUUSD.zip, implementation within 2datas, source auditing and construction of normalized base-market data.
+- Authorized work: build and test ingestion, normalization, provenance, quality control, feature/target generation and dataset artifacts within 2datas as source semantics permit.
+- Excluded work: modifications to `datas`, AURORA QUANT or other external repositories; paid data purchases/subscriptions; model training or expensive benchmarks; live trading/deployment; merge to `main` without review.
+- Consequence: added the initial ingestion/normalization package, source audit, normalized manifest, tests and CI workflow on `build/data-foundation`. The supplied archive contains 681,227 bars across six timeframes. Its structural checks passed, but dataset admission remains pending source timezone, bar timestamp convention, broker/specification, session calendar and data rights.
+- This decision supersedes earlier statements that archive inspection, pipeline implementation or dataset generation were not authorized. It does not authorize work in any other repository.
+
 ## Open questions — do not silently resolve
 
 1. **Stage 5 compatibility:** What exact deliverables and schemas will exist after independent acceptance? Audit only after user confirms that milestone.

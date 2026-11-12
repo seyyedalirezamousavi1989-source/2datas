@@ -4,7 +4,8 @@ import csv
 import gzip
 import hashlib
 import json
-from pathlib import Path\nfrom datetime import datetime
+from pathlib import Path
+from datetime import datetime
 
 from .broker_profiles import resolve_profile_for_archive, to_utc
 from .ingest import read_zip
@@ -52,7 +53,15 @@ def normalize_archive(
     )
 
     for result in read_zip(archive_path, symbol_aliases=broker_config.get("symbol_aliases", {})):
-        for row in result.rows:\n            symbol = row.source_instrument\n            source_symbols.add(symbol)\n            source_date = datetime.strptime(row.source_timestamp.split()[0], "%Y.%m.%d").date().isoformat()\n            if symbol not in source_periods:\n                source_periods[symbol] = (source_date, source_date)\n            else:\n                first, last = source_periods[symbol]\n                source_periods[symbol] = (min(first, source_date), max(last, source_date))
+        for row in result.rows:
+            symbol = row.source_instrument
+            source_symbols.add(symbol)
+            source_date = datetime.strptime(row.source_timestamp.split()[0], "%Y.%m.%d").date().isoformat()
+            if symbol not in source_periods:
+                source_periods[symbol] = (source_date, source_date)
+            else:
+                first, last = source_periods[symbol]
+                source_periods[symbol] = (min(first, source_date), max(last, source_date))
         audit = audit_file(result)
         instrument = result.rows[0].instrument if result.rows else "UNKNOWN"
         target_dir = root / f"instrument={instrument}" / f"timeframe={result.timeframe}"

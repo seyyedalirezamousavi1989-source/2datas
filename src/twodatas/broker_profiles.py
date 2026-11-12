@@ -181,6 +181,13 @@ def resolve_profile_for_archive(
         ):
             raise ValueError("symbol_aliases must map non-empty source symbols to canonical symbols")
         aliases = {key.strip().upper(): value.strip().upper() for key, value in aliases.items()}
+        for source_symbol, history in instrument_specs.items():
+            expected_canonical = aliases.get(source_symbol, source_symbol)
+            if any(item.canonical_instrument != expected_canonical for item in history):
+                raise ValueError(
+                    f"Instrument spec canonical_instrument for {source_symbol} "
+                    f"must match its explicit symbol alias ({expected_canonical})"
+                )
         profile = resolve_profile(
             config.get("profile_id"),
             broker_name=config.get("broker_name"),

@@ -173,7 +173,8 @@ def resolve_profile_for_archive(
                 raise ValueError(f"Broker config {key} must be a string")
         if config["bar_timestamp_convention"] not in {"interval_start", "interval_end"}:
             raise ValueError("bar_timestamp_convention must be interval_start or interval_end")
-        from .instrument_specs import validate_instrument_specs\n        instrument_specs = validate_instrument_specs(config.get("instrument_specs", {}))\n        aliases = config.get("symbol_aliases", {})
+        from .instrument_specs import validate_instrument_specs
+        instrument_specs = validate_instrument_specs(config.get("instrument_specs", {}))\n        aliases = config.get("symbol_aliases", {})
         if not isinstance(aliases, dict) or any(
             not isinstance(key, str) or not key.strip() or not isinstance(value, str) or not value.strip()
             for key, value in aliases.items()

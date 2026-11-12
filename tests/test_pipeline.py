@@ -564,3 +564,90 @@ def test_broker_sidecar_rejects_conflicting_symbol_alias_and_contract_identity(t
     }))
     with pytest.raises(ValueError, match="must match its explicit symbol alias"):
         resolve_profile_for_archive(str(archive))
+
+
+def test_point_in_time_instrument_spec_resolution_uses_inclusive_start_exclusive_end():
+    from twodatas.instrument_specs import validate_instrument_specs, resolve_instrument_spec
+
+    base = {
+        "canonical_instrument": "XAUUSD", "digits": 2, "point_size": "0.01",
+        "tick_size": "0.01", "contract_size": "100", "price_currency": "USD",
+        "profit_currency": "USD", "spread_unit": "points", "volume_semantics": "tick_count",
+        "evidence": "Test fixture only.",
+    }
+    specs = validate_instrument_specs({"GOLD": [
+        {**base, "effective_from": "2020-01-01", "effective_to": "2024-01-01", "contract_size": "100"},
+        {**base, "effective_from": "2024-01-01", "contract_size": "10"},
+    ]})
+    old, old_status, _ = resolve_instrument_spec(specs, "GOLD", "2023.12.31 23:59:00")
+    new, new_status, _ = resolve_instrument_spec(specs, "GOLD", "2024.01.01 00:00:00")
+    missing, missing_status, _ = resolve_instrument_spec(specs, "GOLD", "2019.12.31 23:59:00")
+    assert old_status == new_status == "SPEC_MATCHED"
+    assert old.contract_size == "100"
+    assert new.contract_size == "10"
+    assert missing is None
+    assert missing_status == "NO_EFFECTIVE_SPEC_FOR_DATE"
+
+
+def test_spread_conversion_uses_verified_units_and_never_guesses():
+    from twodatas.instrument_specs import validate_instrument_specs, spec_values_for_bar
+
+    base = {
+        "canonical_instrument": "XAUUSD", "digits": 2, "point_size": "0.01",
+        "tick_size": "0.01", "contract_size": "100", "price_currency": "USD",
+        "profit_currency": "USD", "volume_semantics": "tick_count",
+        "effective_from": "2024-01-01", "evidence": "Test fixture only.",
+    }
+    points = validate_instrument_specs({"GOLD": {**base, "spread_unit": "points"}})
+    price = validate_instrument_specs({"GOLD": {**base, "spread_unit": "price"}})
+    unknown = validate_instrument_specs({"GOLD": {**base, "spread_unit": "unknown"}})
+    point_result = spec_values_for_bar(points, "GOLD", "2024.01.01 10:00:00", 12)
+    price_result = spec_values_for_bar(price, "GOLD", "2024.01.01 10:00:00", 0.12)
+    unknown_result = spec_values_for_bar(unknown, "GOLD", "2024.01.01 10:00:00", 12)
+    no_spec_result = spec_values_for_bar({}, "GOLD", "2024.01.01 10:00:00", 12)
+    assert point_result["spread_points"] == "12"
+    assert point_result["spread_price"] == "0.12"
+    assert price_result["spread_points"] == ""
+    assert price_result["spread_price"] == "0.12"
+    assert unknown_result["spread_points"] == unknown_result["spread_price"] == ""
+    assert no_spec_result["instrument_spec_status"] == "SPEC_NOT_CONFIGURED"
+    assert no_spec_result["spread_raw"] == "12"
+    assert no_spec_result["spread_price"] == ""
+
+
+def test_normalizer_attaches_effective_contract_and_converts_spread_per_bar(tmp_path):
+    import csv
+    import gzip
+    import json
+    import zipfile
+    from twodatas.normalize import normalize_archive
+
+    header = ["<DATE>", "<TIME>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"]
+    rows = [
+        ["2023.12.31", "23:59:00", "2000", "2002", "1999", "2001", "120", "0", "12"],
+        ["2024.01.01", "00:00:00", "2001", "2003", "2000", "2002", "130", "0", "12"],
+    ]
+    source = tmp_path / "effective_specs.zip"
+    with zipfile.ZipFile(source, "w") as archive:
+        archive.writestr("GOLD_M1_test.csv", (chr(9).join(header) + chr(10) + chr(10).join(chr(9).join(row) for row in rows) + chr(10)).encode())
+    (tmp_path / "effective_specs.zip.broker.json").write_text(json.dumps({
+        "schema_version": "2datas-broker-clock-1",
+        "server_timezone": "UTC+00:00",
+        "bar_timestamp_convention": "interval_start",
+        "symbol_aliases": {"GOLD": "XAUUSD"},
+        "instrument_specs": {"GOLD": [
+            {"canonical_instrument": "XAUUSD", "digits": 2, "point_size": "0.01", "tick_size": "0.01", "contract_size": "100", "price_currency": "USD", "profit_currency": "USD", "spread_unit": "points", "volume_semantics": "tick_count", "effective_from": "2020-01-01", "effective_to": "2024-01-01", "evidence": "Historical test fixture."},
+            {"canonical_instrument": "XAUUSD", "digits": 2, "point_size": "0.01", "tick_size": "0.01", "contract_size": "10", "price_currency": "USD", "profit_currency": "USD", "spread_unit": "points", "volume_semantics": "tick_count", "effective_from": "2024-01-01", "evidence": "Current test fixture."},
+        ]},
+    }))
+    output = tmp_path / "normalized"
+    manifest = normalize_archive(str(source), str(output))
+    partition = next((output / "instrument=XAUUSD" / "timeframe=M1").glob("bars-*.csv.gz"))
+    with gzip.open(partition, "rt", encoding="utf-8", newline="") as handle:
+        records = list(csv.DictReader(handle))
+    assert [row["contract_size"] for row in records] == ["100", "10"]
+    assert [row["instrument_spec_status"] for row in records] == ["SPEC_MATCHED", "SPEC_MATCHED"]
+    assert [row["spread_points"] for row in records] == ["12", "12"]
+    assert [row["spread_price"] for row in records] == ["0.12", "0.12"]
+    assert records[0]["instrument_spec_id"] != records[1]["instrument_spec_id"]
+    assert manifest["schema_version"] == "market-bars-0.4.0"

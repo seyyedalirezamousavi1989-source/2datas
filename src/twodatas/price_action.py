@@ -121,6 +121,7 @@ def compute_price_action_features(
         event = {
             "feature_version": FEATURE_VERSION,
             "instrument": bar.instrument,
+            "source_instrument": bar.source_instrument,
             "timeframe": bar.timeframe,
             "source_file": bar.source_file,
             "source_sha256": source_sha256,

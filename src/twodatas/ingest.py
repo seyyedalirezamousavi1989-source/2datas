@@ -15,7 +15,44 @@ TF_PATTERN = re.compile(
     r"(?P<symbol>[A-Za-z0-9.]+)_(?P<timeframe>Daily|MN\d+|W\d+|D1|H\d+|M\d+)(?=_|$)",
     re.IGNORECASE,
 )
-REQUIRED = {"<DATE>", "<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>"}
+REQUIRED = {"DATE", "OPEN", "HIGH", "LOW", "CLOSE", "TICKVOL", "VOL", "SPREAD"}
+HEADER_ALIASES = {
+    "DATE": {"DATE", "<DATE>"},
+    "TIME": {"TIME", "<TIME>"},
+    "OPEN": {"OPEN", "<OPEN>"},
+    "HIGH": {"HIGH", "<HIGH>"},
+    "LOW": {"LOW", "<LOW>"},
+    "CLOSE": {"CLOSE", "<CLOSE>"},
+    "TICKVOL": {"TICKVOL", "<TICKVOL>", "TICK_VOLUME", "TICK VOLUME"},
+    "VOL": {"VOL", "<VOL>", "REAL_VOLUME", "REAL VOLUME"},
+    "SPREAD": {"SPREAD", "<SPREAD>", "SPREAD_POINTS", "SPREAD POINTS"},
+}
+
+
+def _detect_delimiter(text: str) -> str:
+    first = next((line for line in text.splitlines() if line.strip()), "")
+    counts = {delimiter: first.count(delimiter) for delimiter in ("\\t", ",", ";")}
+    delimiter = max(counts, key=counts.get)
+    if counts[delimiter] == 0:
+        raise ValueError("Could not detect CSV delimiter (expected tab, comma or semicolon)")
+    return delimiter
+
+
+def _canonicalize_header(header: list[str], source: str) -> tuple[list[str], dict[str, str]]:
+    actual_by_canonical: dict[str, str] = {}
+    for actual in header:
+        normalized = (actual or "").strip().upper().replace(" ", "_")
+        for canonical, aliases in HEADER_ALIASES.items():
+            normalized_aliases = {alias.upper().replace(" ", "_") for alias in aliases}
+            if normalized in normalized_aliases:
+                if canonical in actual_by_canonical:
+                    raise ValueError(f"{source}: duplicate columns map to {canonical}")
+                actual_by_canonical[canonical] = actual
+                break
+    missing = REQUIRED.difference(actual_by_canonical)
+    if missing:
+        raise ValueError(f"{source}: missing required columns after header normalization: {sorted(missing)}")
+    return list(actual_by_canonical), actual_by_canonical
 
 
 @dataclass(frozen=True)
@@ -71,7 +108,7 @@ def read_mt5_csv(
     instrument: str | None = None,
     timeframe: str | None = None,
 ) -> FileIngestResult:
-    """Read an MT5 tab-delimited export; never infer broker clock semantics."""
+    """Read MT5-style market-bar CSV exports with tab/comma/semicolon delimiters.\n\n    Header aliases are normalized conservatively; volume fields retain their source\n    semantics and broker clock rules are never inferred from the file values.\n    """
     stem = PurePosixPath(source_file).stem
     match = TF_PATTERN.search(stem)
     if timeframe is None and match is None:

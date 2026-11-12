@@ -1,6 +1,6 @@
 # Causal price-action feature contract
 
-Version: 0.1.0
+Version: 0.2.0
 
 This is a compact initial feature implementation, not a claim that SMC terminology is objectively standardized. The newest input candle is excluded by default because it may still be forming; inclusion requires the explicit `--include-last-bar` override and evidence that the bar is complete. Every concept is an operational hypothesis with explicit parameters and a named consumer. Definitions must be tested for stability, annotation agreement and incremental value before model admission.
 

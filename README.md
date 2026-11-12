@@ -37,21 +37,16 @@ The parser supports MT5 timeframe tokens such as M1/M5/M15/M30, H1/H4, D1, W1 an
 
 ## Broker clock configuration
 
-For Alpari, use the candidate profile only to preserve its unverified status:
+Broker clock metadata is source-specific. The preferred automatic path is a sidecar next to each export. Create \`XAUUSD.zip.broker.json\` (or \`XAUUSD.broker.json\`) using the schema in [examples/alpari-mt5.broker.example.json](examples/alpari-mt5.broker.example.json), then run:
 
 \`\`\`bash
-2datas normalize XAUUSD.zip --output-dir data/processed/alpari --broker-profile alpari_mt5_candidate --server-name "YOUR EXACT MT5 SERVER"
+2datas normalize XAUUSD.zip --output-dir data/processed/alpari
+2datas features XAUUSD.zip --output-dir data/features/price_action
 \`\`\`
 
-The profile recognizes the published `Alpari-MT5` and `Alpari-MT5-Demo` server names and applies the documented GMT+2/GMT+3 seasonal clock plus MT5 period-start timestamps. Any other server name remains unresolved until separately verified. The exact server name is retained in the manifest; replace the placeholder with the server shown in your MT5 login window.
+The CLI auto-discovers the sidecar, validates its schema, records its SHA-256 in each manifest and applies the configured server timezone plus interval-start/interval-end convention. For the documented Alpari profile, \`Alpari-MT5\` and \`Alpari-MT5-Demo\` are recognized by the built-in profile when supplied as \`--broker-profile alpari_mt5_candidate --server-name ...\`; confirm your exact MT5 server before relying on it. For other brokers, create a sidecar containing the exact server, IANA timezone (or documented fixed offset such as \`UTC+02:00\`) and timestamp convention.
 
-For another broker, provide an IANA timezone and the confirmed timestamp convention:
-
-\`\`\`bash
-2datas normalize export.zip --output-dir data/processed/custom --broker-name "Example Broker" --server-name "Server-01" --server-timezone Europe/Helsinki --bar-timestamp-convention interval_start
-\`\`\`
-
-Do not copy that example configuration without evidence. Multiple servers and historical DST policies may differ even within one broker. Ambiguous/nonexistent DST wall times are quarantined rather than guessed. See [BROKER_TIME_NORMALIZATION.md](docs/BROKER_TIME_NORMALIZATION.md).
+A broker brand alone is not enough to infer a server clock. If no sidecar or explicit configuration is available, timestamps remain unresolved. Conflicting sidecars or simultaneous sidecar/CLI settings fail closed. Multiple servers and historical DST policies may differ even within one broker. Ambiguous/nonexistent DST wall times are quarantined rather than guessed. See [BROKER_TIME_NORMALIZATION.md](docs/BROKER_TIME_NORMALIZATION.md).
 
 ## Quality and epistemic boundaries
 

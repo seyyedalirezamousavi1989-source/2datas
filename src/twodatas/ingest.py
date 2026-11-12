@@ -92,13 +92,28 @@ def _parse_float(value: str, field: str, source: str, line: int) -> float:
 
 
 def _timestamp(row: dict[str, str]) -> tuple[str, str]:
-    date = (row.get("<DATE>") or "").strip()
-    time = (row.get("<TIME>") or "").strip()
-    if time:
-        datetime.strptime(f"{date} {time}", "%Y.%m.%d %H:%M:%S")
-        return f"{date} {time}", "second"
-    datetime.strptime(date, "%Y.%m.%d")
-    return date, "day"
+    date = (row.get("DATE") or "").strip()
+    time = (row.get("TIME") or "").strip()
+    date_formats = ("%Y.%m.%d", "%Y-%m-%d")
+    parsed_date = None
+    for fmt in date_formats:
+        try:
+            parsed_date = datetime.strptime(date, fmt)
+            break
+        except ValueError:
+            continue
+    if parsed_date is None:
+        raise ValueError(f"Unsupported date format: {date!r}")
+    if not time:
+        return parsed_date.strftime("%Y.%m.%d"), "day"
+    normalized_time = time
+    if len(time) == 5:
+        normalized_time = time + ":00"
+    try:
+        parsed_time = datetime.strptime(normalized_time, "%H:%M:%S")
+    except ValueError as exc:
+        raise ValueError(f"Unsupported time format: {time!r}") from exc
+    return f"{parsed_date.strftime('%Y.%m.%d')} {parsed_time.strftime('%H:%M:%S')}", "second"
 
 
 def read_mt5_csv(
@@ -108,7 +123,11 @@ def read_mt5_csv(
     instrument: str | None = None,
     timeframe: str | None = None,
 ) -> FileIngestResult:
-    """Read MT5-style market-bar CSV exports with tab/comma/semicolon delimiters.\n\n    Header aliases are normalized conservatively; volume fields retain their source\n    semantics and broker clock rules are never inferred from the file values.\n    """
+    """Read MT5-style market-bar CSV exports with tab/comma/semicolon delimiters.
+
+    Header aliases are normalized conservatively; volume fields retain their source
+    semantics and broker clock rules are never inferred from the file values.
+    """
     stem = PurePosixPath(source_file).stem
     match = TF_PATTERN.search(stem)
     if timeframe is None and match is None:
@@ -121,20 +140,20 @@ def read_mt5_csv(
         raise ValueError(f"Cannot infer instrument from filename; provide an explicit instrument: {source_file}")
 
     text = payload.decode("utf-8-sig")
-    reader = csv.DictReader(io.StringIO(text), delimiter="\t")
-    header = list(reader.fieldnames or [])
-    missing = REQUIRED.difference(header)
-    if missing:
-        raise ValueError(f"{source_file}: missing required columns: {sorted(missing)}")
+    delimiter = _detect_delimiter(text)
+    reader = csv.DictReader(io.StringIO(text), delimiter=delimiter)
+    raw_header = list(reader.fieldnames or [])
+    _, column_map = _canonicalize_header(raw_header, source_file)
 
     rows: list[Bar] = []
     for line, raw in enumerate(reader, start=2):
-        stamp, precision = _timestamp(raw)
+        canonical_row = {key: raw[actual] for key, actual in column_map.items()}
+        stamp, precision = _timestamp(canonical_row)
         values = {
-            key: _parse_float(raw[key], key, source_file, line)
-            for key in ("<OPEN>", "<HIGH>", "<LOW>", "<CLOSE>", "<TICKVOL>", "<VOL>", "<SPREAD>")
+            key: _parse_float(canonical_row[key], key, source_file, line)
+            for key in ("OPEN", "HIGH", "LOW", "CLOSE", "TICKVOL", "VOL", "SPREAD")
         }
-        tick_volume = values["<TICKVOL>"]
+        tick_volume = values["TICKVOL"]
         if tick_volume < 0 or not tick_volume.is_integer():
             raise ValueError(f"{source_file}:{line}: TICKVOL must be a non-negative integer")
         rows.append(Bar(
@@ -144,18 +163,17 @@ def read_mt5_csv(
             source_timestamp=stamp,
             timestamp_precision=precision,
             timestamp_timezone="UNKNOWN",
-            open=values["<OPEN>"],
-            high=values["<HIGH>"],
-            low=values["<LOW>"],
-            close=values["<CLOSE>"],
+            open=values["OPEN"],
+            high=values["HIGH"],
+            low=values["LOW"],
+            close=values["CLOSE"],
             tick_volume=int(tick_volume),
-            real_volume=values["<VOL>"],
-            spread_points=values["<SPREAD>"],
+            real_volume=values["VOL"],
+            spread_points=values["SPREAD"],
         ))
     return FileIngestResult(
-        source_file, normalized_timeframe, hashlib.sha256(payload).hexdigest(), rows, header
+        source_file, normalized_timeframe, hashlib.sha256(payload).hexdigest(), rows, raw_header
     )
-
 
 def read_zip(
     path: str,

@@ -34,6 +34,7 @@ def normalize_archive(
     *,
     broker_profile_id: str | None = None,
     broker_name: str | None = None,
+    server_name: str | None = None,
     server_timezone: str | None = None,
     bar_timestamp_convention: str | None = None,
 ) -> dict:
@@ -44,6 +45,7 @@ def normalize_archive(
     profile = resolve_profile(
         broker_profile_id,
         broker_name=broker_name,
+        server_name=server_name,
         server_timezone=server_timezone,
         bar_timestamp_convention=bar_timestamp_convention,
     )
@@ -116,6 +118,7 @@ def normalize_archive(
         "broker_profile": {
             "profile_id": profile.profile_id,
             "broker_name": profile.broker_name,
+            "server_name": profile.server_name,
             "server_timezone": profile.server_timezone,
             "bar_timestamp_convention": profile.bar_timestamp_convention,
             "status": profile.status,

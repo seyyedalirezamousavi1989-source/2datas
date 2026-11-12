@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://2datas.example/schemas/provenance/sample-lineage.schema.json",
+  "title": "2datas Sample Lineage Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sample_id",
+    "dataset_id",
+    "instrument",
+    "decision_timestamp",
+    "inputs",
+    "feature_version",
+    "label_refs",
+    "quality_status"
+  ],
+  "properties": {
+    "sample_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dataset_id": {
+      "type": "string"
+    },
+    "instrument": {
+      "type": "string",
+      "const": "XAUUSD"
+    },
+    "timeframe": {
+      "enum": [
+        "M1",
+        "M5",
+        "M15",
+        "M30",
+        "H1",
+        "H4",
+        "D1",
+        "W1",
+        "MN1"
+      ]
+    },
+    "decision_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_id",
+          "sha256",
+          "available_at"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{64}$"
+          },
+          "available_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source_record_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "feature_version": {
+      "type": "string"
+    },
+    "label_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "label_id",
+          "definition_version",
+          "confirmed_at",
+          "status"
+        ],
+        "properties": {
+          "label_id": {
+            "type": "string"
+          },
+          "definition_version": {
+            "type": "string"
+          },
+          "confirmed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "status": {
+            "enum": [
+              "resolved",
+              "ambiguous",
+              "censored",
+              "unavailable",
+              "invalid",
+              "pending"
+            ]
+          }
+        }
+      }
+    },
+    "split": {
+      "enum": [
+        "train",
+        "validation",
+        "test",
+        "research_only",
+        "unassigned"
+      ]
+    },
+    "episode_group_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "quality_status": {
+      "enum": [
+        "pending",
+        "accepted",
+        "quarantined",
+        "rejected"
+      ]
+    },
+    "quality_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from bisect import bisect_right
 from datetime import datetime
 from pathlib import Path
@@ -31,15 +32,38 @@ def load_feature_events(features_dir: str) -> tuple[dict[str, dict[str, list[dic
     if not manifest_path.is_file():
         raise FileNotFoundError(f"Feature manifest missing: {manifest_path}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("feature_version") != "price-action-0.1.0":
+        raise ValueError("Unsupported or missing feature manifest version")
+    partitions = manifest.get("partitions")
+    if not isinstance(partitions, list) or not partitions:
+        raise ValueError("Feature manifest has no partitions")
+
     grouped: dict[str, dict[str, list[dict]]] = {}
-    for path in sorted(root.glob("*.jsonl")):
+    for partition in partitions:
+        filename = Path(partition["output_path"]).name
+        path = root / filename
+        if not path.is_file():
+            raise FileNotFoundError(f"Feature partition missing: {path}")
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if digest != partition.get("output_sha256"):
+            raise ValueError(f"Feature partition checksum mismatch: {filename}")
+        count = 0
         with path.open(encoding="utf-8") as handle:
             for line_number, line in enumerate(handle, start=1):
                 if not line.strip():
                     continue
                 event = json.loads(line)
-                instrument, timeframe = event["instrument"], event["timeframe"]
-                grouped.setdefault(instrument, {}).setdefault(timeframe, []).append(event)
+                if event.get("feature_version") != manifest["feature_version"]:
+                    raise ValueError(f"Feature version mismatch in {filename}:{line_number}")
+                if event.get("instrument") != partition.get("instrument") or event.get("timeframe") != partition.get("timeframe"):
+                    raise ValueError(f"Partition identity mismatch in {filename}:{line_number}")
+                if event.get("source_sha256") != partition.get("source_sha256"):
+                    raise ValueError(f"Source hash lineage mismatch in {filename}:{line_number}")
+                grouped.setdefault(event["instrument"], {}).setdefault(event["timeframe"], []).append(event)
+                count += 1
+        if count != partition.get("events"):
+            raise ValueError(f"Feature row count mismatch for {filename}: expected {partition.get('events')}, got {count}")
+
     for instrument, by_tf in grouped.items():
         for timeframe, events in by_tf.items():
             events.sort(key=lambda item: item.get("event_index", -1))
@@ -52,7 +76,6 @@ def load_feature_events(features_dir: str) -> tuple[dict[str, dict[str, list[dic
                         raise ValueError(f"Duplicate availability timestamp for {instrument}/{timeframe}: {stamp}")
                     seen.add(instant)
     return grouped, manifest
-
 
 def build_mtf_snapshots(
     events_by_instrument: dict[str, dict[str, list[dict]]],

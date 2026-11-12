@@ -45,7 +45,7 @@ def main() -> None:
     mtf = sub.add_parser("mtf", help="Build point-in-time multi-timeframe snapshots from causal feature events")
     mtf.add_argument("features_dir", type=Path)
     mtf.add_argument("--output-dir", type=Path, default=Path("data/features/mtf"))
-    mtf.add_argument("--decision-timeframes", default="M1,M5,M15,M30,H1,H4")
+    mtf.add_argument("--decision-timeframes", default="M5,M15,M30,H1,H4")
     args = parser.parse_args()
 
     if args.command == "audit":

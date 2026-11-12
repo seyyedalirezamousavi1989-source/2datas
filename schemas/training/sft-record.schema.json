@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aurora-quant.example/schemas/training/sft-record.schema.json",
+  "title": "AURORA QUANT supervised fine-tuning seed record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "messages",
+    "metadata"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+-[0-9]{3}$"
+    },
+    "messages": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role",
+          "content"
+        ],
+        "properties": {
+          "role": {
+            "enum": [
+              "system",
+              "user",
+              "assistant"
+            ]
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "prefixItems": [
+        {
+          "properties": {
+            "role": {
+              "const": "system"
+            }
+          }
+        },
+        {
+          "properties": {
+            "role": {
+              "const": "user"
+            }
+          }
+        },
+        {
+          "properties": {
+            "role": {
+              "const": "assistant"
+            }
+          }
+        }
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "task",
+        "language",
+        "source_type",
+        "review_status",
+        "contains_market_data",
+        "split_group"
+      ],
+      "properties": {
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "task": {
+          "type": "string",
+          "minLength": 1
+        },
+        "language": {
+          "enum": [
+            "en",
+            "fa"
+          ]
+        },
+        "source_type": {
+          "enum": [
+            "curated_authored_seed"
+          ]
+        },
+        "review_status": {
+          "enum": [
+            "initial_curated",
+            "reviewed",
+            "approved_for_training",
+            "rejected"
+          ]
+        },
+        "contains_market_data": {
+          "const": false
+        },
+        "split_group": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

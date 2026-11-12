@@ -13,7 +13,7 @@ MINUTES = {
     "H1": 60, "H2": 120, "H3": 180, "H4": 240, "H6": 360,
     "H8": 480, "H12": 720, "D1": 1440,
 }
-PAIRS = list(zip(list(MINUTES), list(MINUTES)[1:]))
+PAIRS = [("M1", "M5"), ("M2", "M10"), ("M3", "M15"), ("M4", "M20"), ("M5", "M15"), ("M6", "M30"), ("M10", "M30"), ("M15", "M30"), ("M30", "H1"), ("H1", "H4"), ("H2", "H8"), ("H3", "H12"), ("H4", "D1"), ("H6", "D1"), ("H8", "D1"), ("H12", "D1")]
 
 
 def _floor_time(value: datetime, minutes: int) -> datetime:

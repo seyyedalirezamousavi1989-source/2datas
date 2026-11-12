@@ -169,3 +169,16 @@ def test_fixed_offset_server_clock_is_supported_when_explicit():
     utc_value, status = to_utc("2024.01.15 10:00:00", "second", profile)
     assert utc_value == "2024-01-15T08:00:00+00:00"
     assert status == "RESOLVED_INTERVAL_START"
+
+
+def test_published_alpari_mt5_server_profile_applies_seasonal_clock():
+    from twodatas.broker_profiles import resolve_profile, to_utc
+
+    profile = resolve_profile("alpari_mt5_candidate", server_name="Alpari-MT5")
+    assert profile.status == "verified"
+    winter, winter_status = to_utc("2024.01.15 10:00:00", "second", profile)
+    summer, summer_status = to_utc("2024.07.15 10:00:00", "second", profile)
+    assert winter == "2024-01-15T08:00:00+00:00"
+    assert summer == "2024-07-15T07:00:00+00:00"
+    assert winter_status == "RESOLVED_INTERVAL_START"
+    assert summer_status == "RESOLVED_INTERVAL_START"

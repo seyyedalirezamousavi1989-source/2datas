@@ -8,12 +8,12 @@ from pathlib import Path
 from typing import Iterable
 
 from .ingest import read_zip
-from .quality import audit_file
+from .quality import audit_file\nfrom .broker_profiles import resolve_profile, to_utc
 
 SCHEMA_VERSION = "market-bars-0.2.0"
 FIELDS = [
     "schema_version", "instrument", "timeframe", "source_file", "source_sha256",
-    "source_row_number", "source_timestamp", "timestamp_precision", "timestamp_timezone",
+    "source_row_number", "source_timestamp", "timestamp_precision", "timestamp_timezone",\n    "timestamp_utc", "timestamp_resolution_status", "broker_profile_id", "broker_name", "server_timezone", "bar_timestamp_convention",
     "open", "high", "low", "close", "tick_volume", "real_volume", "spread_points",
 ]
 
@@ -26,7 +26,7 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def normalize_archive(archive_path: str, output_dir: str) -> dict:
+def normalize_archive(archive_path: str, output_dir: str, *, broker_profile_id: str | None = None, broker_name: str | None = None, server_timezone: str | None = None, bar_timestamp_convention: str | None = None) -> dict:
     """Materialize deterministic gzip CSV partitions while preserving source time semantics."""
     root = Path(output_dir)
     root.mkdir(parents=True, exist_ok=True)
@@ -46,7 +46,7 @@ def normalize_archive(archive_path: str, output_dir: str) -> dict:
 ")
                 writer.writeheader()
                 for row_number, bar in enumerate(result.rows, start=2):
-                    writer.writerow({
+                    timestamp_utc, timestamp_status = to_utc(bar.source_timestamp, bar.timestamp_precision, profile)\n                    writer.writerow({
                         "schema_version": SCHEMA_VERSION,
                         "instrument": bar.instrument,
                         "timeframe": bar.timeframe,
@@ -55,7 +55,7 @@ def normalize_archive(archive_path: str, output_dir: str) -> dict:
                         "source_row_number": row_number,
                         "source_timestamp": bar.source_timestamp,
                         "timestamp_precision": bar.timestamp_precision,
-                        "timestamp_timezone": bar.timestamp_timezone,
+                        "timestamp_timezone": profile.server_timezone or bar.timestamp_timezone,\n                        "timestamp_utc": timestamp_utc or "",\n                        "timestamp_resolution_status": timestamp_status,\n                        "broker_profile_id": profile.profile_id,\n                        "broker_name": profile.broker_name,\n                        "server_timezone": profile.server_timezone or "",\n                        "bar_timestamp_convention": profile.bar_timestamp_convention or "",
                         "open": repr(bar.open),
                         "high": repr(bar.high),
                         "low": repr(bar.low),
@@ -85,7 +85,7 @@ def normalize_archive(archive_path: str, output_dir: str) -> dict:
         "schema_version": SCHEMA_VERSION,
         "normalizer_version": "0.1.0",
         "source_archive_sha256": _sha256(Path(archive_path)),
-        "timestamp_policy": "Preserve source timestamp verbatim; do not infer timezone or open/close convention.",
+        "timestamp_policy": "Preserve raw source timestamp. UTC is populated only when a configured profile provides both timezone and bar timestamp convention; unresolved and DST-ambiguous values remain blank.",\n        "broker_profile": {"profile_id": profile.profile_id, "broker_name": profile.broker_name, "server_timezone": profile.server_timezone, "bar_timestamp_convention": profile.bar_timestamp_convention, "status": profile.status, "evidence": profile.evidence},
         "partitions": partitions,
         "total_rows": sum(p["row_count"] for p in partitions),
         "limitations": [

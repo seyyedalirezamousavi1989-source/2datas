@@ -121,11 +121,11 @@ def compute_price_action_features(
 
             tolerance = a * equal_level_atr_tolerance
             if event["swing_high_confirmed"] and len(confirmed_highs) >= 2:
-                prior_highs = [v for _, v in confirmed_highs[:-1] if abs(v-confirmed_highs[-1][1]) <= tolerance]
+                prior_highs = [v for _, v in confirmed_highs[-101:-1] if abs(v-confirmed_highs[-1][1]) <= tolerance]
                 if prior_highs:
                     event["equal_high_pool"] = {"level": _median(prior_highs + [confirmed_highs[-1][1]]), "touch_count": len(prior_highs)+1}
             if event["swing_low_confirmed"] and len(confirmed_lows) >= 2:
-                prior_lows = [v for _, v in confirmed_lows[:-1] if abs(v-confirmed_lows[-1][1]) <= tolerance]
+                prior_lows = [v for _, v in confirmed_lows[-101:-1] if abs(v-confirmed_lows[-1][1]) <= tolerance]
                 if prior_lows:
                     event["equal_low_pool"] = {"level": _median(prior_lows + [confirmed_lows[-1][1]]), "touch_count": len(prior_lows)+1}
             if confirmed_highs and bar.high > confirmed_highs[-1][1] and bar.close < confirmed_highs[-1][1]:

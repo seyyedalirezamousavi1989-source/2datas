@@ -8,7 +8,7 @@ from pathlib import Path
 
 from .broker_profiles import resolve_profile_for_archive, to_utc
 from .ingest import read_zip
-from .quality import audit_file
+from .quality import audit_file\nfrom .instrument_specs import validate_instrument_specs, audit_instrument_specs
 
 SCHEMA_VERSION = "market-bars-0.3.0"
 FIELDS = [
@@ -110,14 +110,14 @@ def normalize_archive(
             "bar_timestamp_semantics": profile.bar_timestamp_convention or "UNKNOWN",
         })
 
-    instruments = sorted({p["instrument"] for p in partitions})
+    instruments = sorted({p["instrument"] for p in partitions})\n    specs = validate_instrument_specs(broker_config.get("instrument_specs", {}))\n    source_symbols = {row.source_instrument for result in read_zip(archive_path, symbol_aliases=broker_config.get("symbol_aliases", {})) for row in result.rows}\n    specification_audit = audit_instrument_specs(specs, source_symbols=source_symbols)
     manifest = {
         "dataset": instruments[0] if len(instruments) == 1 else "multi-instrument",
         "instruments": instruments,
         "schema_version": SCHEMA_VERSION,
         "normalizer_version": "0.3.0",
         "source_archive_sha256": _sha256(Path(archive_path)),
-        "broker_config": broker_config,
+        "broker_config": broker_config,\n        "instrument_specification_audit": specification_audit,
         "broker_profile": {
             "profile_id": profile.profile_id,
             "broker_name": profile.broker_name,

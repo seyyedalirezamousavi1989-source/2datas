@@ -10,6 +10,7 @@ SCHEMA_PATH = ROOT / "schemas" / "training" / "sft-record.schema.json"
 DATASET_PATHS = [
     ROOT / "dataset" / "seed" / "identity.jsonl",
     ROOT / "dataset" / "seed" / "forex_knowledge.jsonl",
+    ROOT / "dataset" / "seed" / "strategy_selection.jsonl",
 ]
 
 
@@ -35,7 +36,7 @@ class SeedDatasetTests(unittest.TestCase):
                     self.assertNotIn(record["id"], seen)
                     seen.add(record["id"])
                     total += 1
-        self.assertGreaterEqual(total, 20)
+        self.assertGreaterEqual(total, 40)
 
     def test_identity_facts_are_consistent(self):
         records = []
@@ -74,9 +75,20 @@ class SeedDatasetTests(unittest.TestCase):
             "identity", "forex_fundamentals", "technical_analysis",
             "multi_timeframe", "strategy_research", "quantitative_analysis",
             "risk_management", "fundamental_analysis", "analytical_reasoning",
-            "trade_review", "forex_data_access"
+            "trade_review", "forex_data_access", "adaptive_strategy_selection"
         ]:
             self.assertIn(required, domains)
+
+    def test_strategy_selection_corpus_is_broker_and_timeframe_agnostic(self):
+        path = ROOT / "dataset" / "seed" / "strategy_selection.jsonl"
+        records = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        self.assertGreaterEqual(len(records), 20)
+        text = "\n".join(message["content"] for record in records for message in record["messages"]).lower()
+        self.assertIn("without assuming a broker", text)
+        self.assertIn("no trade", text)
+        self.assertIn("trend-following", text)
+        self.assertIn("mean-reversion", text)
+        self.assertIn("multi-timeframe", text)
 
     def test_forex_tab_access_contract_and_market_manifest(self):
         identity_records = [
@@ -90,7 +102,7 @@ class SeedDatasetTests(unittest.TestCase):
             if record["metadata"]["domain"] == "forex_data_access"
         ]
         self.assertGreaterEqual(len(access_records), 5)
-        combined = "\\n".join(
+        combined = "\n".join(
             message["content"]
             for record in identity_records
             for message in record["messages"]

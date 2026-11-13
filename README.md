@@ -30,6 +30,7 @@ Maximize verified information value per example—not row count, feature count, 
 These authored examples are a starter corpus, not a complete or production-approved training dataset. The six-timeframe market source inventory is recorded separately; no market-derived SFT samples or trade outcomes have been generated yet.
 
 - [Broker-neutral ingestion standard](docs/phase-0/BROKER_NEUTRAL_MARKET_DATA_INGESTION.md) — common provider profile, adapter interface, arbitrary supported timeframes, timezone/DST policy, and source-quality gates.
+- [Adaptive strategy-selection dataset](dataset/seed/strategy_selection.jsonl) — 20 broker- and timeframe-agnostic training examples for regime-aware strategy selection.
 
 ## Uploaded XAUUSD source archive
 

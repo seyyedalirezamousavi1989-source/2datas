@@ -1,18 +1,19 @@
 # AURORA QUANT dataset
 
-## Current contents
+## Learning corpus
 
-- `seed/identity.jsonl`: assistant, creator, team, host-app and Forex-tab interaction identity examples.
-- `seed/forex_knowledge.jsonl`: authored foundational Forex and market-analysis examples.
-- `market_data/xauusd_source_manifest.json`: immutable fingerprint and inventory of the uploaded six-timeframe XAUUSD source archive.
-- `reports/xauusd_source_quality_report.json`: read-only structural audit summary.
+- `seed/identity.jsonl`: assistant identity, project context, and data-access behavior.
+- `seed/forex_knowledge.jsonl`: foundational Forex, market structure, quantitative, risk, and analysis knowledge.
+- `seed/strategy_selection.jsonl`: 20 broker- and timeframe-agnostic examples teaching adaptive regime classification, strategy comparison, multi-timeframe reasoning, no-trade decisions, uncertainty, and post-trade review.
+- `market_data/xauusd_source_manifest.json`: fingerprint and inventory of the supplied six-timeframe XAUUSD archive.
+- `reports/xauusd_source_quality_report.json`: structural audit summary of that archive.
 
-The raw `XAUUSD.zip` is not stored in this repository. Its SHA-256 and per-file hashes are recorded in the source manifest. The six CSVs contain 681,227 source rows across M5, M15, M30, H1, H4 and D1, from 2020-11-11 to 2026-11-10.
+## Intended behavior
 
-## Important status
+The model receives market data from the LocalChat agent. The model is not responsible for connecting to brokers or acquiring files. It should analyze the actual supplied series regardless of provider or timeframe labels, provided the agent supplies enough information to interpret the observations. It should identify the market regime, compare relevant strategy families, choose the best-supported approach conditionally, explain alternatives and invalidation, and explicitly return no-trade when evidence is weak.
 
-The archive has been inventoried and structurally audited, but it has **not** yet been normalized or converted into market-derived SFT examples. Source timezone, bar timestamp convention, provider, and price basis remain unconfirmed. Do not guess these fields. See [the source audit](../docs/phase-0/XAUUSD_MULTI_TIMEFRAME_SOURCE_AUDIT.md).
+The strategy corpus is authored instructional SFT material, not evidence that any strategy is profitable. It contains no real market-derived labels or trade outcomes. The uploaded XAUUSD archive has been inventoried but has not yet been converted into market-derived examples. Do not imply otherwise.
 
-The Forex tab in the LocalChat Agent UI is the planned future data acquisition interface. The model is trained to request data through that interface only when it is actually exposed at runtime. This dataset documentation does not implement the UI or provider connector. See [the Forex Tab access contract](../docs/phase-0/FOREX_TAB_DATA_ACCESS_CONTRACT.md).
+## Data policy
 
-See [the initial curated seed specification](../docs/phase-0/INITIAL_CURATED_SEED_DATASET.md) for the authored seed corpus limitations.
+Do not hard-code a particular broker, symbol suffix, or timeframe. Do not silently reinterpret missing fields or timestamps. If a missing property changes the analysis materially, state the limitation. Keep source acquisition and data delivery in the host agent; keep market interpretation and strategy reasoning in AURORA QUANT.

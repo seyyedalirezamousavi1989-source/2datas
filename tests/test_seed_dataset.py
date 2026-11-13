@@ -11,6 +11,7 @@ DATASET_PATHS = [
     ROOT / "dataset" / "seed" / "identity.jsonl",
     ROOT / "dataset" / "seed" / "forex_knowledge.jsonl",
     ROOT / "dataset" / "seed" / "strategy_selection.jsonl",
+    ROOT / "dataset" / "seed" / "advanced_market_reasoning.jsonl",
 ]
 
 
@@ -36,7 +37,7 @@ class SeedDatasetTests(unittest.TestCase):
                     self.assertNotIn(record["id"], seen)
                     seen.add(record["id"])
                     total += 1
-        self.assertGreaterEqual(total, 50)
+        self.assertGreaterEqual(total, 80)
 
     def test_identity_facts_are_consistent(self):
         records = []
@@ -89,6 +90,22 @@ class SeedDatasetTests(unittest.TestCase):
         self.assertIn("trend-following", text)
         self.assertIn("mean-reversion", text)
         self.assertIn("multi-timeframe", text)
+
+
+    def test_advanced_reasoning_corpus_has_breadth_and_complete_answers(self):
+        path = ROOT / "dataset" / "seed" / "advanced_market_reasoning.jsonl"
+        records = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        self.assertGreaterEqual(len(records), 30)
+        tasks = {record["metadata"]["task"] for record in records}
+        for required in [
+            "regime-001", "breakout-001", "mtf-001", "structure-001",
+            "risk-001", "no-trade-001", "forecast-001", "data-001",
+            "posttrade-001", "overfit-001", "probability-001"
+        ]:
+            self.assertIn(required, tasks)
+        for record in records:
+            self.assertGreater(len(record["messages"][2]["content"]), 180)
+            self.assertTrue(record["metadata"]["split_group"].startswith("advanced_reasoning_"))
 
     def test_forex_tab_access_contract_and_market_manifest(self):
         identity_records = [

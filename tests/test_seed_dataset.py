@@ -12,6 +12,7 @@ DATASET_PATHS = [
     ROOT / "dataset" / "seed" / "forex_knowledge.jsonl",
     ROOT / "dataset" / "seed" / "strategy_selection.jsonl",
     ROOT / "dataset" / "seed" / "advanced_market_reasoning.jsonl",
+    ROOT / "dataset" / "seed" / "adversarial_market_reasoning.jsonl",
 ]
 
 
@@ -37,7 +38,7 @@ class SeedDatasetTests(unittest.TestCase):
                     self.assertNotIn(record["id"], seen)
                     seen.add(record["id"])
                     total += 1
-        self.assertGreaterEqual(total, 80)
+        self.assertGreaterEqual(total, 130)
 
     def test_identity_facts_are_consistent(self):
         records = []
@@ -76,7 +77,8 @@ class SeedDatasetTests(unittest.TestCase):
             "identity", "forex_fundamentals", "technical_analysis",
             "multi_timeframe", "strategy_research", "quantitative_analysis",
             "risk_management", "fundamental_analysis", "analytical_reasoning",
-            "trade_review", "forex_data_access", "adaptive_strategy_selection"
+            "trade_review", "forex_data_access", "adaptive_strategy_selection",
+            "adversarial_market_reasoning"
         ]:
             self.assertIn(required, domains)
 
@@ -106,6 +108,22 @@ class SeedDatasetTests(unittest.TestCase):
         for record in records:
             self.assertGreater(len(record["messages"][2]["content"]), 180)
             self.assertTrue(record["metadata"]["split_group"].startswith("advanced_reasoning_"))
+
+
+    def test_adversarial_reasoning_corpus_resists_bias_and_leakage(self):
+        path = ROOT / "dataset" / "seed" / "adversarial_market_reasoning.jsonl"
+        records = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        self.assertGreaterEqual(len(records), 40)
+        tasks = {record["metadata"]["task"] for record in records}
+        for required in [
+            "leading-001", "falseconfluence-001", "lateentry-001",
+            "timealign-001", "swinglookahead-001", "labelleak-001",
+            "duplicate-001", "costs-001", "policy-001", "calibration-001"
+        ]:
+            self.assertIn(required, tasks)
+        for record in records:
+            self.assertGreater(len(record["messages"][2]["content"]), 200)
+            self.assertTrue(record["metadata"]["split_group"].startswith("adversarial_"))
 
     def test_forex_tab_access_contract_and_market_manifest(self):
         identity_records = [

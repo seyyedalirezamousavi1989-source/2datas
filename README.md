@@ -2,7 +2,7 @@
 
 A research-first project to build a compact, high-information, reproducible dataset for Forex domain learning and XAUUSD market understanding.
 
-**Current status: initial authored seed corpus plus six-timeframe XAUUSD source inventory and read-only quality audit.** Market data has been inspected structurally, but not normalized, labeled, or converted into market-derived training samples. No model has been trained.
+**Current status: curated seed corpus plus a 32-example advanced market-reasoning set and six-timeframe XAUUSD source inventory.** Market data has been inspected structurally, but not normalized, labeled, or converted into market-derived training samples. No model has been trained.
 
 ## Non-negotiable objective
 
@@ -30,7 +30,8 @@ Maximize verified information value per example—not row count, feature count, 
 These authored examples are a starter corpus, not a complete or production-approved training dataset. The six-timeframe market source inventory is recorded separately; no market-derived SFT samples or trade outcomes have been generated yet.
 
 - [Broker-neutral ingestion standard](docs/phase-0/BROKER_NEUTRAL_MARKET_DATA_INGESTION.md) — common provider profile, adapter interface, arbitrary supported timeframes, timezone/DST policy, and source-quality gates.
-- [Adaptive strategy-selection dataset](dataset/seed/strategy_selection.jsonl) — 20 broker- and timeframe-agnostic training examples for regime-aware strategy selection.
+- [Adaptive strategy-selection dataset](dataset/seed/strategy_selection.jsonl) — 20 foundational examples.
+- [Advanced market reasoning dataset](dataset/seed/advanced_market_reasoning.jsonl) — 32 detailed hypothetical cases with worked answers for adaptive strategy choice, regime transitions, MTF conflicts, risk, abstention, forecasting, data quality, and research discipline.
 
 ## Uploaded XAUUSD source archive
 

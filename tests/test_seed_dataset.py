@@ -36,7 +36,7 @@ class SeedDatasetTests(unittest.TestCase):
                     self.assertNotIn(record["id"], seen)
                     seen.add(record["id"])
                     total += 1
-        self.assertGreaterEqual(total, 40)
+        self.assertGreaterEqual(total, 50)
 
     def test_identity_facts_are_consistent(self):
         records = []
